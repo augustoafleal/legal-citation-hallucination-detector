@@ -24,7 +24,7 @@ class DatabaseOverviewNotebookTests(unittest.TestCase):
 
         self.assertIn("connect_database", source)
         self.assertNotIn("sys.path.append", source)
-        self.assertIn('1.276.977', source)
+        self.assertIn('2.110', source)
 
 
 class CanonicalDatabaseAnalysisNotebookTests(unittest.TestCase):
