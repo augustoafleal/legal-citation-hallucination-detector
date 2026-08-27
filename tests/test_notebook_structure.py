@@ -25,6 +25,7 @@ class DatabaseOverviewNotebookTests(unittest.TestCase):
         self.assertIn("connect_database", source)
         self.assertNotIn("sys.path.append", source)
         self.assertIn('2.110', source)
+        self.assertIn("Distribuição das posições dos resultados FTS5", source)
 
 
 class CanonicalDatabaseAnalysisNotebookTests(unittest.TestCase):
@@ -55,3 +56,11 @@ class CanonicalDatabaseAnalysisNotebookTests(unittest.TestCase):
         self.assertIn("connect_database", source)
         self.assertNotIn("sys.path.append", source)
         self.assertNotIn("CanonicalIndex", source)
+        for chart_title in (
+            "Cobertura das extrações experimentais",
+            "Cobertura acumulada por posição no texto",
+            "Categorias do parsing exploratório",
+            "Colisões nas chaves candidatas",
+            "Tamanho dos grupos de identidade experimental",
+        ):
+            self.assertIn(chart_title, source)
