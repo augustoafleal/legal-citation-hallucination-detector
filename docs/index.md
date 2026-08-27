@@ -9,6 +9,13 @@ Bem-vindo ao material do desafio Jusbrasil na BRACIS 2026. A tarefa é construir
 
 Esta página apresenta o desafio e inventaria os arquivos disponíveis. O conteúdo foi inspecionado localmente; o arquivo compactado de distribuição não foi modificado.
 
+## Documentação técnica
+
+- [Arquitetura](architecture.md): organização atual do bootstrap e seus limites.
+- [Notebooks](notebooks.md): convenções para exploração reprodutível.
+- [Scripts](scripts.md): sanity check read-only disponível.
+- [Dados e materiais](#arquivos-disponiveis): localização dos arquivos distribuídos, sem cópia do SQLite.
+
 !!! tip "Por onde começar"
 
     1. Leia o [enunciado](#enunciado) para entender o contrato de entrada e saída.

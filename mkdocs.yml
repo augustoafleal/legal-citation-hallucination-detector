@@ -24,6 +24,9 @@ theme:
 
 nav:
   - O desafio: index.md
+  - Arquitetura: architecture.md
+  - Notebooks: notebooks.md
+  - Scripts: scripts.md
 
 plugins:
   - search:

@@ -175,4 +175,8 @@ pyrightconfig.json
 .agents/
 material_desafio_jusbrasil_bracis/
 
+# Artefatos temporários de exploração
+.jupyter_cache/
+*.tmp
+
 # End of https://www.toptal.com/developers/gitignore/api/python
