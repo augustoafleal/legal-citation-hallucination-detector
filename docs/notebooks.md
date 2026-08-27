@@ -25,3 +25,11 @@ processuais estruturadas. Ele mede posições, padrões por tribunal, cobertura 
 parsing experimental, falhas, duplicatas, múltiplos IDs e chaves candidatas de
 feito. A análise continua read-only e não implementa índice canônico ou
 resolver.
+
+## 03_canonical_identity_analysis.ipynb
+
+O terceiro notebook refina, de modo estritamente exploratório, a extração de
+número principal e classe associada por tribunal. Ele audita a qualidade das
+classes, revisita falhas, mede candidatos FTS revalidados, compara chaves
+candidatas e visualiza colisões. Continua somente leitura e não introduz
+componentes de identidade no pacote de produção.

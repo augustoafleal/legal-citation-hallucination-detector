@@ -64,3 +64,54 @@ class CanonicalDatabaseAnalysisNotebookTests(unittest.TestCase):
             "Tamanho dos grupos de identidade experimental",
         ):
             self.assertIn(chart_title, source)
+
+
+class CanonicalIdentityAnalysisNotebookTests(unittest.TestCase):
+    def test_notebook_covers_main_identity_without_production_components(self) -> None:
+        notebook = json.loads(
+            Path("notebooks/03_canonical_identity_analysis.ipynb").read_text()
+        )
+        source = "\n".join("".join(cell["source"]) for cell in notebook["cells"])
+
+        for heading in (
+            "# 1. Setup",
+            "# 2. O conceito de identidade principal",
+            "# 3. Anatomia da identidade por tribunal",
+            "# 4. Número principal",
+            "# 5. Classe associada ao número principal",
+            "# 6. Auditoria de qualidade da classe",
+            "# 7. Taxonomia observada de classes",
+            "# 8. Classe-base e modificadores",
+            "# 9. Os 14 casos sem número",
+            "# 10. FTS como fallback real",
+            "# 11. Recalcular as chaves candidatas",
+            "# 12. Inspeção manual das colisões",
+            "# 13. Definição operacional de feito",
+            "# 14. Hipótese de estrutura canônica",
+            "# 15. Critérios de confiança do parsing",
+            "# 16. Findings",
+        ):
+            self.assertIn(heading, source)
+
+        for chart_title in (
+            "Cobertura de número principal por tribunal",
+            "Qualidade do número principal por tribunal",
+            "Classes confiáveis e suspeitas por tribunal",
+            "Taxonomia observada de classes confiáveis",
+            "Classes simples e compostas",
+            "Cobertura estrutural e candidatos FTS revalidados",
+            "Colisões das chaves candidatas",
+            "Classificação exploratória das colisões",
+        ):
+            self.assertIn(chart_title, source)
+
+        self.assertIn("connect_database", source)
+        self.assertIn("pd.isna(value)", source)
+        for prohibited in (
+            "sys.path.append",
+            "CanonicalIndex",
+            "resolver",
+            "goldenset",
+            "openai",
+        ):
+            self.assertNotIn(prohibited, source)
