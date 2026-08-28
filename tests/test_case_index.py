@@ -3,17 +3,17 @@ import sqlite3
 import unittest
 from pathlib import Path
 
-from bracis_jusbrasil.canonical_index import CanonicalIndex, build_canonical_index
-from bracis_jusbrasil.canonical_parser import parse_canonical_identity
+from bracis_jusbrasil.cases import CaseIndex, build_case_index
+from bracis_jusbrasil.cases.parser import parse_case_identity
 from bracis_jusbrasil.database import connect_database, get_database_path
 from bracis_jusbrasil.normalization import normalize_case_number, normalize_tribunal
 
 
-class CanonicalIndexTests(unittest.TestCase):
+class CaseIndexTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         with connect_database(get_database_path(), read_only=True) as connection:
-            cls.index = build_canonical_index(connection)
+            cls.index = build_case_index(connection)
 
     def test_normalization(self) -> None:
         self.assertEqual(normalize_tribunal(" tse "), "TSE")
@@ -44,7 +44,8 @@ class CanonicalIndexTests(unittest.TestCase):
     def test_single_id_case_exists_for_each_tribunal(self) -> None:
         for tribunal in ("STF", "STJ", "TSE", "TST", "STM"):
             case = next(
-                case for case in self.index.cases()
+                case
+                for case in self.index.cases()
                 if case.tribunal == tribunal and len(case.canonical_ids) == 1
             )
             record = case.records[0]
@@ -76,7 +77,7 @@ class CanonicalIndexTests(unittest.TestCase):
                     """,
                     (tribunal,),
                 ).fetchone()
-                parsed = parse_canonical_identity(row["texto"], row["tribunal"])
+                parsed = parse_case_identity(row["texto"], row["tribunal"])
                 self.assertEqual(parsed.tribunal, tribunal)
                 self.assertTrue(parsed.numero_normalizado)
 
@@ -91,7 +92,7 @@ class CanonicalIndexTests(unittest.TestCase):
                 """
             ).fetchall()
 
-        parsed = [parse_canonical_identity(row["texto"], row["tribunal"]) for row in rows]
+        parsed = [parse_case_identity(row["texto"], row["tribunal"]) for row in rows]
         self.assertEqual(len(parsed), 200)
         self.assertEqual(sum(item.numero_family == "legacy" for item in parsed), 1)
         self.assertEqual(sum(item.parse_source == "intradocument_fallback" for item in parsed), 2)
@@ -115,7 +116,7 @@ class CanonicalIndexTests(unittest.TestCase):
 
     def test_build_is_read_only(self) -> None:
         with connect_database(get_database_path(), read_only=True) as connection:
-            index = CanonicalIndex.from_database(connection)
+            index = CaseIndex.from_database(connection)
             self.assertEqual(index.stats["records_total"], 1000)
             with self.assertRaises(sqlite3.OperationalError):
-                connection.execute("CREATE TABLE canonical_index_must_not_write (id INTEGER)")
+                connection.execute("CREATE TABLE case_index_must_not_write (id INTEGER)")

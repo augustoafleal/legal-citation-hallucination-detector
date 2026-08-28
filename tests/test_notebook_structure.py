@@ -55,7 +55,7 @@ class CanonicalDatabaseAnalysisNotebookTests(unittest.TestCase):
 
         self.assertIn("connect_database", source)
         self.assertNotIn("sys.path.append", source)
-        self.assertNotIn("CanonicalIndex", source)
+        self.assertNotIn("CaseIndex", source)
         for chart_title in (
             "Cobertura das extrações experimentais",
             "Cobertura acumulada por posição no texto",
@@ -109,7 +109,7 @@ class CanonicalIdentityAnalysisNotebookTests(unittest.TestCase):
         self.assertIn("pd.isna(value)", source)
         for prohibited in (
             "sys.path.append",
-            "CanonicalIndex",
+            "CaseIndex",
             "resolver",
             "goldenset",
             "openai",

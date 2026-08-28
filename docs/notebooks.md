@@ -53,11 +53,11 @@ O quinto notebook analisa, exclusivamente no SQLite, os grupos multi-ID
 formados por `(tribunal, numero_normalizado)`. Classe, UF, relator, ano e texto
 são evidências auxiliares somente dentro das colisões; o notebook preserva
 todos os candidatos, não escolhe uma identidade final e não implementa
-`CanonicalIndex`. A análise final cobre 1000/1000 acórdãos: 912 grupos, 831
+`CaseIndex`. A análise final cobre 1000/1000 acórdãos: 912 grupos, 831
 single-ID e 81 multi-ID, envolvendo 169 candidatos. O delta dos 25 TSE criou
 21 chaves single-ID e 2 colisões novas; as duas foram auditadas como
 `same_case`, somando-se aos 79 grupos antigos já auditados. A chave é adequada
 para recuperação, mas não garante identidade única; múltiplos IDs devem ser
-preservados por feito. Essa baseline alimenta o `CanonicalIndex` V1 em
-`src/bracis_jusbrasil`: súmulas, dispositivos, citações `.txt` e FTS continuam
-fora do índice.
+preservados por feito. Essa baseline alimenta o `CaseIndex` V1 em
+`src/bracis_jusbrasil.cases`: súmulas, dispositivos, citações `.txt` e FTS
+continuam fora do índice.
