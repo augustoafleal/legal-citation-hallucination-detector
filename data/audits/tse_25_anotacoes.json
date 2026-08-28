@@ -1,0 +1,177 @@
+[
+  {
+    "documento_id": "doc_0412",
+    "id": "469063122",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERPOR ELEITORAL ACÓRDÃO EMBARGOS DE DECLARAÇÃO NO AGRAVO REGIMENTAL NA AÇÃO RESCISÓRIA Nº 876-92.2013.6.00.0000 - CLASSE 5 - MANARI -PERNAMBUCO <fim>\n<inicio>REDATOR PARÃO ACÓRDÃO ED-AgR-AR no 876-92.201 3.6.00.0000/PE<fim>"
+  },
+  {
+    "documento_id": "doc_0414",
+    "id": "1888100977",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO RECURSO ESPECIAL ELEITORAL Nº 3112-8520146070000 - CLASSE 3ZY - BRASÍLIA - DISTRITO FEDERAL <fim>"
+  },
+  {
+    "documento_id": "doc_0424",
+    "id": "1891074202",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>A, TRE3UNAL. SUPERIOR ELEITORAL. ACORDAO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL N o 685-65. 2016.6.11.0055- CLASSE 32- CUIABA - MATO GROSSO<fim>"
+  },
+  {
+    "documento_id": "doc_0427",
+    "id": "23127447",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO RECURSO ESPECIAL ELEITORAL Nº 487-26.20126.06.0049 - CLASSE 32— HORIZONTE - CEARÁ<fim>"
+  },
+  {
+    "documento_id": "doc_0451",
+    "id": "537821108",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL AGRAVO REGIMENTAL NO RECURSO ORDINÁRIO Nº 1052-77. 201 5.6.26.0000 -CLASSE 37— SÃO PAULO - SÃO PAULO<fim>"
+  },
+  {
+    "documento_id": "doc_0452",
+    "id": "1890911847",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL Nº 1-19. 201 7.6.18.0021 - CLASSE 32- PIRACURUCA - PIAUÍ<fim>"
+  },
+  {
+    "documento_id": "doc_0454",
+    "id": "576309534",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL Nº 598- 2012 6 08 0018 - CLASSE 32 49 — IBATIBA - ESPIRITO SANTO<fim>"
+  },
+  {
+    "documento_id": "doc_0464",
+    "id": "351110742",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORA.L ACORDAO RECURSO ESPECIAL ELEITORAL No 561-73.2012.6.24.0051 - CLASSE 32 - TIMBO GRANDE - SANTA CATARINA<fim>"
+  },
+  {
+    "documento_id": "doc_0485",
+    "id": "437316801",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO EMBARGOS DE DECLARAÇÃO NO RECURSO ESPECIAL ELEITORAL Nº 21 2-46.201 6.6.14.0039 - CLASSE 32— TOMÉ-AÇU - PARÁ<fim>"
+  },
+  {
+    "documento_id": "doc_0498",
+    "id": "348591593",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACORDAO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL N 330-29. 201 2.6.13.0285 - CLASSE 32— SÃO ROMAO - MINAS GERAIS <fim>"
+  },
+  {
+    "documento_id": "doc_0500",
+    "id": "882662188",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO EMBARGOS DE DECLARAÇÃO NO RECURSO ESPECIAL ELEITORAL Nº 1-48.2017.6.13.0218 - CLASSE 32— PIRAPORA<fim>"
+  },
+  {
+    "documento_id": "doc_0505",
+    "id": "469075172",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO - CLASSE 32 ELEITORAL No 10975.2016.6.13.0133 GERAIS ABUJTO<fim>\n<inicio>MINIS REDATOR PARA O ACÓRDÃO REspe no 109-75.2016.6.13.0133/MG o <fim>"
+  },
+  {
+    "documento_id": "doc_0511",
+    "id": "14630182",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NA AÇÃO CAUTELAR Nº 3.334 - CLASSE 1 a IPATINGA - MINAS GERAIS<fim>"
+  },
+  {
+    "documento_id": "doc_0516",
+    "id": "469077266",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>TRIBUNAL SUPERPOR ELEITORAL ACÓRDÃO 20s EMBARGOS DE DECLARAÇÃO NO RECURSO ESPECIAL ELEITORAL Nº 104-03.2016.6.26.0065 - CLASSE 32— ITUPEVA - SÃO PAULO <fim>"
+  },
+  {
+    "documento_id": "doc_0534",
+    "id": "23127111",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>PUBLICADO EM SESSÃO TRIBUNAL. SUPERIOR ELEITORAL ACÓRDÃO RECURSO ESPECIAL ELEITORAL Nº 102-81.2012.620.0019 CLASSE 32— BARCELONA - RIO GRANDE DO NORTE<fim>"
+  },
+  {
+    "documento_id": "doc_0536",
+    "id": "23531614",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>PUBLICADO EM SESSÃO TRIBUNAL. SUPERIOR ELEITORAL ACÓRDÃO RECURSO ESPECIAL ELEITORAL Nº 102-81.2012.620.0019 CLASSE 32— BARCELONA - RIO GRANDE DO NORTE<fim>"
+  },
+  {
+    "documento_id": "doc_0539",
+    "id": "24739990",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL AC€RD O AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL N‚ 374-42. 2012.6.16.0066 - CLASSE 32ƒ MARING„ - PARAN<fim>"
+  },
+  {
+    "documento_id": "doc_0540",
+    "id": "134380702",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio> TRIBUNAL SUPERIOR ELEITORAL AC€RD O RECURSO ESPECIAL ELEITORAL N‚ 184-70.2012.6.20.0033 -CLASSE 32ƒ MOSSOR€ - RIO GRANDE DO NORTE <fim>"
+  },
+  {
+    "documento_id": "doc_0542",
+    "id": "402600310",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL Nº 16-75.2015.6.26.0266 CLASSE 32— RIBEIRÃO PRETO SÃO PAULO<fim>"
+  },
+  {
+    "documento_id": "doc_0546",
+    "id": "1890912099",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>TRIBUNAL ELEITORAL ACÓ RECURSO ESPECIAL ELEITORAL 494-51.2016.6.26.0039 - CLASSE 32 - CASA BRANCA - SÃO PAULO<fim>"
+  },
+  {
+    "documento_id": "doc_0549",
+    "id": "437044712",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ORDINÁRIO Nº 1120-1 9. 2014.6.06.0000 - CLASSE 37— FORTALEZA - CEARÁ<fim>"
+  },
+  {
+    "documento_id": "doc_0551",
+    "id": "568736504",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMÈNTAL NO AGRAVO DÉ INSTRUMENTO Nº 185-05. 20.16.6. , 250024.— CLASSE 6— .CÀMPÓ bõ BRITO— SERGiPE <fim>"
+  },
+  {
+    "documento_id": "doc_0578",
+    "id": "23149811",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL Nº 477-45. 201 2.6.26.0139 - CLASSE 32— TAQUARITINGA - SÃO PAULO<fim>"
+  },
+  {
+    "documento_id": "doc_0579",
+    "id": "23542259",
+    "tribunal": "TSE",
+    "parse_status": "suspicious",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL ACÓRDÃO AGRAVO REGIMENTAL NO RECURSO ESPECIAL ELEITORAL Nº 477-45. 201 2.6.26.0139 - CLASSE 32— TAQUARITINGA - SÃO PAULO<fim>"
+  },
+  {
+    "documento_id": "doc_0580",
+    "id": "24269534",
+    "tribunal": "TSE",
+    "parse_status": "unparsed",
+    "anotacao": "<inicio>TRIBUNAL SUPERIOR ELEITORAL AC€RD O RECURSO ESPECIAL ELEITORAL N‚ 310-03.2012.6.09.0074 - CLASSE 32ƒ SANTA RITA DO NOVO DESTINO - GOI<fim>"
+  }
+]

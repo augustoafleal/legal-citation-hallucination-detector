@@ -115,3 +115,16 @@ class CanonicalIdentityAnalysisNotebookTests(unittest.TestCase):
             "openai",
         ):
             self.assertNotIn(prohibited, source)
+
+
+class PrimaryCaseNumberNotebookTests(unittest.TestCase):
+    def test_notebook_has_structural_parsers_and_collision_plots(self) -> None:
+        notebook = json.loads(Path("notebooks/04_primary_case_number_and_collisions.ipynb").read_text())
+        source = "\n".join("".join(cell["source"]) for cell in notebook["cells"])
+        for heading in ("# 1. Setup", "# 4. Parser estrutural do STF", "# 13. Construir chave primária experimental", "# 22. Findings"):
+            self.assertIn(heading, source)
+        for title in ("Distribuição da posição do número principal por tribunal", "Cobertura acumulada por janela", "Status do parsing por tribunal", "Quantidade de grupos por tamanho", "Grupos multi-ID por tribunal", "Distribuição das categorias de colisão", "Cobertura versus colisões por estratégia"):
+            self.assertIn(title, source)
+        for name in ("parse_stf_primary_number", "parse_stj_primary_number", "parse_tse_primary_number", "parse_tst_primary_number", "parse_stm_primary_number"):
+            self.assertIn(name, source)
+        self.assertIn("connect_database", source)
