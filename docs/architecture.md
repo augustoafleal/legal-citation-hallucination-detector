@@ -12,21 +12,29 @@ uma cópia do SQLite.
 
 ```mermaid
 flowchart LR
-    A[data/ e material do desafio] --> B[src/]
-    B --> C[notebooks/]
-    B --> D[scripts/]
+    A[SQLite read-only] --> B[canonical parser]
+    B --> C[normalization]
+    C --> D[CanonicalIndex]
+    D --> E[(tribunal, numero) -> CanonicalCase]
+    B --> F[notebooks/]
+    D --> G[scripts/]
 ```
 
 | Diretório | Responsabilidade atual |
 | --- | --- |
-| `src/` | Código reutilizável, incluindo a conexão SQLite read-only. |
+| `src/` | Código reutilizável: conexão read-only, parser, normalização e índice canônico. |
 | `notebooks/` | Exploração visual e experimentos executáveis. |
 | `scripts/` | Comandos utilitários e reproduzíveis. |
 | `data/` | Documentação da localização dos arquivos distribuídos. |
 | `docs/` | Decisões e documentação renderizada pelo MkDocs. |
 
-## Limites desta etapa
+## Índice canônico V1
 
-Ainda não existem parsing de citações, normalização, índice canônico ou
-resolução. Esses componentes poderão ser adicionados futuramente em `src/`,
-quando houver uma decisão de implementação baseada na exploração do banco.
+O `CanonicalIndex` cobre somente os 1.000 acórdãos do SQLite. A extração
+estrutural validada por tribunal passa pela normalização e forma 912 feitos:
+831 single-ID e 81 multi-ID. Todos os IDs de um mesmo feito são preservados;
+nenhum é escolhido arbitrariamente. Súmulas e dispositivos ainda não fazem
+parte do índice.
+
+O índice é uma chave de recuperação, não um resolver de citações. Parsing de
+`.txt`, spans, classificações, FTS e resolução permanecem fora desta V1.

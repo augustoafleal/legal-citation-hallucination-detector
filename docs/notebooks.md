@@ -58,4 +58,6 @@ single-ID e 81 multi-ID, envolvendo 169 candidatos. O delta dos 25 TSE criou
 21 chaves single-ID e 2 colisões novas; as duas foram auditadas como
 `same_case`, somando-se aos 79 grupos antigos já auditados. A chave é adequada
 para recuperação, mas não garante identidade única; múltiplos IDs devem ser
-preservados por feito.
+preservados por feito. Essa baseline alimenta o `CanonicalIndex` V1 em
+`src/bracis_jusbrasil`: súmulas, dispositivos, citações `.txt` e FTS continuam
+fora do índice.
