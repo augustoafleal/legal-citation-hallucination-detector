@@ -14,11 +14,13 @@ class InspectDatabaseScriptTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         for expected in (
             "integrity_check: ok",
-            "documentos: 1018",
-            "acordao: 1000",
+            "documentos: 1016",
+            "acordao: 998",
             "sumula: 5",
             "dispositivo: 13",
             "STF: 200",
+            "STJ: 199",
+            "TSE: 199",
             "FTS5: available",
         ):
             self.assertIn(expected, result.stdout)

@@ -19,7 +19,7 @@ Esta página apresenta o desafio e inventaria os arquivos disponíveis. O conte�
 !!! tip "Por onde começar"
 
     1. Leia o [enunciado](#enunciado) para entender o contrato de entrada e saída.
-    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset.csv` como amostra de desenvolvimento.
+    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset.xlsx` como amostra de desenvolvimento.
     3. Use `desafio1_bracis.db` como a fonte de verdade para decidir e resolver citações.
     4. Gere o CSV final com `json_to_submission.py`.
 
@@ -53,7 +53,7 @@ material_desafio_jusbrasil_bracis.zip              # arquivo compactado de distr
 material_desafio_jusbrasil_bracis/
 ├── Dados do Caça-Alucinações - BRACIS 2026.pdf # enunciado (6 páginas)
 ├── desafio1_bracis.db                             # base canônica SQLite (~89 MiB)
-├── goldenset.csv                                  # gabarito da amostra de desenvolvimento
+├── goldenset.xlsx                                 # gabarito da amostra de desenvolvimento
 ├── json_to_submission.py                          # conversor de JSONs para CSV de submissão
 └── txt/                                           # 26 documentos jurídicos sintéticos de entrada
     ├── gen_n1_001.txt … gen_n1_013.txt
@@ -74,7 +74,7 @@ Súmulas e dispositivos legais devem ser comparados aos seus registros próprios
 
 ## Textos de entrada
 
-O diretório `txt/` contém 26 peças jurídicas sintéticas em UTF-8, totalizando 89.470 bytes (86.663 caracteres). Cada texto tem entre 2.880 e 3.887 caracteres, com média de 3.333. As peças assumem formas como petições, pareceres, decisões monocráticas e memoriais, em matérias coerentes com os tribunais e normas citados.
+O diretório `txt/` contém 26 peças jurídicas sintéticas em UTF-8, totalizando 89.488 bytes (86.681 caracteres). Cada texto tem entre 2.880 e 3.887 caracteres, com média de 3.334. As peças assumem formas como petições, pareceres, decisões monocráticas e memoriais, em matérias coerentes com os tribunais e normas citados.
 
 | Conjunto | Arquivos | Peso | O que avalia |
 | --- | ---: | ---: | --- |
@@ -85,7 +85,7 @@ O nome do arquivo sem extensão é o `documento_id` utilizado pelo gabarito e pe
 
 ## Base canônica
 
-`desafio1_bracis.db` é um banco SQLite 3 em UTF-8, com 93.364.224 bytes. Sua verificação de integridade retorna `ok`. Ele é a cobertura congelada que define se uma citação é real ou inventada no desafio; não se deve consultar uma base jurídica externa para tomar essa decisão.
+`desafio1_bracis.db` é um banco SQLite 3 em UTF-8, com 93.298.688 bytes. Sua verificação de integridade retorna `ok`. Ele é a cobertura congelada que define se uma citação é real ou inventada no desafio; não se deve consultar uma base jurídica externa para tomar essa decisão.
 
 A tabela principal é `documentos`. A tabela virtual `documentos_fts` usa FTS5, conteúdo externo por `rowid` e o tokenizador `unicode61 remove_diacritics 2`, permitindo pesquisa no inteiro teor sem duplicá-lo.
 
@@ -98,19 +98,19 @@ A tabela principal é `documentos`. A tabela virtual `documentos_fts` usa FTS5, 
 | `tipo` | `jurisprudencia` ou `lei`. |
 | `texto`, `texto_len` | Inteiro teor e seu comprimento. |
 
-A base contém 1.018 registros, que somam 67.984.520 caracteres indexados:
+A base contém 1.016 registros, que somam 67.931.149 caracteres indexados:
 
 | Natureza | Tipo | Registros |
 | --- | --- | ---: |
-| `acordao` | `jurisprudencia` | 1.000 |
+| `acordao` | `jurisprudencia` | 998 |
 | `sumula` | `jurisprudencia` | 5 |
 | `dispositivo` | `lei` | 13 |
 
-Há 200 acórdãos de cada tribunal — STF, STJ, TSE, TST e STM. As cinco súmulas se distribuem entre STF (1), STJ (3) e TST (1); os 13 dispositivos não têm tribunal. Os acórdãos cobrem de 2009 a 2026. Além das chaves, existem índices para `tribunal`, `ano` e `natureza`.
+Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas se distribuem entre STF (1), STJ (3) e TST (1); os 13 dispositivos não têm tribunal. Os acórdãos cobrem de 2009 a 2026. Além das chaves, existem índices para `tribunal`, `ano` e `natureza`.
 
 ## Gabarito de desenvolvimento
 
-`goldenset.csv` é um CSV UTF-8 de 20.494 bytes, com uma linha por citação esperada da amostra de desenvolvimento. São 225 linhas distribuídas pelos 26 documentos, de 7 a 10 citações por peça (média de 8,65).
+`goldenset.xlsx` contém uma linha por citação esperada da amostra de desenvolvimento, na planilha `goldenset`. São 225 linhas distribuídas pelos 26 documentos, de 7 a 10 citações por peça (média de 8,65).
 
 | Campo | Descrição |
 | --- | --- |
@@ -120,7 +120,7 @@ Há 200 acórdãos de cada tribunal — STF, STJ, TSE, TST e STM. As cinco súmu
 | `trecho` | Trecho anotado; quebras de linha são serializadas como `\\n`. |
 | `tipo` | `jurisprudencia` ou `lei`. |
 | `classificacao` | `real`, `inventada` ou `incompleta`. |
-| `id_canonico` | Identificador(es) aceito(s), separado(s) por espaço; preenchido apenas em citações reais. |
+| `id_canonico` | Identificador único aceito; preenchido apenas em citações reais. |
 
 | Recorte | `real` | `inventada` | `incompleta` | Total |
 | --- | ---: | ---: | ---: | ---: |
@@ -132,7 +132,15 @@ Existem 186 citações de jurisprudência e 39 de lei. As 96 linhas classificada
 
 !!! note "Observação de consistência"
 
-    Comparando `texto[inicio:fim]` com o `trecho` do CSV, ao interpretar `\\n` como quebra de linha, 219 das 225 linhas coincidem. As seis exceções estão em `gen_n2_010`, de `g2` a `g7`: os spans apontam para trechos diferentes do conteúdo de `trecho`. Ao usar validação estrita de offsets, trate o span como referência de posição e confirme com a organização se a discrepância for relevante para o treino.
+    Comparando `texto[inicio:fim]` com o `trecho` do XLSX, ao interpretar `\\n` como quebra de linha, as 225 linhas coincidem com os textos atuais. O arquivo `gen_n2_010.txt` foi corrigido na revisão oficial de 28/08/2026.
+
+## Revisão do dataset — 28/08/2026
+
+A revisão oficial removeu os acórdãos duplicados `doc_0227` e `doc_0461` do
+SQLite, corrigiu `gen_n2_010.txt` e substituiu `goldenset.csv` por
+`goldenset.xlsx`. A base passou a ter 1.016 registros, incluindo 998 acórdãos,
+13 dispositivos e 5 súmulas. No contrato de saída, `id_canonico` é um único
+valor para cada citação real.
 
 ## Conversão da submissão
 

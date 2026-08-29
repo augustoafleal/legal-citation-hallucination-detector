@@ -3,3 +3,4 @@ jupyterlab
 ipykernel
 pandas
 matplotlib
+openpyxl

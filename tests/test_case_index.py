@@ -32,10 +32,10 @@ class CaseIndexTests(unittest.TestCase):
         self.assertEqual(
             self.index.stats,
             {
-                "records_total": 1000,
+                "records_total": 998,
                 "case_keys": 912,
-                "single_id_cases": 831,
-                "multi_id_cases": 81,
+                "single_id_cases": 833,
+                "multi_id_cases": 79,
                 "max_ids_per_case": 4,
             },
         )
@@ -93,7 +93,7 @@ class CaseIndexTests(unittest.TestCase):
             ).fetchall()
 
         parsed = [parse_case_identity(row["texto"], row["tribunal"]) for row in rows]
-        self.assertEqual(len(parsed), 200)
+        self.assertEqual(len(parsed), 199)
         self.assertEqual(sum(item.numero_family == "legacy" for item in parsed), 1)
         self.assertEqual(sum(item.parse_source == "intradocument_fallback" for item in parsed), 2)
         self.assertGreaterEqual(sum(item.parse_source == "normalized_header" for item in parsed), 1)
@@ -114,9 +114,43 @@ class CaseIndexTests(unittest.TestCase):
         self.assertEqual(len(notes), 25)
         self.assertTrue({item["documento_id"] for item in notes} <= records)
 
+    def test_updated_dataset_removed_duplicates(self) -> None:
+        with connect_database(get_database_path(), read_only=True) as connection:
+            for document_id, canonical_id in (
+                ("doc_0227", 2939403187),
+                ("doc_0461", 1890912862),
+            ):
+                self.assertIsNone(
+                    connection.execute(
+                        "SELECT 1 FROM documentos WHERE documento_id = ?",
+                        (document_id,),
+                    ).fetchone()
+                )
+                self.assertIsNone(
+                    connection.execute(
+                        "SELECT 1 FROM documentos WHERE id = ?",
+                        (canonical_id,),
+                    ).fetchone()
+                )
+
+            for document_id, canonical_id in (
+                ("doc_0230", 2849473714),
+                ("doc_0462", 1931806554),
+            ):
+                row = connection.execute(
+                    "SELECT documento_id, id, tribunal, texto FROM documentos WHERE documento_id = ?",
+                    (document_id,),
+                ).fetchone()
+                self.assertIsNotNone(row)
+                self.assertEqual(row["id"], canonical_id)
+                parsed = parse_case_identity(row["texto"], row["tribunal"])
+                case = self.index.lookup(row["tribunal"], parsed.numero_raw)
+                self.assertIsNotNone(case)
+                self.assertIn(canonical_id, case.canonical_ids)
+
     def test_build_is_read_only(self) -> None:
         with connect_database(get_database_path(), read_only=True) as connection:
             index = CaseIndex.from_database(connection)
-            self.assertEqual(index.stats["records_total"], 1000)
+            self.assertEqual(index.stats["records_total"], 998)
             with self.assertRaises(sqlite3.OperationalError):
                 connection.execute("CREATE TABLE case_index_must_not_write (id INTEGER)")

@@ -61,3 +61,32 @@ para recuperação, mas não garante identidade única; múltiplos IDs devem ser
 preservados por feito. Essa baseline alimenta o `CaseIndex` V1 em
 `src/bracis_jusbrasil.cases`: súmulas, dispositivos, citações `.txt` e FTS
 continuam fora do índice.
+
+Os números acima registram a investigação sobre a versão anterior do dataset.
+Em 28/08/2026, a baseline oficial foi atualizada: `doc_0227` e `doc_0461`
+foram removidos por serem duplicatas exatas.
+
+## 06_citation_surface_analysis.ipynb
+
+O sexto notebook é uma etapa exploratória sobre a superfície das citações da
+revisão corrente do desafio. Ele lê somente os 26 arquivos `txt` e as 225 linhas
+do `goldenset.xlsx`, valida os 225 spans contra os offsets do texto e separa
+explicitamente detecção, parsing e resolução; somente as duas primeiras são
+estudadas. A taxonomia textual cobre processos CNJ, processos ou recursos
+numerados, súmulas, referências jurisprudenciais contextuais ou gerais e três
+formas de referência legal. Os rótulos do goldenset são usados apenas depois
+para cruzamentos analíticos, nunca para definir regras ou famílias.
+
+A baseline determinística de regras interpretáveis obteve 105 TP, 89 FP e 120
+FN (precisão 0,541, recall 0,467 e F1 0,501 com IoU >= 0,5), tornando visíveis
+as lacunas de cobertura e de fronteira antes de qualquer evolução. O parsing é
+medido exclusivamente com spans-oráculo e registra apenas tribunal, classe,
+número e UF explicitamente presentes. O notebook não resolve citações, não usa
+`CaseIndex`, não cria código de produção e não usa o diretório histórico
+`_old`; os resultados servem para orientar um próximo experimento de detecção
+geral, não uma arquitetura de resolução.
+
+A baseline de detecção desse notebook foi portada sem alterações de métricas
+para `bracis_jusbrasil.citations.CitationDetector` V1. O componente preserva os
+spans, regras, famílias, deduplicação e overlaps observados, enquanto parsing e
+resolução continuam fora do código de produção.
