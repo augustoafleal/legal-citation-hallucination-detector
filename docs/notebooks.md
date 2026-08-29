@@ -126,3 +126,63 @@ A regra foi posteriormente promovida, sem alterações, ao `CitationDetector`
 V2. Os notebooks 07 e 07.1 continuam sendo a evidência histórica da seleção e
 do teste de robustez; a implementação de produção preserva somente
 `jurisprudencia_geral`, com baseline de 117 TP, 89 FP e 108 FN.
+
+## 08_citation_parsing_analysis.ipynb
+
+O oitavo notebook estuda, de forma exploratória e determinística, o desenho de
+um futuro parser de citações usando exclusivamente os 225 spans-oráculo do
+goldenset e os 26 textos da revisão corrente. Ele separa reconhecimento de
+família, extração de campos, normalização segura e informação ausente, sem
+consultar `CaseIndex`, banco, FTS ou `id_canonico`, e sem alterar componentes de
+produção.
+
+A análise cobre processos CNJ, processos ou recursos numerados, súmulas,
+referências jurisprudenciais contextuais ou gerais e as três famílias legais.
+Ela mantém tipos numéricos distintos — inclusive artigo, número de lei e número
+processual — e preserva valores brutos, normalizados e a proveniência do campo.
+Os CNJs foram extraídos em 25/25 spans; números de súmula em 10/10; campos
+contextuais (tribunal, relator e ano) em 20/20; e artigo/diploma nas referências
+legais com diploma em 27/27. Já a família de processos ou recursos numerados
+exige nova investigação: 61/85 números explicitamente presentes e 53/63 UFs
+explícitas foram extraídos, com pior cobertura de número em N2 (61,7% contra
+90,5% em N1).
+
+O notebook não executa reparos OCR: registra separadamente newline e confusões
+`O/0`, `l/1` e `S/5` como hipóteses locais. A recomendação é uma segunda rodada
+exploratória de parsing sobre as estruturas de processo/recurso numerado e sua
+robustez N2, antes de implementar `CitationParser` em produção. A proposta
+arquitetural permanece conceitual: reconhecimento de família, dispatch para
+parsers específicos e um contrato comum com campos opcionais; existência,
+desambiguação, `id_canonico` e classificações finais pertencem ao futuro
+Resolver.
+
+## 09_case_citation_parsing_robustness.ipynb
+
+O nono notebook encerra a exploração de robustez do parsing sobre os 110
+spans-oráculo de processos CNJ e processos/recursos numerados. Ele reproduz a
+baseline do Notebook 08 (CNJ 25/25, número 61/85 e UF 53/63 pelo protocolo
+original), audita as 24 ausências da baseline e não consulta SQLite,
+`CaseIndex` ou `id_canonico`.
+
+Onze dessas 24 citações não contêm número processual: são referências
+contextuais com ano. Das 13 limitações estruturais restantes, oito são
+recuperadas por tolerância local a marcadores e aliases de classe, e quatro por
+newline/pontuação em posição plausível; uma cadeia trabalhista composta fica
+deliberadamente fora da proposta por ter suporte único. A extração de UF passa
+de 53/63 no protocolo anterior para 66/66 formas localmente visíveis ao número,
+sem buscar siglas no span inteiro. As regras estruturais não produzem
+regressões e mantêm CNJ em 25/25.
+
+Dois identificadores N2 exigem reparo OCR contextual (`l/1` e `S/5`). O reparo
+permanece apenas como fallback local dentro de um candidato numérico já
+delimitado, preservando `numero_raw` e registrando proveniência. A conclusão
+exploratória recomenda implementar o futuro `CitationParser` V1 com dispatch
+por família, envelope comum e payload específico simples; existência,
+desambiguação e classificação continuam sendo responsabilidade do Resolver.
+
+As regras investigadas nesses dois notebooks foram posteriormente portadas sem
+ampliação para `bracis_jusbrasil.citations.CitationParser` V1. A implementação
+mantém dispatch por família, preserva valores brutos e provenance, suporta as
+tolerâncias estruturais validadas para processos/recurso e limita OCR a dois
+contextos numéricos locais. O parser descreve apenas a superfície textual;
+resolução e classificação permanecem fora de produção nesta etapa.

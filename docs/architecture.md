@@ -20,9 +20,10 @@ flowchart LR
     D --> G[scripts/]
     H[Texto original] --> I[CitationDetector V2]
     I --> J[CitationCandidate[]]
-    J -.-> K[CitationParser futuro]
-    K -.-> L[Resolver futuro]
-    L -.-> D
+    J --> K[CitationParser V1]
+    K --> L[ParsedCitation[]]
+    L -.-> M[Resolver futuro]
+    M -.-> D
 ```
 
 | Diretório | Responsabilidade atual |
@@ -50,6 +51,12 @@ recebe texto original e retorna candidatos com offsets, texto, regra e família
 superficial. A V2 preserva a V1 e adiciona a detecção conservadora de
 referências jurisprudenciais gerais (`jurisprudencia_geral`): V1 obteve
 105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN (F1 0,543).
-Ele não consulta o banco ou `CaseIndex`, não classifica uma citação e não faz
-parsing estruturado ou resolução. `CitationParser` e `Resolver` continuam
-futuros; somente este último poderá decidir a relação com o `CaseIndex`.
+Ele não consulta o banco ou `CaseIndex` e não classifica uma citação.
+
+`CitationParser` V1 recebe exclusivamente uma `CitationCandidate` já
+delimitada e produz `ParsedCitation`: família, tipo, tribunal explícito e um
+payload específico da família com os campos textualmente presentes. O parser
+não consulta banco, FTS ou `CaseIndex`, não infere tribunal, não classifica a
+citação e não decide se há evidência suficiente. O `Resolver` continua futuro
+e será o único componente autorizado a confrontar `ParsedCitation` com o
+corpus, desambiguar candidatos e decidir a relação com o `CaseIndex`.
