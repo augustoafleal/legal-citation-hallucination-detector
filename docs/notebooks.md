@@ -90,3 +90,39 @@ A baseline de detecção desse notebook foi portada sem alterações de métrica
 para `bracis_jusbrasil.citations.CitationDetector` V1. O componente preserva os
 spans, regras, famílias, deduplicação e overlaps observados, enquanto parsing e
 resolução continuam fora do código de produção.
+
+## 07_citation_detector_error_analysis.ipynb
+
+O sétimo notebook é uma análise exploratória e reproduz exatamente a baseline
+do `CitationDetector` V1 na revisão corrente: 105 TP, 89 FP e 120 FN. Ele
+classifica os erros sem alterar o detector: os FN se dividem em 79 casos sem
+candidato e 41 candidatos contidos no trecho gold; os FP em 63 subspans de
+trechos gold e 26 casos espúrios. Também mede regras, famílias, níveis N1/N2 e
+tipos, além de explicitar os deltas de fronteira.
+
+As variantes permanecem exclusivamente no notebook. A melhor isolada é uma
+regra lexical conservadora para referências jurisprudenciais gerais: 117 TP,
+89 FP, 108 FN e F1 0,543, sem regressões dos matches V1. A extensão estrutural
+de sufixo de processo e as hipóteses contextuais mais amplas elevam falsos
+positivos, portanto não são proposta de V2. O notebook recomenda somente essa
+adição mínima como candidata a V2, condicionada a nova validação; não modifica
+`CitationDetector`, não implementa V2 e não faz parsing ou resolução.
+
+## 07_1_citation_detector_generalization_check.ipynb
+
+O Notebook 07.1 audita o risco de generalização da regra experimental
+`jurisprudencia_geral`, mantendo produção e a regra congeladas. Os 12 TP novos
+se distribuem por 8 documentos (top-1: 25%, top-3: 58,3%; HHI: 0,153), cinco
+branches lexicais e ambos os níveis (8 em N1, 4 em N2), sem FP novo. O LOODO,
+explicitamente usado apenas como medida de concentração e não como holdout,
+mantém ganho de F1 em 26/26 exclusões; a remoção simultânea dos dois documentos
+com maior ganho ainda preserva +7 TP. Nenhum branch pode ser removido sem perder
+cobertura, portanto não há simplificação equivalente. A evidência foi
+classificada como `LOW GENERALIZATION RISK` e a decisão analítica é promover a
+regra para uma futura V2, ainda condicionada à avaliação no blind set dos
+organizadores. O notebook não altera produção nem implementa essa decisão.
+
+A regra foi posteriormente promovida, sem alterações, ao `CitationDetector`
+V2. Os notebooks 07 e 07.1 continuam sendo a evidência histórica da seleção e
+do teste de robustez; a implementação de produção preserva somente
+`jurisprudencia_geral`, com baseline de 117 TP, 89 FP e 108 FN.

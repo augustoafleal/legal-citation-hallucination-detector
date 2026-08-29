@@ -18,7 +18,7 @@ flowchart LR
     D --> E[(tribunal, numero_normalizado) -> Case]
     B --> F[notebooks/]
     D --> G[scripts/]
-    H[Texto original] --> I[CitationDetector V1]
+    H[Texto original] --> I[CitationDetector V2]
     I --> J[CitationCandidate[]]
     J -.-> K[CitationParser futuro]
     K -.-> L[Resolver futuro]
@@ -45,9 +45,11 @@ dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicata
 exatas: `doc_0227` e `doc_0461`.
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` começa com o `CitationDetector` V1: uma baseline determinística
-que recebe texto original e retorna candidatos com offsets, texto, regra e
-família superficial. Ele não consulta o banco ou `CaseIndex`, não classifica
-uma citação e não faz parsing estruturado ou resolução. `CitationParser` e
-`Resolver` continuam futuros; somente este último poderá decidir a relação com
-o `CaseIndex`.
+`citations/` contém o `CitationDetector` V2: um detector determinístico que
+recebe texto original e retorna candidatos com offsets, texto, regra e família
+superficial. A V2 preserva a V1 e adiciona a detecção conservadora de
+referências jurisprudenciais gerais (`jurisprudencia_geral`): V1 obteve
+105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN (F1 0,543).
+Ele não consulta o banco ou `CaseIndex`, não classifica uma citação e não faz
+parsing estruturado ou resolução. `CitationParser` e `Resolver` continuam
+futuros; somente este último poderá decidir a relação com o `CaseIndex`.
