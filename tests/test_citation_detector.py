@@ -129,8 +129,45 @@ class CitationDetectorTests(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.detector.detect(None)  # type: ignore[arg-type]
 
+    def test_process_candidates_expand_to_adjacent_uf(self) -> None:
+        examples = (
+            ("REsp nº 1.597.443-PR", "1.597.443-PR"),
+            ("REsp nº 1.597.443/PR", "1.597.443/PR"),
+            ("REsp nº 1.597.443 PR", "1.597.443 PR"),
+            ("REsp nº 1.597.443- PR", "1.597.443- PR"),
+        )
+        for text, expected_suffix in examples:
+            with self.subTest(text=text):
+                candidate = next(item for item in self.detector.detect(text) if item.family == "processo_ou_recurso_numerado")
+                self.assertTrue(candidate.text.endswith(expected_suffix))
+                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+                self.assertEqual(candidate.end, len(text))
 
-class CitationDetectorV2BaselineTests(unittest.TestCase):
+    def test_process_uf_expansion_does_not_consume_arbitrary_text(self) -> None:
+        text = "REsp nº 1.597.443 processo posterior"
+        candidate = next(item for item in self.detector.detect(text) if item.family == "processo_ou_recurso_numerado")
+        self.assertEqual(candidate.text, "REsp nº 1.597.443")
+
+    def test_uf_expansion_does_not_change_other_families(self) -> None:
+        text = "art. 75 da Constituição Federal; Súmula 331; jurisprudência pacífica."
+        candidates = self.detector.detect(text)
+        self.assertEqual(
+            {(item.text, item.rule, item.family) for item in candidates},
+            {
+                ("art. 75 da Constituição Federal", "lei_com_diploma", "lei_dispositivo_com_diploma"),
+                ("art. 75", "dispositivo_legal", "lei_dispositivo_sem_diploma"),
+                ("Súmula 331", "sumula_numerada", "sumula_numerada"),
+                ("jurisprudência pacífica", "jurisprudencia_geral", "jurisprudencia_referencia_geral"),
+            },
+        )
+        self.assertFalse(any(item.rule == "processo_ou_recurso" for item in candidates))
+
+    def test_process_uf_expansion_is_deterministic(self) -> None:
+        text = "REsp nº 1.597.443-PR e art. 75 da Constituição."
+        self.assertEqual(self.detector.detect(text), self.detector.detect(text))
+
+
+class CitationDetectorV3Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl").reset_index(names="gold_idx")
@@ -147,25 +184,25 @@ class CitationDetectorV2BaselineTests(unittest.TestCase):
         cls.predictions["nivel"] = cls.predictions["documento_id"].map(gold.drop_duplicates("documento_id").set_index("documento_id")["nivel"])
         cls.matches = greedy_match(gold, cls.predictions)
 
-    def test_v2_candidate_count_offsets_and_exact_matches(self) -> None:
+    def test_v3_candidate_count_offsets_and_exact_matches(self) -> None:
         self.assertEqual(len(self.predictions), 206)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 117)
-        self.assertEqual(int(self.matches["exact"].sum()), 25)
+        self.assertEqual(len(self.matches), 119)
+        self.assertEqual(int(self.matches["exact"].sum()), 61)
 
-    def test_v2_metrics_by_level_and_type(self) -> None:
+    def test_v3_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (117, 89, 108)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (72, 46, 44)),
+            "global": (self.gold, self.predictions, (119, 87, 106)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (74, 44, 42)),
             "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (45, 43, 64)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (101, 62, 85)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (103, 60, 83)),
             "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 23)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
             with self.subTest(group=name):
                 self.assertEqual(metrics(gold, predictions, self.matches), expected_metrics)
 
-    def test_v1_candidates_are_preserved_and_only_validated_candidates_are_new(self) -> None:
+    def test_non_process_candidates_and_validated_candidates_are_preserved(self) -> None:
         v1_predictions = self.predictions.loc[~self.predictions["rule"].eq("jurisprudencia_geral")].copy()
         v1_matches = greedy_match(self.gold, v1_predictions)
         new_predictions = self.predictions.loc[self.predictions["rule"].eq("jurisprudencia_geral")]
@@ -183,8 +220,8 @@ class CitationDetectorV2BaselineTests(unittest.TestCase):
                 "tribunal_contextual": 29,
             },
         )
-        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (105, 89, 120))
-        self.assertEqual(int(v1_matches["exact"].sum()), 19)
+        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (107, 87, 118))
+        self.assertEqual(int(v1_matches["exact"].sum()), 55)
         self.assertEqual(len(new_predictions), 12)
         self.assertEqual(len(new_matches), 12)
         self.assertTrue(set(v1_matches["gold_idx"]).issubset(set(self.matches["gold_idx"])))

@@ -224,3 +224,44 @@ para o `CitationResolver` V1, limitado a estratégias verificáveis: número
 exato de processo/recurso e súmula com número e tribunal explícito. O resolver
 preserva grupos canônicos multi-ID como ambíguos e não introduz Parser V2,
 busca aproximada ou novos índices nesta etapa.
+
+## 12_end_to_end_pipeline_baseline.ipynb
+
+O décimo segundo notebook executa, pela primeira vez, o fluxo completo
+`CitationDetector` V2 → `CitationParser` V1 → `CitationResolver` V1 sobre os
+26 textos reais, sem substituir candidatos por spans-oráculo. O gold é usado
+somente após a execução para matching determinístico por IoU, funis por classe,
+atribuição da primeira falha e comparação entre o teto oracle e o resultado
+end-to-end.
+
+Ele também audita os falsos positivos do detector depois de parser e resolver,
+mede o efeito de boundaries não exatos, separa N1 de N2 e registra
+contrafactuais diagnósticos sem alterar regras de produção. A conclusão aponta
+o `CitationDetector` como próximo componente a estudar, com base em retenção,
+segurança de IDs e gaps estruturais; não cria filtro de candidatos,
+classificação de produção ou submissão.
+
+## 13_citation_detector_identity_preservation.ipynb
+
+O décimo terceiro notebook explorou uma possível V3 e registrou a promoção da
+única mudança aprovada. Ele reproduz o baseline V2 e reexecuta, do zero, o fluxo
+`Detector → CitationParser V1 → CitationResolver V1` para comparar boundaries,
+famílias e misses pelos efeitos downstream. A métrica principal é a preservação
+de identidade e de resolução segura, complementada por F1, exact, auditoria de
+FPs, segurança de IDs, N1/N2, distribuição por documento, LOODO, determinismo
+e performance.
+
+As variantes originais foram regras sintáticas locais em memória: não consultam gold,
+documento, banco, `CaseIndex`, Resolver, FTS ou modelo. O notebook classifica os
+21 boundary failures, 5 family mismatches e 19 misses, separa ganhos imediatos
+de identidade estrutural futura e só recomenda uma V3 mínima quando há ganho de
+ID sem `wrong_unique_real` ou falsos-real. Parser e Resolver continuam
+congelados.
+
+A revisão humana confirmou dois ganhos reais de ID e identificou um artefato na
+auditoria de spans: candidates legais distintos compartilhavam `start` e não
+podiam ser associados por esse campo isolado. A associação corrigida exige
+family, rule, start e prefixo textual compatível; as duas supostas regressões
+legais (`gen_n1_006` e `gen_n2_007`) não são regressões da V3. A implementação
+promovida em produção é somente V2 + expansão estrutural local de UF para
+processo/recurso numerado.

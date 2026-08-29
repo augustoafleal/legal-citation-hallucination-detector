@@ -34,6 +34,15 @@ _PROCESS_PATTERN = re.compile(
     r"\b(?:(?:AgInt|AgRg|EDcl|ED)\s+(?:no|n[oº.]+)\s+)?(?:AREsp|REsp|HC|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|Recurso\s+(?:Especial|Extraordin[aá]rio)|Agravo(?:\s+Regimental)?|Habeas\s+Corpus|Reclamaç[aã]o)\s*(?:n[ºo.]?\s*)?\d[\d.\-/ ]{2,}\d(?:\s*-\s*[A-Z]{2})?",
     re.IGNORECASE,
 )
+_UF_CODES = (
+    "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR "
+    "SC SP SE TO"
+).split()
+_PROCESS_UF_TAIL = re.compile(
+    r"^[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:[ \t\u00a0]*\))?\b"
+)
 _LAW_WITH_DIPLOMA_PATTERN = re.compile(
     r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?(?:\s*,?\s*§\s*\d+(?:[ºo])?)?)(?:\s+do|\s+da)?\s+(?:Constituiç[aã]o(?: Federal)?|C[oó]digo [A-Za-zÀ-ÿ ]+|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+[./-]?[\d./-]*)",
     re.IGNORECASE,
@@ -99,7 +108,7 @@ def _family_for(text: str, citation_type: str) -> str:
 
 
 class CitationDetector:
-    """Encontra candidatos da baseline sem consultar corpus ou índice de casos."""
+    """Encontra candidatos V3 sem consultar corpus ou índice de casos."""
 
     def detect(self, text: str) -> tuple[CitationCandidate, ...]:
         """Retorna candidatos ordenados, deduplicados por intervalo exato."""
@@ -118,8 +127,30 @@ class CitationDetector:
             for match in pattern.finditer(text)
         ]
 
+        # Recupera somente a UF horizontal imediatamente ligada a um processo.
+        candidates = [
+            self._expand_process_uf(candidate, text) for candidate in candidates
+        ]
+
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _expand_process_uf(candidate: CitationCandidate, text: str) -> CitationCandidate:
+        """Expande um processo até sua UF adjacente, sem atravessar newline."""
+        if candidate.rule != "processo_ou_recurso" or candidate.family != "processo_ou_recurso_numerado":
+            return candidate
+        tail = _PROCESS_UF_TAIL.match(text[candidate.end :])
+        if tail is None:
+            return candidate
+        end = candidate.end + tail.end()
+        return CitationCandidate(
+            start=candidate.start,
+            end=end,
+            text=text[candidate.start:end],
+            rule=candidate.rule,
+            family=candidate.family,
+        )
