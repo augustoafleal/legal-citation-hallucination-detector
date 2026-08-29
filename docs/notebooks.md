@@ -186,3 +186,41 @@ mantém dispatch por família, preserva valores brutos e provenance, suporta as
 tolerâncias estruturais validadas para processos/recurso e limita OCR a dois
 contextos numéricos locais. O parser descreve apenas a superfície textual;
 resolução e classificação permanecem fora de produção nesta etapa.
+
+## 10_citation_resolution_analysis.ipynb
+
+O décimo notebook conecta, de forma exclusivamente exploratória, os 225
+spans-oráculo ao `CitationParser` V1 e ao corpus canônico. Ele reutiliza o
+`CaseIndex` para acórdãos, inspeciona os três tipos de registro (acórdão,
+súmula e dispositivo) e cria somente índices auxiliares em memória. As decisões
+neutras — `resolved_unique`, `no_match`, `ambiguous` e `insufficient` — são
+tomadas antes da comparação posterior com `classificacao` e `id_canonico`.
+
+O experimento mede suficiência estrutural, conjuntos de candidatos, candidate
+recall, resolução única correta, grupos multi-ID, gaps do parser e risco de
+generalização por estratégia. Ele não usa FTS como identidade, não escolhe
+arbitrariamente IDs de grupos múltiplos e evidencia que o schema atual não
+expõe diploma legal estruturado para uma resolução segura de dispositivos. Ao
+fim, propõe apenas um contrato conceitual de `ResolutionResult` e um resolver
+futuro com dispatch interno; nenhum `CitationResolver` é implementado neste
+notebook ou em produção.
+
+## 11_resolution_edge_cases_and_identity_audit.ipynb
+
+O décimo primeiro notebook audita os casos que impediam uma resolução canônica
+segura: o CNJ/TST que diverge do ID gold, os três grupos multi-ID presentes em
+citações reais, a ausência de diploma verificável nos dispositivos e as
+limitações de metadados das súmulas. A auditoria confirma que o conflito CNJ é
+isolado e consistente com uma divergência de gold, mas ainda o exclui da V1
+porque o contrato exige ID escalar exato. Multi-ID continua `ambiguous`, sem
+escolha por ordenação.
+
+O notebook separa os 14 gaps reais do parser dos gaps semânticos e mede um
+conjunto mínimo de `SAFE_STRATEGIES`: número explícito para processos/recursos
+e tribunal+número para súmulas. Esse subconjunto é reavaliado sobre os 225
+spans-oráculo com zero ID real errado e zero false-real; as famílias restantes
+permanecem `insufficient` ou `ambiguous`. A decisão exploratória foi promovida
+para o `CitationResolver` V1, limitado a estratégias verificáveis: número
+exato de processo/recurso e súmula com número e tribunal explícito. O resolver
+preserva grupos canônicos multi-ID como ambíguos e não introduz Parser V2,
+busca aproximada ou novos índices nesta etapa.

@@ -22,8 +22,9 @@ flowchart LR
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
-    L -.-> M[Resolver futuro]
-    M -.-> D
+    L --> M[CitationResolver V1]
+    M --> N[ResolutionResult]
+    M --> D
 ```
 
 | Diretório | Responsabilidade atual |
@@ -57,6 +58,17 @@ Ele não consulta o banco ou `CaseIndex` e não classifica uma citação.
 delimitada e produz `ParsedCitation`: família, tipo, tribunal explícito e um
 payload específico da família com os campos textualmente presentes. O parser
 não consulta banco, FTS ou `CaseIndex`, não infere tribunal, não classifica a
-citação e não decide se há evidência suficiente. O `Resolver` continua futuro
-e será o único componente autorizado a confrontar `ParsedCitation` com o
-corpus, desambiguar candidatos e decidir a relação com o `CaseIndex`.
+citação e não decide se há evidência suficiente.
+
+`CitationResolver` V1 é o único componente que confronta a interpretação com o
+corpus. Nesta primeira versão resolve somente número exato de
+processo/recurso e súmula com número e tribunal explícito. Grupos canônicos
+com mais de um `doc_id` permanecem ambíguos; não há escolha arbitrária, busca
+aproximada ou fallback por texto.
+
+O resultado é `ResolutionResult`, com os estados neutros `resolved`,
+`no_match`, `ambiguous` e `insufficient`. `no_match` significa que uma consulta
+segura foi possível, mas não encontrou candidato; `insufficient` significa que
+faltou informação ou que a estratégia não é aprovada nesta V1. CNJ,
+dispositivos legais e jurisprudência geral/contextual permanecem
+`insufficient`.

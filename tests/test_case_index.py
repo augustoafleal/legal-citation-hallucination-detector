@@ -64,6 +64,11 @@ class CaseIndexTests(unittest.TestCase):
     def test_lookup_missing_case_returns_none(self) -> None:
         self.assertIsNone(self.index.lookup("TSE", "999-99.2099.9.99.9999"))
 
+    def test_lookup_by_number_returns_case_without_selecting_its_ids(self) -> None:
+        case = next(case for case in self.index.cases() if len(case.canonical_ids) > 1)
+        self.assertEqual(self.index.lookup_by_number(case.numero_normalizado), case)
+        self.assertIsNone(self.index.lookup_by_number("9999999999999999"))
+
     def test_parser_has_one_real_case_per_tribunal(self) -> None:
         with connect_database(get_database_path(), read_only=True) as connection:
             for tribunal in ("STF", "STJ", "TSE", "TST", "STM"):

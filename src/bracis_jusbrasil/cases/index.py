@@ -50,6 +50,13 @@ class CaseIndex:
 
     def __init__(self, cases: Mapping[tuple[str, str], Case]) -> None:
         self._cases = MappingProxyType(dict(cases))
+        by_number: dict[str, Case] = {}
+        for case in self._cases.values():
+            previous = by_number.get(case.numero_normalizado)
+            if previous is not None and previous != case:
+                raise ValueError("numero_normalizado associado a mais de um Case")
+            by_number[case.numero_normalizado] = case
+        self._cases_by_number = MappingProxyType(by_number)
 
     @classmethod
     def from_database(cls, connection: sqlite3.Connection) -> "CaseIndex":
@@ -60,6 +67,10 @@ class CaseIndex:
         """Retorna o feito da chave normalizada ou ``None`` se inexistente."""
         key = (normalize_tribunal(tribunal), normalize_case_number(numero))
         return self._cases.get(key)
+
+    def lookup_by_number(self, numero: str) -> Case | None:
+        """Retorna o feito por número, sem escolher IDs internos."""
+        return self._cases_by_number.get(normalize_case_number(numero))
 
     def __len__(self) -> int:
         return len(self._cases)
