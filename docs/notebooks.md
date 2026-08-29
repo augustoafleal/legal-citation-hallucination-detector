@@ -265,3 +265,35 @@ family, rule, start e prefixo textual compatível; as duas supostas regressões
 legais (`gen_n1_006` e `gen_n2_007`) não são regressões da V3. A implementação
 promovida em produção é somente V2 + expansão estrutural local de UF para
 processo/recurso numerado.
+
+## 14_post_v3_bottleneck_reassessment.ipynb
+
+O décimo quarto notebook reavalia os gargalos após a promoção da V3, executando
+somente `CitationDetector V3 → CitationParser V1 → CitationResolver V1`. Ele
+compara a atribuição histórica V2 com a nova atribuição dos 96 casos `real`,
+separa `first blocker` de retorno imediato e mede os upper bounds contrafactuais
+de Detector V4 e Parser V2 sem implementar nenhuma nova regra.
+
+A análise também decompõe os 67 `real` ainda não resolvidos em investimento no
+Detector, Parser, Resolver estrutural e investigação semântica/contextual.
+Destaca o pool estrutural do Resolver como potencial de pesquisa, sem tratá-lo
+como ganho seguro, e registra a matriz de estados, famílias, N1/N2, FPs,
+determinismo, performance e a decisão do próximo experimento. Não altera
+produção, Notebook 12 ou o dataset.
+
+## 15_citation_resolver_v2_structural_analysis.ipynb
+
+O décimo quinto notebook investiga exclusivamente os 22 casos do pool
+estrutural identificado após a V3. Ele mantém Detector V3, Parser V1 e Resolver
+V1 como baseline experimental, constrói índices experimentais em memória para CNJ,
+dispositivos legais e súmulas, e avalia candidate recall, unicidade, segurança,
+impacto nos 87 FPs e ganho oracle versus end-to-end.
+
+As estratégias são avaliadas individualmente e somente as que preservam zero
+`wrong_unique_real` e zero falsos-real podem compor uma candidata conceitual de
+Resolver V2. A revisão humana aprovou `sumula_number_only`, que foi promovida
+ao `CitationResolver V2` como a única nova estratégia. O notebook também cobre o conflito CNJ/gold, a ausência de
+metadata legal estruturada, o pool semântico/contextual, LOODO e uma lista
+reduzida para revisão humana. O notebook permanece evidência histórica anterior
+à promoção; CNJ, estratégias legais e resolução semântica continuam fora de
+produção.

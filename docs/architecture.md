@@ -22,7 +22,7 @@ flowchart LR
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
-    L --> M[CitationResolver V1]
+    L --> M[CitationResolver V2]
     M --> N[ResolutionResult]
     M --> D
 ```
@@ -62,15 +62,18 @@ payload específico da família com os campos textualmente presentes. O parser
 não consulta banco, FTS ou `CaseIndex`, não infere tribunal, não classifica a
 citação e não decide se há evidência suficiente.
 
-`CitationResolver` V1 é o único componente que confronta a interpretação com o
-corpus. Nesta primeira versão resolve somente número exato de
-processo/recurso e súmula com número e tribunal explícito. Grupos canônicos
-com mais de um `doc_id` permanecem ambíguos; não há escolha arbitrária, busca
-aproximada ou fallback por texto.
+`CitationResolver` V2 é o único componente que confronta a interpretação com o
+corpus. Ele preserva `case_number_exact` para processo/recurso e promove
+`sumula_number_only`: para a família `sumula_numerada`, um número presente é
+consultado globalmente no corpus de súmulas, sem exigir tribunal. Zero matches
+retorna `no_match`, um match retorna `resolved` e múltiplos matches retornam
+`ambiguous`; o dispatch explícito com tribunal preserva a estratégia V1
+`sumula_number_tribunal`. Grupos canônicos com mais de um `doc_id` permanecem
+ambíguos; não há escolha arbitrária, busca aproximada ou fallback por texto.
 
 O resultado é `ResolutionResult`, com os estados neutros `resolved`,
 `no_match`, `ambiguous` e `insufficient`. `no_match` significa que uma consulta
 segura foi possível, mas não encontrou candidato; `insufficient` significa que
-faltou informação ou que a estratégia não é aprovada nesta V1. CNJ,
+faltou informação ou que a estratégia não é aprovada nesta V2. CNJ,
 dispositivos legais e jurisprudência geral/contextual permanecem
 `insufficient`.

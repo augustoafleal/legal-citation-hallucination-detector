@@ -1,0 +1,71 @@
+{
+  "schema": "sumula-number-only-review-v1",
+  "cases": [
+    {
+      "case_title": "gold_idx=84 | gen_n1_010 | N1",
+      "decision": "ok",
+      "note": "faltou o \"do STJ\"",
+      "updated_at": "2026-08-29T23:11:43.892Z"
+    },
+    {
+      "case_title": "gold_idx=198 | gen_n2_011 | N2",
+      "decision": "ok",
+      "note": "faltou o \"do STJ\"",
+      "updated_at": "2026-08-29T23:11:59.356Z"
+    },
+    {
+      "case_title": "gold_idx=69 | gen_n1_008 | N1",
+      "decision": "ok",
+      "note": "O candidato está correto, masfaltou a expressão \"do TST\"",
+      "updated_at": "2026-08-29T23:12:59.736Z"
+    },
+    {
+      "case_title": "gold_idx=76 | gen_n1_009 | N1",
+      "decision": "ok",
+      "note": "O candidato está correto, mas faltou \"do STF\"",
+      "updated_at": "2026-08-29T23:13:15.484Z"
+    },
+    {
+      "case_title": "gold_idx=84 | gen_n1_010 | N1",
+      "decision": "ok",
+      "note": "O nũmero está correto, mas faltou o \"do STJ\"",
+      "updated_at": "2026-08-29T23:13:43.982Z"
+    },
+    {
+      "case_title": "gold_idx=91 | gen_n1_011 | N1",
+      "decision": "ok",
+      "note": "Nũmero correto",
+      "updated_at": "2026-08-29T23:14:38.000Z"
+    },
+    {
+      "case_title": "gold_idx=113 | gen_n1_013 | N1",
+      "decision": "ok",
+      "note": "Numero correto, faltou \"do TSE\"",
+      "updated_at": "2026-08-29T23:14:45.372Z"
+    },
+    {
+      "case_title": "gold_idx=120 | gen_n2_001 | N2",
+      "decision": "ok",
+      "note": "Número correto, faltou \"do SFT\"",
+      "updated_at": "2026-08-29T23:15:03.818Z"
+    },
+    {
+      "case_title": "gold_idx=171 | gen_n2_007 | N2",
+      "decision": "ok",
+      "note": "Número correto",
+      "updated_at": "2026-08-29T23:15:17.688Z"
+    },
+    {
+      "case_title": "gold_idx=198 | gen_n2_011 | N2",
+      "decision": "ok",
+      "note": "Número correto, faltou \"do STJ\"",
+      "updated_at": "2026-08-29T23:15:31.871Z"
+    },
+    {
+      "case_title": "gold_idx=203 | gen_n2_011 | N2",
+      "decision": "pending",
+      "note": "Número correto, faltou \"do STF\"",
+      "updated_at": "2026-08-29T23:15:47.795Z"
+    }
+  ]
+}

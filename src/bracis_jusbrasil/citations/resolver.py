@@ -48,28 +48,40 @@ class ResolutionResult:
 
 
 class CitationResolver:
-    """Resolver V1 parcial: processo numerado e súmula com tribunal explícito."""
+    """Resolver parcial: processo numerado e súmulas identificáveis com segurança."""
 
     def __init__(self, *, case_index: CaseIndex, connection: sqlite3.Connection) -> None:
         self._case_index = case_index
-        self._sumula_ids = MappingProxyType(self._build_sumula_mapping(connection))
+        sumula_ids, sumula_ids_by_number = self._build_sumula_mappings(connection)
+        self._sumula_ids = MappingProxyType(sumula_ids)
+        self._sumula_ids_by_number = MappingProxyType(sumula_ids_by_number)
 
     @staticmethod
-    def _build_sumula_mapping(connection: sqlite3.Connection) -> dict[tuple[str, str], tuple[int, ...]]:
-        grouped: dict[tuple[str, str], list[int]] = defaultdict(list)
+    def _build_sumula_mappings(
+        connection: sqlite3.Connection,
+    ) -> tuple[dict[tuple[str, str], tuple[int, ...]], dict[str, tuple[int, ...]]]:
+        grouped_by_tribunal: dict[tuple[str, str], list[int]] = defaultdict(list)
+        grouped_by_number: dict[str, list[int]] = defaultdict(list)
         rows = connection.execute(
             "SELECT id, tribunal, texto FROM documentos WHERE natureza = 'sumula' ORDER BY id"
         ).fetchall()
         for row in rows:
             tribunal = row["tribunal"]
             match = _SUMULA_NUMBER.search(row["texto"])
-            if not isinstance(tribunal, str) or match is None:
+            if match is None:
                 continue
-            grouped[(normalize_tribunal(tribunal), match.group("number"))].append(int(row["id"]))
-        return {key: tuple(sorted(ids)) for key, ids in grouped.items()}
+            number = match.group("number")
+            id_canonico = int(row["id"])
+            grouped_by_number[number].append(id_canonico)
+            if isinstance(tribunal, str):
+                grouped_by_tribunal[(normalize_tribunal(tribunal), number)].append(id_canonico)
+        return (
+            {key: tuple(sorted(ids)) for key, ids in grouped_by_tribunal.items()},
+            {number: tuple(sorted(ids)) for number, ids in grouped_by_number.items()},
+        )
 
     def resolve(self, parsed_citation: ParsedCitation) -> ResolutionResult:
-        """Resolve somente famílias cobertas pelas estratégias seguras da V1."""
+        """Resolve somente famílias cobertas pelas estratégias seguras da V2."""
         if not isinstance(parsed_citation, ParsedCitation):
             raise TypeError("parsed_citation deve ser ParsedCitation")
         if parsed_citation.family == "processo_ou_recurso_numerado":
@@ -92,14 +104,28 @@ class CitationResolver:
 
     def _resolve_sumula(self, parsed: ParsedCitation) -> ResolutionResult:
         number = parsed.data.get("sumula_numero")
-        if not number or not parsed.tribunal or parsed.tribunal_source != "explicit":
-            return ResolutionResult("insufficient", None, (), None, "sumula_number_or_tribunal_missing", "sumula")
-        candidate_ids = self._sumula_ids.get((parsed.tribunal, number), ())
+        if not number:
+            return ResolutionResult("insufficient", None, (), None, "sumula_number_missing", "sumula")
+
+        # Preserve the V1 path when the citation supplies a trusted tribunal.
+        # Without one, the promoted V2 strategy deliberately resolves by number
+        # alone and determines uniqueness from the complete sumula corpus.
+        if parsed.tribunal and parsed.tribunal_source == "explicit":
+            strategy = "sumula_number_tribunal"
+            candidate_ids = self._sumula_ids.get((parsed.tribunal, number), ())
+            not_found_reason = "sumula_not_found"
+            ambiguous_reason = "sumula_has_multiple_canonical_ids"
+        else:
+            strategy = "sumula_number_only"
+            candidate_ids = self._sumula_ids_by_number.get(number, ())
+            not_found_reason = "sumula_number_not_found"
+            ambiguous_reason = "sumula_number_ambiguous"
+
         if not candidate_ids:
-            return ResolutionResult("no_match", None, (), "sumula_number_tribunal", "sumula_not_found", "sumula")
+            return ResolutionResult("no_match", None, (), strategy, not_found_reason, "sumula")
         if len(candidate_ids) == 1:
-            return ResolutionResult("resolved", candidate_ids[0], candidate_ids, "sumula_number_tribunal", "sumula_unique", "sumula")
-        return ResolutionResult("ambiguous", None, candidate_ids, "sumula_number_tribunal", "sumula_has_multiple_canonical_ids", "sumula")
+            return ResolutionResult("resolved", candidate_ids[0], candidate_ids, strategy, "sumula_unique", "sumula")
+        return ResolutionResult("ambiguous", None, candidate_ids, strategy, ambiguous_reason, "sumula")
 
     @staticmethod
     def _unsupported_family(parsed: ParsedCitation) -> ResolutionResult:

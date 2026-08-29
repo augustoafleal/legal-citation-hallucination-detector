@@ -73,13 +73,14 @@ class CitationResolverUnitTests(unittest.TestCase):
             self.assertIsNone(value.id_canonico)
             self.assertEqual(len(value.candidate_ids), 2)
 
-    def test_sumula_requires_explicit_tribunal(self) -> None:
+    def test_sumula_number_only_does_not_require_tribunal(self) -> None:
         resolved = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "83"}, tribunal="STJ", tribunal_source="explicit"))
-        missing = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "83"}))
-        no_match = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "999"}, tribunal="STJ", tribunal_source="explicit"))
+        no_tribunal = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "83"}))
+        no_match = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "999"}))
         self.assertEqual((resolved.status, resolved.record_type), ("resolved", "sumula"))
-        self.assertEqual((missing.status, missing.strategy), ("insufficient", None))
-        self.assertEqual((no_match.status, no_match.strategy), ("no_match", "sumula_number_tribunal"))
+        self.assertEqual(resolved.strategy, "sumula_number_tribunal")
+        self.assertEqual((no_tribunal.status, no_tribunal.strategy, no_tribunal.reason), ("resolved", "sumula_number_only", "sumula_unique"))
+        self.assertEqual((no_match.status, no_match.strategy, no_match.reason), ("no_match", "sumula_number_only", "sumula_number_not_found"))
 
     def test_unsupported_families_are_insufficient(self) -> None:
         families = {
@@ -131,9 +132,10 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         for row in resolved_rows:
             key = (row["gold"], row["result"].status)
             counts[key] = counts.get(key, 0) + 1
+        # Baseline do Resolver V2 com sumula_number_only.
         self.assertEqual(counts, {
-            ("real", "resolved"): 41, ("real", "no_match"): 2, ("real", "ambiguous"): 1, ("real", "insufficient"): 52,
-            ("inventada", "no_match"): 36, ("inventada", "insufficient"): 28,
+            ("real", "resolved"): 41, ("real", "no_match"): 3, ("real", "ambiguous"): 1, ("real", "insufficient"): 51,
+            ("inventada", "no_match"): 38, ("inventada", "insufficient"): 26,
             ("incompleta", "insufficient"): 65,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
@@ -144,7 +146,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 142)
+        self.assertEqual(classified, 144)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []
