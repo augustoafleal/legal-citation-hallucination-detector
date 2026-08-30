@@ -166,6 +166,85 @@ class CitationDetectorTests(unittest.TestCase):
         text = "REsp nº 1.597.443-PR e art. 75 da Constituição."
         self.assertEqual(self.detector.detect(text), self.detector.detect(text))
 
+    def test_h1_expands_only_a_structural_procedural_prefix_chain(self) -> None:
+        examples = (
+            "Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO",
+            "Terceiro AG.REG na Rcl nº 62.425/SP",
+            "EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.rule == "processo_ou_recurso"]
+                self.assertEqual(len(candidates), 1)
+                candidate = candidates[0]
+                self.assertEqual(candidate.text, text)
+                self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
+                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+
+    def test_h1_rejects_narrative_delimiters_and_newline_compound_titles(self) -> None:
+        examples = (
+            ("A discussão sobre Agravo genérico antecede o REsp nº 123456.", False),
+            ("Agravo em; REsp nº 123456.", False),
+            ("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA", True),
+        )
+        for text, no_candidate in examples:
+            with self.subTest(text=text):
+                process = [item for item in self.detector.detect(text) if item.family == "processo_ou_recurso_numerado"]
+                if no_candidate:
+                    self.assertEqual(process, [])
+                    continue
+                self.assertEqual(len(process), 1)
+                self.assertNotIn("Agravo", process[0].text)
+                self.assertNotIn("Suspensão", process[0].text)
+
+    def test_h2_supports_only_approved_dotted_class_aliases_with_numbers(self) -> None:
+        examples = (
+            ("AgRg no Rec. Esp. n.\u00a01.522.200 (SC)", "Rec. Esp."),
+            ("AgRg no H.C. Nº 891369 (RS)", "H.C."),
+            ("AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ", "Rec. Esp."),
+        )
+        for text, alias in examples:
+            with self.subTest(text=text):
+                candidate = next(item for item in self.detector.detect(text) if alias in item.text)
+                self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
+                self.assertIn(alias, candidate.text)
+                self.assertRegex(candidate.text, r"\d")
+                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+
+    def test_h2_requires_identity_and_does_not_create_a_broad_alias_catalog(self) -> None:
+        for text in ("Rec. Esp.", "H.C.", "Rec. Esp. citado no processo", "R.E. nº 123456/PR"):
+            with self.subTest(text=text):
+                self.assertFalse(any(item.family == "processo_ou_recurso_numerado" for item in self.detector.detect(text)))
+
+    def test_h3_extends_only_adjacent_approved_ocr_numeric_tails(self) -> None:
+        for ocr in "OIlS":
+            text = f"REsp nº 1234{ocr}5/PR"
+            with self.subTest(text=text):
+                candidate = next(item for item in self.detector.detect(text) if item.family == "processo_ou_recurso_numerado")
+                self.assertEqual(candidate.text, text)
+                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+
+    def test_h3_does_not_fuzzy_repair_unrelated_text(self) -> None:
+        examples = (
+            "REsp nº 1234X5/PR",
+            "REsp nº 1234 O5/PR",
+            "REsp nº 1234, referência O5/PR",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidate = next((item for item in self.detector.detect(text) if item.family == "processo_ou_recurso_numerado"), None)
+                self.assertIsNotNone(candidate)
+                assert candidate is not None
+                self.assertNotIn("X5", candidate.text)
+                self.assertNotIn("O5", candidate.text)
+
+    def test_h4_cnj_and_h5_compound_title_remain_outside_v4(self) -> None:
+        self.assertEqual(self.detector.detect("AgInt No 7000553-0320217000000"), ())
+        self.assertEqual(
+            self.detector.detect("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA"),
+            (),
+        )
+
 
 class CitationDetectorV3Tests(unittest.TestCase):
     @classmethod

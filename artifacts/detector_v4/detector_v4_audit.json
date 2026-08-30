@@ -1,0 +1,3284 @@
+{
+  "status": "PASS WITH WARNINGS",
+  "baseline": {
+    "name": "baseline",
+    "enabled": [],
+    "metrics": {
+      "predictions": 206,
+      "TP": 119,
+      "FP": 87,
+      "FN": 106,
+      "precision": 0.5776699029126213,
+      "recall": 0.5288888888888889,
+      "F1": 0.5522041763341067,
+      "exact": 61,
+      "identity_preservation": 105,
+      "correct_IDs": 31,
+      "wrong_unique_real": 0,
+      "false_real_inventada": 0,
+      "false_real_incompleta": 0
+    },
+    "boundary": {
+      "exact": 61,
+      "non_exact_safe": 44,
+      "non_exact_damaging": 14
+    },
+    "duplicates": {
+      "exact_duplicates": 0,
+      "nested_duplicates": 15,
+      "overlapping_same_family": 0,
+      "overlapping_cross_family": 7
+    },
+    "performance_seconds": 0.026266135999321705,
+    "high_value_gained": [],
+    "other_detector_affected": [],
+    "current_tp_control": {
+      "baseline": 119,
+      "preserved": 119,
+      "lost": 0,
+      "degraded": 0,
+      "family_changed": 0,
+      "expanded_safely": 0,
+      "lost_gids": [],
+      "degraded_gids": []
+    },
+    "new_fp": 0,
+    "new_fp_status": {
+      "resolved": 0,
+      "no_match": 0,
+      "ambiguous": 0,
+      "insufficient": 0
+    },
+    "formal_fp_states": {
+      "resolved": 3,
+      "no_match": 0,
+      "ambiguous": 0,
+      "insufficient": 84
+    },
+    "new_fp_sensitive": [],
+    "raw_occurrences": [],
+    "raw_occurrence_summary": {
+      "total": 0,
+      "documents": 0,
+      "N1": 0,
+      "N2": 0,
+      "non_gold": 0,
+      "gold_classes": {},
+      "top1_document_share": 0.0,
+      "top2_document_share": 0.0
+    },
+    "classification_control": {
+      "real": {
+        "insufficient": 26,
+        "resolved": 31,
+        "no_match": 5,
+        "missing": 33,
+        "ambiguous": 1
+      },
+      "inventada": {
+        "no_match": 31,
+        "insufficient": 13,
+        "missing": 20
+      },
+      "incompleta": {
+        "missing": 53,
+        "insufficient": 12
+      }
+    }
+  },
+  "integrity": {
+    "sha256": "d759681be82ee00f383b49a5c76c42dd475564e042272e00730252468dcb6e71",
+    "expected_sha256": "d759681be82ee00f383b49a5c76c42dd475564e042272e00730252468dcb6e71",
+    "pragma_integrity_check": "ok"
+  },
+  "high_value_count": 10,
+  "detector_blockers": {
+    "total": 41,
+    "high_value": 10,
+    "control_other": 31
+  },
+  "high_value_cases": [
+    {
+      "document": "gen_n1_009",
+      "level": "N1",
+      "gold_index": 75,
+      "gid": "g5",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO",
+      "gold_span": [
+        2449,
+        2533
+      ],
+      "gold_class": "real",
+      "gold_id": 3360644937,
+      "blocker": "detector_boundary_failure",
+      "structural_issue": "procedural prefix omitted or numeric tail truncated",
+      "hypothesis": "H1",
+      "normalized_identity": "1904603",
+      "v3_text": null,
+      "experimental_text": "Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO",
+      "v3_related_candidates": [
+        {
+          "span": [
+            2503,
+            2533
+          ],
+          "text": "Recurso Especial nº 1904603/TO",
+          "rule": "processo_ou_recurso",
+          "family": "processo_ou_recurso_numerado",
+          "parser": {
+            "family": "processo_ou_recurso_numerado",
+            "tribunal": null,
+            "tribunal_source": "unknown",
+            "data": {
+              "classe_raw": "Recurso Especial",
+              "numero_raw": "1904603",
+              "numero_normalizado": "1904603",
+              "numero_family": "recurso_number",
+              "uf_raw": "/TO",
+              "uf": "TO"
+            },
+            "provenance": {
+              "numero": "normalized",
+              "uf": "explicit"
+            }
+          },
+          "resolver": {
+            "status": "resolved",
+            "id_canonico": 3360644937,
+            "candidate_ids": [
+              3360644937
+            ],
+            "strategy": "case_number_exact",
+            "reason": "case_number_unique",
+            "record_type": "acordao"
+          }
+        }
+      ],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Recurso Especial",
+          "numero_raw": "1904603",
+          "numero_normalizado": "1904603",
+          "numero_family": "recurso_number",
+          "uf_raw": "/TO",
+          "uf": "TO"
+        },
+        "provenance": {
+          "numero": "normalized",
+          "uf": "explicit"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Recurso Especial",
+          "numero_raw": "1904603",
+          "numero_normalizado": "1904603",
+          "numero_family": "recurso_number",
+          "uf_raw": "/TO",
+          "uf": "TO"
+        },
+        "provenance": {
+          "numero": "normalized",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 3360644937,
+        "candidate_ids": [
+          3360644937
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 3360644937,
+        "candidate_ids": [
+          3360644937
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 3360644937,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n1_009",
+      "level": "N1",
+      "gold_index": 79,
+      "gid": "g9",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA",
+      "gold_span": [
+        3401,
+        3465
+      ],
+      "gold_class": "real",
+      "gold_id": 6576893354,
+      "blocker": "detector_miss",
+      "structural_issue": "marker/compound title crosses newline",
+      "hypothesis": "H5",
+      "normalized_identity": "2883",
+      "v3_text": null,
+      "experimental_text": null,
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": null,
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Agravo",
+          "numero_raw": "2.883",
+          "numero_normalizado": "2883",
+          "numero_family": "case_number",
+          "uf_raw": "/MA",
+          "uf": "MA"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 6576893354,
+        "candidate_ids": [
+          6576893354
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": null,
+      "predicted_id": null,
+      "assessment_reason": "detector_miss"
+    },
+    {
+      "document": "gen_n1_012",
+      "level": "N1",
+      "gold_index": 106,
+      "gid": "g9",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "Terceiro AG.REG na Rcl nº 62.425/SP",
+      "gold_span": [
+        3135,
+        3170
+      ],
+      "gold_class": "real",
+      "gold_id": 2428195275,
+      "blocker": "detector_boundary_failure",
+      "structural_issue": "procedural prefix omitted or numeric tail truncated",
+      "hypothesis": "H1",
+      "normalized_identity": "62425",
+      "v3_text": null,
+      "experimental_text": "Terceiro AG.REG na Rcl nº 62.425/SP",
+      "v3_related_candidates": [
+        {
+          "span": [
+            3154,
+            3170
+          ],
+          "text": "Rcl nº 62.425/SP",
+          "rule": "processo_ou_recurso",
+          "family": "processo_ou_recurso_numerado",
+          "parser": {
+            "family": "processo_ou_recurso_numerado",
+            "tribunal": null,
+            "tribunal_source": "unknown",
+            "data": {
+              "classe_raw": "Rcl",
+              "numero_raw": "62.425",
+              "numero_normalizado": "62425",
+              "numero_family": "case_number",
+              "uf_raw": "/SP",
+              "uf": "SP"
+            },
+            "provenance": {
+              "numero": "normalized",
+              "uf": "explicit"
+            }
+          },
+          "resolver": {
+            "status": "resolved",
+            "id_canonico": 2428195275,
+            "candidate_ids": [
+              2428195275
+            ],
+            "strategy": "case_number_exact",
+            "reason": "case_number_unique",
+            "record_type": "acordao"
+          }
+        }
+      ],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Rcl",
+          "numero_raw": "62.425",
+          "numero_normalizado": "62425",
+          "numero_family": "case_number",
+          "uf_raw": "/SP",
+          "uf": "SP"
+        },
+        "provenance": {
+          "numero": "normalized",
+          "uf": "explicit"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Rcl",
+          "numero_raw": "62.425",
+          "numero_normalizado": "62425",
+          "numero_family": "case_number",
+          "uf_raw": "/SP",
+          "uf": "SP"
+        },
+        "provenance": {
+          "numero": "normalized",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 2428195275,
+        "candidate_ids": [
+          2428195275
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 2428195275,
+        "candidate_ids": [
+          2428195275
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 2428195275,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_001",
+      "level": "N2",
+      "gold_index": 119,
+      "gid": "g4",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgRg no Rec. Esp. n. 1.522.200 (SC)",
+      "gold_span": [
+        1707,
+        1742
+      ],
+      "gold_class": "real",
+      "gold_id": 192165489,
+      "blocker": "detector_miss",
+      "structural_issue": "punctuated class alias",
+      "hypothesis": "H2",
+      "normalized_identity": "1522200",
+      "v3_text": null,
+      "experimental_text": "AgRg no Rec. Esp. n. 1.522.200 (SC",
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg",
+          "numero_raw": "1.522.200",
+          "numero_normalizado": "1522200",
+          "numero_family": "recurso_number",
+          "uf_raw": "(SC",
+          "uf": "SC"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg",
+          "numero_raw": "1.522.200",
+          "numero_normalizado": "1522200",
+          "numero_family": "recurso_number",
+          "uf_raw": "(SC",
+          "uf": "SC"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 192165489,
+        "candidate_ids": [
+          192165489
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 192165489,
+        "candidate_ids": [
+          192165489
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 192165489,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_001",
+      "level": "N2",
+      "gold_index": 123,
+      "gid": "g8",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP",
+      "gold_span": [
+        2976,
+        3045
+      ],
+      "gold_class": "real",
+      "gold_id": 6304461308,
+      "blocker": "detector_boundary_failure",
+      "structural_issue": "procedural prefix omitted or numeric tail truncated",
+      "hypothesis": "H1",
+      "normalized_identity": "1145207",
+      "v3_text": null,
+      "experimental_text": "EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207",
+      "v3_related_candidates": [
+        {
+          "span": [
+            3012,
+            3040
+          ],
+          "text": "Recurso Especial No  1145207",
+          "rule": "processo_ou_recurso",
+          "family": "processo_ou_recurso_numerado",
+          "parser": {
+            "family": "processo_ou_recurso_numerado",
+            "tribunal": null,
+            "tribunal_source": "unknown",
+            "data": {
+              "classe_raw": "Recurso Especial",
+              "numero_raw": "1145207",
+              "numero_normalizado": "1145207",
+              "numero_family": "recurso_number"
+            },
+            "provenance": {
+              "numero": "normalized"
+            }
+          },
+          "resolver": {
+            "status": "resolved",
+            "id_canonico": 6304461308,
+            "candidate_ids": [
+              6304461308
+            ],
+            "strategy": "case_number_exact",
+            "reason": "case_number_unique",
+            "record_type": "acordao"
+          }
+        }
+      ],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Recurso Especial",
+          "numero_raw": "1145207",
+          "numero_normalizado": "1145207",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "normalized"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Recurso Especial",
+          "numero_raw": "1145207",
+          "numero_normalizado": "1145207",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "normalized"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 6304461308,
+        "candidate_ids": [
+          6304461308
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 6304461308,
+        "candidate_ids": [
+          6304461308
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 6304461308,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_008",
+      "level": "N2",
+      "gold_index": 180,
+      "gid": "g7",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgRg no H.C. Nº 891369 (RS)",
+      "gold_span": [
+        3051,
+        3078
+      ],
+      "gold_class": "real",
+      "gold_id": 2849473714,
+      "blocker": "detector_miss",
+      "structural_issue": "punctuated class alias",
+      "hypothesis": "H2",
+      "normalized_identity": "891369",
+      "v3_text": null,
+      "experimental_text": "AgRg no H.C. Nº 891369 (RS",
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg",
+          "numero_raw": "891369",
+          "numero_normalizado": "891369",
+          "numero_family": "case_number",
+          "uf_raw": "(RS",
+          "uf": "RS"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg",
+          "numero_raw": "891369",
+          "numero_normalizado": "891369",
+          "numero_family": "case_number",
+          "uf_raw": "(RS",
+          "uf": "RS"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 2849473714,
+        "candidate_ids": [
+          2849473714
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 2849473714,
+        "candidate_ids": [
+          2849473714
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 2849473714,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_009",
+      "level": "N2",
+      "gold_index": 186,
+      "gid": "g6",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgInt no RESP 21737l8 - SP",
+      "gold_span": [
+        1614,
+        1640
+      ],
+      "gold_class": "real",
+      "gold_id": 6490934118,
+      "blocker": "detector_boundary_failure",
+      "structural_issue": "OCR character inside numeric identity",
+      "hypothesis": "H3",
+      "normalized_identity": "2173718",
+      "v3_text": "AgInt no RESP 21737",
+      "experimental_text": "AgInt no RESP 21737l8 - SP",
+      "v3_related_candidates": [
+        {
+          "span": [
+            1614,
+            1633
+          ],
+          "text": "AgInt no RESP 21737",
+          "rule": "processo_ou_recurso",
+          "family": "processo_ou_recurso_numerado",
+          "parser": {
+            "family": "processo_ou_recurso_numerado",
+            "tribunal": null,
+            "tribunal_source": "unknown",
+            "data": {
+              "classe_raw": "AgInt no RESP",
+              "numero_raw": "21737",
+              "numero_normalizado": "21737",
+              "numero_family": "recurso_number"
+            },
+            "provenance": {
+              "numero": "normalized"
+            }
+          },
+          "resolver": {
+            "status": "no_match",
+            "id_canonico": null,
+            "candidate_ids": [],
+            "strategy": "case_number_exact",
+            "reason": "case_number_not_found",
+            "record_type": "acordao"
+          }
+        }
+      ],
+      "v3_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt no RESP",
+          "numero_raw": "21737",
+          "numero_normalizado": "21737",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "normalized"
+        }
+      },
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt no RESP",
+          "numero_raw": "21737l8",
+          "numero_normalizado": "2173718",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "ocr_repair"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt no RESP",
+          "numero_raw": "21737l8",
+          "numero_normalizado": "2173718",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "ocr_repair"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 6490934118,
+        "candidate_ids": [
+          6490934118
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": {
+        "status": "no_match",
+        "id_canonico": null,
+        "candidate_ids": [],
+        "strategy": "case_number_exact",
+        "reason": "case_number_not_found",
+        "record_type": "acordao"
+      },
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 6490934118,
+        "candidate_ids": [
+          6490934118
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 6490934118,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_011",
+      "level": "N2",
+      "gold_index": 205,
+      "gid": "g8",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ",
+      "gold_span": [
+        2473,
+        2517
+      ],
+      "gold_class": "real",
+      "gold_id": 2108195032,
+      "blocker": "detector_miss",
+      "structural_issue": "punctuated class alias",
+      "hypothesis": "H2",
+      "normalized_identity": "2050950",
+      "v3_text": null,
+      "experimental_text": "AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ",
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt",
+          "numero_raw": "2.050.950",
+          "numero_normalizado": "2050950",
+          "numero_family": "recurso_number",
+          "uf_raw": "-RJ",
+          "uf": "RJ"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt",
+          "numero_raw": "2.050.950",
+          "numero_normalizado": "2050950",
+          "numero_family": "recurso_number",
+          "uf_raw": "-RJ",
+          "uf": "RJ"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 2108195032,
+        "candidate_ids": [
+          2108195032
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 2108195032,
+        "candidate_ids": [
+          2108195032
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 2108195032,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_012",
+      "level": "N2",
+      "gold_index": 208,
+      "gid": "g1",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgRg no RESP 1.528.4S5/ RJ",
+      "gold_span": [
+        481,
+        507
+      ],
+      "gold_class": "real",
+      "gold_id": 2674928810,
+      "blocker": "detector_boundary_failure",
+      "structural_issue": "OCR character inside numeric identity",
+      "hypothesis": "H3",
+      "normalized_identity": "1528455",
+      "v3_text": "AgRg no RESP 1.528.4",
+      "experimental_text": "AgRg no RESP 1.528.4S5/ RJ",
+      "v3_related_candidates": [
+        {
+          "span": [
+            481,
+            501
+          ],
+          "text": "AgRg no RESP 1.528.4",
+          "rule": "processo_ou_recurso",
+          "family": "processo_ou_recurso_numerado",
+          "parser": {
+            "family": "processo_ou_recurso_numerado",
+            "tribunal": null,
+            "tribunal_source": "unknown",
+            "data": {
+              "classe_raw": "AgRg no RESP",
+              "numero_raw": "1.528.4",
+              "numero_normalizado": "15284",
+              "numero_family": "recurso_number"
+            },
+            "provenance": {
+              "numero": "normalized"
+            }
+          },
+          "resolver": {
+            "status": "no_match",
+            "id_canonico": null,
+            "candidate_ids": [],
+            "strategy": "case_number_exact",
+            "reason": "case_number_not_found",
+            "record_type": "acordao"
+          }
+        }
+      ],
+      "v3_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg no RESP",
+          "numero_raw": "1.528.4",
+          "numero_normalizado": "15284",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "normalized"
+        }
+      },
+      "experimental_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg no RESP",
+          "numero_raw": "1.528.4S5",
+          "numero_normalizado": "1528455",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "ocr_repair"
+        }
+      },
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgRg no RESP",
+          "numero_raw": "1.528.4S5",
+          "numero_normalizado": "1528455",
+          "numero_family": "recurso_number"
+        },
+        "provenance": {
+          "numero": "ocr_repair"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 2674928810,
+        "candidate_ids": [
+          2674928810
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": {
+        "status": "no_match",
+        "id_canonico": null,
+        "candidate_ids": [],
+        "strategy": "case_number_exact",
+        "reason": "case_number_not_found",
+        "record_type": "acordao"
+      },
+      "experimental_resolver": {
+        "status": "resolved",
+        "id_canonico": 2674928810,
+        "candidate_ids": [
+          2674928810
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "predicted_id": 2674928810,
+      "assessment_reason": "resolved_correct"
+    },
+    {
+      "document": "gen_n2_013",
+      "level": "N2",
+      "gold_index": 221,
+      "gid": "g4",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgInt No 7000553-0320217000000",
+      "gold_span": [
+        1883,
+        1913
+      ],
+      "gold_class": "real",
+      "gold_id": 1477658218,
+      "blocker": "detector_miss",
+      "structural_issue": "modifier class followed directly by number",
+      "hypothesis": "H4",
+      "normalized_identity": "70005530320217000000",
+      "v3_text": null,
+      "experimental_text": null,
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": null,
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt",
+          "numero_raw": "7000553-0320217000000",
+          "numero_normalizado": "70005530320217000000",
+          "numero_family": "case_number"
+        },
+        "provenance": {
+          "numero": "structural_repair"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 1477658218,
+        "candidate_ids": [
+          1477658218
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": null,
+      "predicted_id": null,
+      "assessment_reason": "detector_miss"
+    }
+  ],
+  "high_value_family_blocker": [
+    {
+      "family": "processo_ou_recurso_numerado",
+      "blocker": "detector_boundary_failure",
+      "count": 5
+    },
+    {
+      "family": "processo_ou_recurso_numerado",
+      "blocker": "detector_miss",
+      "count": 5
+    }
+  ],
+  "groups": [
+    {
+      "group": "H1",
+      "cases": 3,
+      "documents": 3,
+      "N1": 2,
+      "N2": 1,
+      "mechanism": "expandir um processo já detectado por uma cadeia processual horizontal imediatamente anterior"
+    },
+    {
+      "group": "H2",
+      "cases": 3,
+      "documents": 3,
+      "N1": 0,
+      "N2": 3,
+      "mechanism": "detectar aliases processuais pontuados seguidos de marcador, número e UF opcional"
+    },
+    {
+      "group": "H3",
+      "cases": 2,
+      "documents": 2,
+      "N1": 0,
+      "N2": 2,
+      "mechanism": "estender número detectado quando a continuação adjacente contém caractere OCR confusável e termina em dígito"
+    },
+    {
+      "group": "H4",
+      "cases": 1,
+      "documents": 1,
+      "N1": 0,
+      "N2": 1,
+      "mechanism": "aceitar classe modificadora processual diretamente seguida de marcador e número"
+    },
+    {
+      "group": "H5",
+      "cases": 1,
+      "documents": 1,
+      "N1": 1,
+      "N2": 0,
+      "mechanism": "detectar agravo interno em título processual composto seguido de marcador numérico"
+    }
+  ],
+  "hypothesis_registry": {
+    "H1": {
+      "name": "procedural_prefix_chain",
+      "target_failure": "boundary too short",
+      "mechanism": "expandir um processo já detectado por uma cadeia processual horizontal imediatamente anterior",
+      "expected_gain": 3,
+      "risk": "prefixos podem ampliar boundaries corretas",
+      "complexity": "MEDIUM",
+      "precedence": "não; substitui localmente o candidate curto",
+      "interaction": "pode alterar boundary de regra existente; não adiciona nested candidate"
+    },
+    "H2": {
+      "name": "dotted_class_alias",
+      "target_failure": "complete miss",
+      "mechanism": "detectar aliases processuais pontuados seguidos de marcador, número e UF opcional",
+      "expected_gain": 3,
+      "risk": "alias curto pode ocorrer fora de citação",
+      "complexity": "MEDIUM",
+      "precedence": "não; adiciona spans e usa a deduplicação exata existente",
+      "interaction": "não competiu nem criou overlap incremental no corpus"
+    },
+    "H3": {
+      "name": "ocr_numeric_tail",
+      "target_failure": "boundary too short / OCR",
+      "mechanism": "estender número detectado quando a continuação adjacente contém caractere OCR confusável e termina em dígito",
+      "expected_gain": 2,
+      "risk": "continuação alfanumérica pode não pertencer ao número",
+      "complexity": "LOW",
+      "precedence": "não; substitui localmente o candidate truncado",
+      "interaction": "preserva família e entrega a identidade completa ao Parser V1"
+    },
+    "H4": {
+      "name": "standalone_modifier_number",
+      "target_failure": "complete miss",
+      "mechanism": "aceitar classe modificadora processual diretamente seguida de marcador e número",
+      "expected_gain": 1,
+      "risk": "estrutura é geral, mas o suporte primário é unitário",
+      "complexity": "LOW",
+      "precedence": "sim em números CNJ-like; pode aninhar com a regra CNJ",
+      "interaction": "capturou uma identidade CNJ como processo numerado"
+    },
+    "H5": {
+      "name": "compound_procedure_title",
+      "target_failure": "newline / compound citation",
+      "mechanism": "detectar agravo interno em título processual composto seguido de marcador numérico",
+      "expected_gain": 1,
+      "risk": "ramo lexical com apenas um alvo conhecido",
+      "complexity": "HIGH",
+      "precedence": "não observada no corpus",
+      "interaction": "adiciona uma nova branch lexical de título processual"
+    }
+  },
+  "hypotheses": {
+    "H1": {
+      "name": "H1",
+      "enabled": [
+        "H1"
+      ],
+      "metrics": {
+        "predictions": 206,
+        "TP": 122,
+        "FP": 84,
+        "FN": 103,
+        "precision": 0.5922330097087378,
+        "recall": 0.5422222222222223,
+        "F1": 0.5661252900232018,
+        "exact": 70,
+        "identity_preservation": 108,
+        "correct_IDs": 34,
+        "wrong_unique_real": 0,
+        "false_real_inventada": 0,
+        "false_real_incompleta": 0
+      },
+      "boundary": {
+        "exact": 70,
+        "non_exact_safe": 38,
+        "non_exact_damaging": 14
+      },
+      "duplicates": {
+        "exact_duplicates": 0,
+        "nested_duplicates": 15,
+        "overlapping_same_family": 0,
+        "overlapping_cross_family": 7
+      },
+      "performance_seconds": 0.027230700001382502,
+      "high_value_gained": [
+        "g5",
+        "g9",
+        "g8"
+      ],
+      "other_detector_affected": [],
+      "current_tp_control": {
+        "baseline": 119,
+        "preserved": 119,
+        "lost": 0,
+        "degraded": 0,
+        "family_changed": 0,
+        "expanded_safely": 8,
+        "lost_gids": [],
+        "degraded_gids": []
+      },
+      "new_fp": 0,
+      "new_fp_status": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 0
+      },
+      "formal_fp_states": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 84
+      },
+      "new_fp_sensitive": [],
+      "raw_occurrences": [
+        {
+          "document": "gen_n1_002",
+          "start": 2308,
+          "end": 2350,
+          "text": "Agravo em Recurso Especial nº 1.708.000/SP",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g7"
+          ]
+        },
+        {
+          "document": "gen_n1_007",
+          "start": 946,
+          "end": 968,
+          "text": "AgInt na Rcl 36.670/SP",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g2"
+          ]
+        },
+        {
+          "document": "gen_n1_009",
+          "start": 2449,
+          "end": 2533,
+          "text": "Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g5"
+          ]
+        },
+        {
+          "document": "gen_n1_009",
+          "start": 3065,
+          "end": 3098,
+          "text": "AgInt nos EDcl no REsp 2144995/RJ",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g7"
+          ]
+        },
+        {
+          "document": "gen_n1_009",
+          "start": 3603,
+          "end": 3635,
+          "text": "EDcl no AgInt no REsp 1889127/SE",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g10"
+          ]
+        },
+        {
+          "document": "gen_n1_010",
+          "start": 3049,
+          "end": 3107,
+          "text": "Agravo Interno no Agravo em Recurso Especial nº 1807643/RS",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g9"
+          ]
+        },
+        {
+          "document": "gen_n1_012",
+          "start": 3135,
+          "end": 3170,
+          "text": "Terceiro AG.REG na Rcl nº 62.425/SP",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g9"
+          ]
+        },
+        {
+          "document": "gen_n2_001",
+          "start": 2976,
+          "end": 3040,
+          "text": "EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g8"
+          ]
+        },
+        {
+          "document": "gen_n2_008",
+          "start": 1898,
+          "end": 1932,
+          "text": "EDcl no AgInt no ARESP 1980827/ RS",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g4"
+          ]
+        },
+        {
+          "document": "gen_n2_009",
+          "start": 725,
+          "end": 762,
+          "text": "EDcl no AgInt no ARESP  1 821 663/ SC",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g2"
+          ]
+        },
+        {
+          "document": "gen_n2_011",
+          "start": 2313,
+          "end": 2356,
+          "text": "EDcl no AgInt no Recurso Especial Nº 170076",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H1_prefix_chain",
+          "gold": [
+            "g7"
+          ]
+        }
+      ],
+      "raw_occurrence_summary": {
+        "total": 11,
+        "documents": 9,
+        "N1": 7,
+        "N2": 4,
+        "non_gold": 0,
+        "gold_classes": {
+          "real": 11
+        },
+        "top1_document_share": 0.2727272727272727,
+        "top2_document_share": 0.36363636363636365
+      },
+      "classification_control": {
+        "real": {
+          "insufficient": 26,
+          "resolved": 34,
+          "no_match": 5,
+          "missing": 30,
+          "ambiguous": 1
+        },
+        "inventada": {
+          "no_match": 31,
+          "insufficient": 13,
+          "missing": 20
+        },
+        "incompleta": {
+          "missing": 53,
+          "insufficient": 12
+        }
+      },
+      "registry": {
+        "name": "procedural_prefix_chain",
+        "target_failure": "boundary too short",
+        "mechanism": "expandir um processo já detectado por uma cadeia processual horizontal imediatamente anterior",
+        "expected_gain": 3,
+        "risk": "prefixos podem ampliar boundaries corretas",
+        "complexity": "MEDIUM",
+        "precedence": "não; substitui localmente o candidate curto",
+        "interaction": "pode alterar boundary de regra existente; não adiciona nested candidate"
+      },
+      "safety": "SAFE",
+      "generalization": {
+        "rating": "STRONG",
+        "overfitting_risk": "LOW"
+      },
+      "LOODO": {
+        "gen_n1_009": {
+          "support_documents_outside": 8,
+          "has_external_support": true
+        },
+        "gen_n1_012": {
+          "support_documents_outside": 8,
+          "has_external_support": true
+        },
+        "gen_n2_001": {
+          "support_documents_outside": 8,
+          "has_external_support": true
+        }
+      },
+      "counterexamples": {
+        "full_rule_nonreal_or_nongold": [],
+        "broader_anchor_search": {
+          "anchor_occurrences": 37,
+          "captured_anchor_occurrences": 20,
+          "uncaptured_anchor_occurrences": 17,
+          "uncaptured": [
+            {
+              "document": "gen_n1_001",
+              "start": 951,
+              "end": 956,
+              "anchor": "AgInt",
+              "context": "a-se a repisar argumentos já superados. Invoca-se, ainda,\no AgInt 7557430-50.2018.7.00.0000/DF, no ponto em que afasta a exigência combatida.\n\nI — DA CONTROVÉRSIA\n\nD",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "inventada"
+              ]
+            },
+            {
+              "document": "gen_n1_002",
+              "start": 1613,
+              "end": 1618,
+              "anchor": "AgInt",
+              "context": " se trata, aqui, de revolver matéria fática. Vale invocar\no AgInt no AREsp nº 1.996.496/RJ, de clareza solar quanto ao ponto ora debatido.\n\nII — DO DIREITO APLICÁVEL",
+              "gold": [
+                "g5"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_003",
+              "start": 2308,
+              "end": 2317,
+              "anchor": "Agravo em",
+              "context": " acórdão recorrido diverge frontalmente do que assentado no Agravo em Recurso Especial do STJ,\nde 2023, Rel. Min. Assusete Magalhães. Sob outro ângulo, a solução adotada",
+              "gold": [
+                "g6"
+              ],
+              "gold_classes": [
+                "incompleta"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 848,
+              "end": 853,
+              "anchor": "AgInt",
+              "context": " controvérsia posta nos autos não é nova.\nCumpre destacar o AgInt no REsp 1.599.910/PR, cuja ratio decidendi se amolda integralmente ao caso concreto.\nCumpre observa",
+              "gold": [
+                "g3"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 1030,
+              "end": 1035,
+              "anchor": "AgInt",
+              "context": "o dos tribunais superiores é firme no ponto. Vale invocar o AgInt no Recurso\nEspecial nº 1.620.021/PR, de clareza solar quanto ao ponto ora debatido.\n\nI — DA CONTROV",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 1532,
+              "end": 1537,
+              "anchor": "AgInt",
+              "context": "damento autônomo a amparar a pretensão. Invoca-se, ainda,\no AgInt no REsp 1.664.893/PR, no ponto em que afasta a exigência combatida.\n\nII — DO DIREITO APLICÁVEL\n\nSus",
+              "gold": [
+                "g5"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_009",
+              "start": 616,
+              "end": 638,
+              "anchor": "Embargos de Declaração",
+              "context": "e diga que a hipótese comportaria distinção. Ao apreciar os Embargos de Declaração no Recurso em Mandado de Segurança\nnº 67.101/RJ, o colegiado consolidou entendimento diametralmente",
+              "gold": [
+                "g1"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_010",
+              "start": 2748,
+              "end": 2753,
+              "anchor": "AgInt",
+              "context": "Aplica-se\nà espécie, mutatis mutandis, o quanto decidido no AgInt no REsp nº 1.944.552/RS. Ainda que assim não\nfosse, subsiste fundamento autônomo a amparar a preten",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_011",
+              "start": 1216,
+              "end": 1221,
+              "anchor": "AgInt",
+              "context": " jurídica dos fatos\nincontroversos. A orientação firmada no AgInt no REsp 1.820.970/SC foi reafirmada em julgamentos posteriores.\n\nII — DO DIREITO APLICÁVEL\n\nA sente",
+              "gold": [
+                "g3"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 1614,
+              "end": 1619,
+              "anchor": "AgInt",
+              "context": "a\nperante as instâncias ordinárias. A orientação firmada no AgInt no RESP 21737l8 - SP foi reafirmada em julgamentos\nposteriores. Registre-se que o tema comporta enf",
+              "gold": [
+                "g6"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 2227,
+              "end": 2232,
+              "anchor": "AgInt",
+              "context": "do parte de premissa equivocada. Milita em favor da\nparte o AgInt no RESP nº 1.666.812/ PR, que reconhece a excepcionalldade da medida.\n\nIII — DOS PRECEDENTES INVOCA",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_010",
+              "start": 1164,
+              "end": 1169,
+              "anchor": "AgInt",
+              "context": "nvocados conduz\nà mesma conclusão. Corrobora essa leitura o AgInt no ARESP Nº 1.512.757-PR, de cujo voto condutor se extrai\nidêntica premissa.\n\nIII — DO DIREITO APLI",
+              "gold": [
+                "g2"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_010",
+              "start": 2963,
+              "end": 2968,
+              "anchor": "AgInt",
+              "context": "imitar\no objeto da irresignação. Confira-se, a propósito, o AgInt no Recurso Especial nº  1.597.443\n- PR.\n\nÉ o quc se tinha a expor, colocando-se esta consultoria à ",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2473,
+              "end": 2478,
+              "anchor": "AgInt",
+              "context": "rte\nde premissa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a ",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2483,
+              "end": 2487,
+              "anchor": "EDcl",
+              "context": "missa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a prescriçã",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_013",
+              "start": 516,
+              "end": 521,
+              "anchor": "AGINT",
+              "context": "plica-se à espécie,\nmutatis mutandis, o quanto decidido  no AGINT nº 7000462-39.2023.7.00.0000/ DF.\n\nI — DA CONTROVÉRSIA\n\nO apelante, militar da ativa à época dos fa",
+              "gold": [
+                "g1"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_013",
+              "start": 1883,
+              "end": 1888,
+              "anchor": "AgInt",
+              "context": "o dos tribunais superiores é firme no ponto. Vale invocar o AgInt No 7000553-0320217000000,\nde clareza solar quanto ao ponto ora debatido. Registre-se que o tema com",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            }
+          ]
+        }
+      },
+      "family_conflicts": []
+    },
+    "H2": {
+      "name": "H2",
+      "enabled": [
+        "H2"
+      ],
+      "metrics": {
+        "predictions": 211,
+        "TP": 124,
+        "FP": 87,
+        "FN": 101,
+        "precision": 0.5876777251184834,
+        "recall": 0.5511111111111111,
+        "F1": 0.5688073394495413,
+        "exact": 62,
+        "identity_preservation": 108,
+        "correct_IDs": 36,
+        "wrong_unique_real": 0,
+        "false_real_inventada": 0,
+        "false_real_incompleta": 0
+      },
+      "boundary": {
+        "exact": 62,
+        "non_exact_safe": 46,
+        "non_exact_damaging": 16
+      },
+      "duplicates": {
+        "exact_duplicates": 0,
+        "nested_duplicates": 15,
+        "overlapping_same_family": 0,
+        "overlapping_cross_family": 7
+      },
+      "performance_seconds": 0.02818533399840817,
+      "high_value_gained": [
+        "g4",
+        "g7",
+        "g8"
+      ],
+      "other_detector_affected": [
+        {
+          "gid": "g7",
+          "document": "gen_n2_002",
+          "family": "jurisprudencia_referencia_geral",
+          "category": "immediate ID gain",
+          "blocker": "resolved_correct"
+        },
+        {
+          "gid": "g1",
+          "document": "gen_n2_009",
+          "family": "jurisprudencia_referencia_geral",
+          "category": "immediate ID gain",
+          "blocker": "resolved_correct"
+        }
+      ],
+      "current_tp_control": {
+        "baseline": 119,
+        "preserved": 119,
+        "lost": 0,
+        "degraded": 0,
+        "family_changed": 0,
+        "expanded_safely": 0,
+        "lost_gids": [],
+        "degraded_gids": []
+      },
+      "new_fp": 0,
+      "new_fp_status": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 0
+      },
+      "formal_fp_states": {
+        "resolved": 3,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 84
+      },
+      "new_fp_sensitive": [],
+      "raw_occurrences": [
+        {
+          "document": "gen_n2_001",
+          "start": 1707,
+          "end": 1741,
+          "text": "AgRg no Rec. Esp. n. 1.522.200 (SC",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H2_dotted_alias",
+          "gold": [
+            "g4"
+          ]
+        },
+        {
+          "document": "gen_n2_002",
+          "start": 3202,
+          "end": 3224,
+          "text": "Rec. Esp. No 1.880.529",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H2_dotted_alias",
+          "gold": [
+            "g7"
+          ]
+        },
+        {
+          "document": "gen_n2_008",
+          "start": 3051,
+          "end": 3077,
+          "text": "AgRg no H.C. Nº 891369 (RS",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H2_dotted_alias",
+          "gold": [
+            "g7"
+          ]
+        },
+        {
+          "document": "gen_n2_009",
+          "start": 539,
+          "end": 563,
+          "text": "Rec. Esp. nº  1. 570.531",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H2_dotted_alias",
+          "gold": [
+            "g1"
+          ]
+        },
+        {
+          "document": "gen_n2_011",
+          "start": 2473,
+          "end": 2517,
+          "text": "AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H2_dotted_alias",
+          "gold": [
+            "g8"
+          ]
+        }
+      ],
+      "raw_occurrence_summary": {
+        "total": 5,
+        "documents": 5,
+        "N1": 0,
+        "N2": 5,
+        "non_gold": 0,
+        "gold_classes": {
+          "real": 5
+        },
+        "top1_document_share": 0.2,
+        "top2_document_share": 0.4
+      },
+      "classification_control": {
+        "real": {
+          "insufficient": 26,
+          "resolved": 36,
+          "no_match": 5,
+          "missing": 28,
+          "ambiguous": 1
+        },
+        "inventada": {
+          "no_match": 31,
+          "insufficient": 13,
+          "missing": 20
+        },
+        "incompleta": {
+          "missing": 53,
+          "insufficient": 12
+        }
+      },
+      "registry": {
+        "name": "dotted_class_alias",
+        "target_failure": "complete miss",
+        "mechanism": "detectar aliases processuais pontuados seguidos de marcador, número e UF opcional",
+        "expected_gain": 3,
+        "risk": "alias curto pode ocorrer fora de citação",
+        "complexity": "MEDIUM",
+        "precedence": "não; adiciona spans e usa a deduplicação exata existente",
+        "interaction": "não competiu nem criou overlap incremental no corpus"
+      },
+      "safety": "SAFE",
+      "generalization": {
+        "rating": "MODERATE",
+        "overfitting_risk": "MODERATE"
+      },
+      "LOODO": {
+        "gen_n2_001": {
+          "support_documents_outside": 4,
+          "has_external_support": true
+        },
+        "gen_n2_008": {
+          "support_documents_outside": 4,
+          "has_external_support": true
+        },
+        "gen_n2_011": {
+          "support_documents_outside": 4,
+          "has_external_support": true
+        }
+      },
+      "counterexamples": {
+        "full_rule_nonreal_or_nongold": [],
+        "broader_anchor_search": {
+          "anchor_occurrences": 5,
+          "captured_anchor_occurrences": 5,
+          "uncaptured_anchor_occurrences": 0,
+          "uncaptured": []
+        }
+      },
+      "family_conflicts": []
+    },
+    "H3": {
+      "name": "H3",
+      "enabled": [
+        "H3"
+      ],
+      "metrics": {
+        "predictions": 206,
+        "TP": 119,
+        "FP": 87,
+        "FN": 106,
+        "precision": 0.5776699029126213,
+        "recall": 0.5288888888888889,
+        "F1": 0.5522041763341067,
+        "exact": 63,
+        "identity_preservation": 107,
+        "correct_IDs": 33,
+        "wrong_unique_real": 0,
+        "false_real_inventada": 0,
+        "false_real_incompleta": 0
+      },
+      "boundary": {
+        "exact": 63,
+        "non_exact_safe": 44,
+        "non_exact_damaging": 12
+      },
+      "duplicates": {
+        "exact_duplicates": 0,
+        "nested_duplicates": 15,
+        "overlapping_same_family": 0,
+        "overlapping_cross_family": 7
+      },
+      "performance_seconds": 0.03209197499745642,
+      "high_value_gained": [
+        "g6",
+        "g1"
+      ],
+      "other_detector_affected": [],
+      "current_tp_control": {
+        "baseline": 119,
+        "preserved": 119,
+        "lost": 0,
+        "degraded": 0,
+        "family_changed": 0,
+        "expanded_safely": 2,
+        "lost_gids": [],
+        "degraded_gids": []
+      },
+      "new_fp": 0,
+      "new_fp_status": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 0
+      },
+      "formal_fp_states": {
+        "resolved": 3,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 84
+      },
+      "new_fp_sensitive": [],
+      "raw_occurrences": [
+        {
+          "document": "gen_n2_009",
+          "start": 1614,
+          "end": 1640,
+          "text": "AgInt no RESP 21737l8 - SP",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H3_ocr_tail",
+          "gold": [
+            "g6"
+          ]
+        },
+        {
+          "document": "gen_n2_012",
+          "start": 481,
+          "end": 507,
+          "text": "AgRg no RESP 1.528.4S5/ RJ",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H3_ocr_tail",
+          "gold": [
+            "g1"
+          ]
+        }
+      ],
+      "raw_occurrence_summary": {
+        "total": 2,
+        "documents": 2,
+        "N1": 0,
+        "N2": 2,
+        "non_gold": 0,
+        "gold_classes": {
+          "real": 2
+        },
+        "top1_document_share": 0.5,
+        "top2_document_share": 1.0
+      },
+      "classification_control": {
+        "real": {
+          "insufficient": 26,
+          "resolved": 33,
+          "no_match": 3,
+          "missing": 33,
+          "ambiguous": 1
+        },
+        "inventada": {
+          "no_match": 31,
+          "insufficient": 13,
+          "missing": 20
+        },
+        "incompleta": {
+          "missing": 53,
+          "insufficient": 12
+        }
+      },
+      "registry": {
+        "name": "ocr_numeric_tail",
+        "target_failure": "boundary too short / OCR",
+        "mechanism": "estender número detectado quando a continuação adjacente contém caractere OCR confusável e termina em dígito",
+        "expected_gain": 2,
+        "risk": "continuação alfanumérica pode não pertencer ao número",
+        "complexity": "LOW",
+        "precedence": "não; substitui localmente o candidate truncado",
+        "interaction": "preserva família e entrega a identidade completa ao Parser V1"
+      },
+      "safety": "SAFE",
+      "generalization": {
+        "rating": "MODERATE",
+        "overfitting_risk": "MODERATE"
+      },
+      "LOODO": {
+        "gen_n2_009": {
+          "support_documents_outside": 1,
+          "has_external_support": true
+        },
+        "gen_n2_012": {
+          "support_documents_outside": 1,
+          "has_external_support": true
+        }
+      },
+      "counterexamples": {
+        "full_rule_nonreal_or_nongold": [],
+        "broader_anchor_search": {
+          "anchor_occurrences": 2,
+          "captured_anchor_occurrences": 2,
+          "uncaptured_anchor_occurrences": 0,
+          "uncaptured": []
+        }
+      },
+      "family_conflicts": []
+    },
+    "H4": {
+      "name": "H4",
+      "enabled": [
+        "H4"
+      ],
+      "metrics": {
+        "predictions": 208,
+        "TP": 120,
+        "FP": 88,
+        "FN": 105,
+        "precision": 0.5769230769230769,
+        "recall": 0.5333333333333333,
+        "F1": 0.5542725173210161,
+        "exact": 63,
+        "identity_preservation": 105,
+        "correct_IDs": 33,
+        "wrong_unique_real": 0,
+        "false_real_inventada": 0,
+        "false_real_incompleta": 0
+      },
+      "boundary": {
+        "exact": 63,
+        "non_exact_safe": 43,
+        "non_exact_damaging": 14
+      },
+      "duplicates": {
+        "exact_duplicates": 0,
+        "nested_duplicates": 16,
+        "overlapping_same_family": 0,
+        "overlapping_cross_family": 7
+      },
+      "performance_seconds": 0.02769857300154399,
+      "high_value_gained": [
+        "g4"
+      ],
+      "other_detector_affected": [],
+      "current_tp_control": {
+        "baseline": 119,
+        "preserved": 119,
+        "lost": 0,
+        "degraded": 1,
+        "family_changed": 1,
+        "expanded_safely": 0,
+        "lost_gids": [],
+        "degraded_gids": [
+          "g1"
+        ]
+      },
+      "new_fp": 0,
+      "new_fp_status": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 0
+      },
+      "formal_fp_states": {
+        "resolved": 3,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 85
+      },
+      "new_fp_sensitive": [],
+      "raw_occurrences": [
+        {
+          "document": "gen_n2_013",
+          "start": 516,
+          "end": 554,
+          "text": "AGINT nº 7000462-39.2023.7.00.0000/ DF",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H4_standalone_modifier",
+          "gold": [
+            "g1"
+          ]
+        },
+        {
+          "document": "gen_n2_013",
+          "start": 1883,
+          "end": 1913,
+          "text": "AgInt No 7000553-0320217000000",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H4_standalone_modifier",
+          "gold": [
+            "g4"
+          ]
+        }
+      ],
+      "raw_occurrence_summary": {
+        "total": 2,
+        "documents": 1,
+        "N1": 0,
+        "N2": 2,
+        "non_gold": 0,
+        "gold_classes": {
+          "real": 2
+        },
+        "top1_document_share": 1.0,
+        "top2_document_share": 1.0
+      },
+      "classification_control": {
+        "real": {
+          "insufficient": 25,
+          "resolved": 33,
+          "no_match": 5,
+          "missing": 32,
+          "ambiguous": 1
+        },
+        "inventada": {
+          "no_match": 31,
+          "insufficient": 13,
+          "missing": 20
+        },
+        "incompleta": {
+          "missing": 53,
+          "insufficient": 12
+        }
+      },
+      "registry": {
+        "name": "standalone_modifier_number",
+        "target_failure": "complete miss",
+        "mechanism": "aceitar classe modificadora processual diretamente seguida de marcador e número",
+        "expected_gain": 1,
+        "risk": "estrutura é geral, mas o suporte primário é unitário",
+        "complexity": "LOW",
+        "precedence": "sim em números CNJ-like; pode aninhar com a regra CNJ",
+        "interaction": "capturou uma identidade CNJ como processo numerado"
+      },
+      "safety": "SAFE",
+      "generalization": {
+        "rating": "WEAK",
+        "overfitting_risk": "HIGH"
+      },
+      "LOODO": {
+        "gen_n2_013": {
+          "support_documents_outside": 0,
+          "has_external_support": false
+        }
+      },
+      "counterexamples": {
+        "full_rule_nonreal_or_nongold": [],
+        "broader_anchor_search": {
+          "anchor_occurrences": 33,
+          "captured_anchor_occurrences": 2,
+          "uncaptured_anchor_occurrences": 31,
+          "uncaptured": [
+            {
+              "document": "gen_n1_002",
+              "start": 1613,
+              "end": 1621,
+              "anchor": "AgInt no",
+              "context": " se trata, aqui, de revolver matéria fática. Vale invocar\no AgInt no AREsp nº 1.996.496/RJ, de clareza solar quanto ao ponto ora debatido.\n\nII — DO DIREITO APLICÁVEL\n\nS",
+              "gold": [
+                "g5"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_003",
+              "start": 3034,
+              "end": 3041,
+              "anchor": "AgRg no",
+              "context": "ipótese comportaria distinção. Registre-se, por oportuno, o AgRg no AREsp 1.327.863/PR,\ncuja fundamentação se pede vênia para transcrever. Registre-se que o tema compo",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 848,
+              "end": 856,
+              "anchor": "AgInt no",
+              "context": " controvérsia posta nos autos não é nova.\nCumpre destacar o AgInt no REsp 1.599.910/PR, cuja ratio decidendi se amolda integralmente ao caso concreto.\nCumpre observar q",
+              "gold": [
+                "g3"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 1030,
+              "end": 1038,
+              "anchor": "AgInt no",
+              "context": "o dos tribunais superiores é firme no ponto. Vale invocar o AgInt no Recurso\nEspecial nº 1.620.021/PR, de clareza solar quanto ao ponto ora debatido.\n\nI — DA CONTROVÉRS",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_005",
+              "start": 1532,
+              "end": 1540,
+              "anchor": "AgInt no",
+              "context": "damento autônomo a amparar a pretensão. Invoca-se, ainda,\no AgInt no REsp 1.664.893/PR, no ponto em que afasta a exigência combatida.\n\nII — DO DIREITO APLICÁVEL\n\nSusten",
+              "gold": [
+                "g5"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_007",
+              "start": 946,
+              "end": 953,
+              "anchor": "AgInt n",
+              "context": " que a hipótese comportaria distinção. Ampara a pretensão a AgInt na Rcl 36.670/SP, à qual se remete\ndesde logo.\n\nII — DO DIREITO APLICÁVEL\n\nA instrução criminal trans",
+              "gold": [
+                "g2"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_009",
+              "start": 3065,
+              "end": 3073,
+              "anchor": "AgInt no",
+              "context": "to,\no acolhimento da tese ora sustentada. Merece registro o AgInt nos EDcl no REsp 2144995/RJ, invocado desde a peça\nde defesa. Registre-se que o tema comporta enfrenta",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_009",
+              "start": 3075,
+              "end": 3082,
+              "anchor": "EDcl no",
+              "context": "himento da tese ora sustentada. Merece registro o AgInt nos EDcl no REsp 2144995/RJ, invocado desde a peça\nde defesa. Registre-se que o tema comporta enfrentamento sob",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_009",
+              "start": 3603,
+              "end": 3610,
+              "anchor": "EDcl no",
+              "context": "nvocados conduz à mesma conclusão. Corrobora essa leitura o EDcl no AgInt no REsp 1889127/SE,\nde cujo voto condutor se extrai idêntica premissa.\n\nAnte o exposto, reque",
+              "gold": [
+                "g10"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_009",
+              "start": 3611,
+              "end": 3619,
+              "anchor": "AgInt no",
+              "context": " conduz à mesma conclusão. Corrobora essa leitura o EDcl no AgInt no REsp 1889127/SE,\nde cujo voto condutor se extrai idêntica premissa.\n\nAnte o exposto, requer-se o pr",
+              "gold": [
+                "g10"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_010",
+              "start": 2748,
+              "end": 2756,
+              "anchor": "AgInt no",
+              "context": "Aplica-se\nà espécie, mutatis mutandis, o quanto decidido no AgInt no REsp nº 1.944.552/RS. Ainda que assim não\nfosse, subsiste fundamento autônomo a amparar a pretensão",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n1_011",
+              "start": 1216,
+              "end": 1224,
+              "anchor": "AgInt no",
+              "context": " jurídica dos fatos\nincontroversos. A orientação firmada no AgInt no REsp 1.820.970/SC foi reafirmada em julgamentos posteriores.\n\nII — DO DIREITO APLICÁVEL\n\nA sentença",
+              "gold": [
+                "g3"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_001",
+              "start": 1707,
+              "end": 1714,
+              "anchor": "AgRg no",
+              "context": "ficiente para o deslinde\nda causa. Corrobora essa leitura o AgRg no Rec. Esp. n. 1.522.200 (SC), de cujo voto\ncondutor se extrai idêntica premissa.\n\nIII — DOS PRECEDEN",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_001",
+              "start": 2976,
+              "end": 2983,
+              "anchor": "EDcl no",
+              "context": "rta enfrentamento sob dupla perspectiva. Em caso\nanálogo, o EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP afastou pretensão de igual teor.\n\nAnt",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_001",
+              "start": 2985,
+              "end": 2992,
+              "anchor": "EDcl no",
+              "context": "ntamento sob dupla perspectiva. Em caso\nanálogo, o EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP afastou pretensão de igual teor.\n\nAnte o expos",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_001",
+              "start": 2993,
+              "end": 3001,
+              "anchor": "AgInt no",
+              "context": " sob dupla perspectiva. Em caso\nanálogo, o EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP afastou pretensão de igual teor.\n\nAnte o exposto, reque",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_006",
+              "start": 992,
+              "end": 997,
+              "anchor": "ED no",
+              "context": "ribunais supcriores\né firme no ponto. Reforça o argumento o ED no AgR-REspe No  0600316-4920206160182, de resto ãmplamente\nconhecido no foro.\n\nI — DA CONTROVÉRSIA\n\nA",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_008",
+              "start": 1898,
+              "end": 1905,
+              "anchor": "EDcl no",
+              "context": " autônomo a amparar a pretensão. Milita\nem favor da parte o EDcl no AgInt no ARESP 1980827/ RS, que reconhece a excepcionalidade da medida.\n\nIII — DOS PRECEDENTES INVO",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_008",
+              "start": 1906,
+              "end": 1914,
+              "anchor": "AgInt no",
+              "context": "o a amparar a pretensão. Milita\nem favor da parte o EDcl no AgInt no ARESP 1980827/ RS, que reconhece a excepcionalidade da medida.\n\nIII — DOS PRECEDENTES INVOCADOS\n\nIn",
+              "gold": [
+                "g4"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_008",
+              "start": 3051,
+              "end": 3058,
+              "anchor": "AgRg no",
+              "context": " de fundo comporta solução singela. A orientação firmada no\nAgRg no H.C. Nº 891369 (RS) foi reafirmada em julgamentos posteriores.\n\nPor tais fundamentos, nego seguimen",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 725,
+              "end": 732,
+              "anchor": "EDcl no",
+              "context": "ronta a segurança jurídica. Não destoa desse\nentendimento o EDcl no AgInt no ARESP  1 821 663/ SC. O ponto nodal da discussão reside na qualificação jurídica\n dos fato",
+              "gold": [
+                "g2"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 733,
+              "end": 741,
+              "anchor": "AgInt no",
+              "context": "segurança jurídica. Não destoa desse\nentendimento o EDcl no AgInt no ARESP  1 821 663/ SC. O ponto nodal da discussão reside na qualificação jurídica\n dos fatos incontr",
+              "gold": [
+                "g2"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 1614,
+              "end": 1622,
+              "anchor": "AgInt no",
+              "context": "a\nperante as instâncias ordinárias. A orientação firmada no AgInt no RESP 21737l8 - SP foi reafirmada em julgamentos\nposteriores. Registre-se que o tema comporta enfrcn",
+              "gold": [
+                "g6"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_009",
+              "start": 2227,
+              "end": 2235,
+              "anchor": "AgInt no",
+              "context": "do parte de premissa equivocada. Milita em favor da\nparte o AgInt no RESP nº 1.666.812/ PR, que reconhece a excepcionalldade da medida.\n\nIII — DOS PRECEDENTES INVOCADOS",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_010",
+              "start": 1164,
+              "end": 1172,
+              "anchor": "AgInt no",
+              "context": "nvocados conduz\nà mesma conclusão. Corrobora essa leitura o AgInt no ARESP Nº 1.512.757-PR, de cujo voto condutor se extrai\nidêntica premissa.\n\nIII — DO DIREITO APLICÁV",
+              "gold": [
+                "g2"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_010",
+              "start": 2963,
+              "end": 2971,
+              "anchor": "AgInt no",
+              "context": "imitar\no objeto da irresignação. Confira-se, a propósito, o AgInt no Recurso Especial nº  1.597.443\n- PR.\n\nÉ o quc se tinha a expor, colocando-se esta consultoria à dis",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2313,
+              "end": 2320,
+              "anchor": "EDcl no",
+              "context": "nto da tese ora sustentada. Não destoa dessc entendimento\no EDcl no AgInt no Recurso Especial Nº 170076O (SP). O raciocínio desenvolvido no acórdão recorrido parte\nde ",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2321,
+              "end": 2329,
+              "anchor": "AgInt no",
+              "context": "ese ora sustentada. Não destoa dessc entendimento\no EDcl no AgInt no Recurso Especial Nº 170076O (SP). O raciocínio desenvolvido no acórdão recorrido parte\nde premissa ",
+              "gold": [
+                "g7"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2473,
+              "end": 2481,
+              "anchor": "AgInt no",
+              "context": "rte\nde premissa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a pre",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_011",
+              "start": 2483,
+              "end": 2490,
+              "anchor": "EDcl no",
+              "context": "missa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a prescrição p",
+              "gold": [
+                "g8"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            },
+            {
+              "document": "gen_n2_012",
+              "start": 481,
+              "end": 488,
+              "anchor": "AgRg no",
+              "context": "que a hipótese comportaria distinção. Reforça o argumento o AgRg no RESP 1.528.4S5/ RJ, de\nresto amplamente conhecido no foro. Com efeito, a controvérsia posta nos aut",
+              "gold": [
+                "g1"
+              ],
+              "gold_classes": [
+                "real"
+              ]
+            }
+          ]
+        }
+      },
+      "family_conflicts": [
+        {
+          "document": "gen_n2_013",
+          "start": 516,
+          "end": 554,
+          "text": "AGINT nº 7000462-39.2023.7.00.0000/ DF",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H4_standalone_modifier",
+          "gold": [
+            "g1"
+          ]
+        }
+      ]
+    },
+    "H5": {
+      "name": "H5",
+      "enabled": [
+        "H5"
+      ],
+      "metrics": {
+        "predictions": 207,
+        "TP": 120,
+        "FP": 87,
+        "FN": 105,
+        "precision": 0.5797101449275363,
+        "recall": 0.5333333333333333,
+        "F1": 0.5555555555555555,
+        "exact": 62,
+        "identity_preservation": 106,
+        "correct_IDs": 32,
+        "wrong_unique_real": 0,
+        "false_real_inventada": 0,
+        "false_real_incompleta": 0
+      },
+      "boundary": {
+        "exact": 62,
+        "non_exact_safe": 44,
+        "non_exact_damaging": 14
+      },
+      "duplicates": {
+        "exact_duplicates": 0,
+        "nested_duplicates": 15,
+        "overlapping_same_family": 0,
+        "overlapping_cross_family": 7
+      },
+      "performance_seconds": 0.025951226998586208,
+      "high_value_gained": [
+        "g9"
+      ],
+      "other_detector_affected": [],
+      "current_tp_control": {
+        "baseline": 119,
+        "preserved": 119,
+        "lost": 0,
+        "degraded": 0,
+        "family_changed": 0,
+        "expanded_safely": 0,
+        "lost_gids": [],
+        "degraded_gids": []
+      },
+      "new_fp": 0,
+      "new_fp_status": {
+        "resolved": 0,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 0
+      },
+      "formal_fp_states": {
+        "resolved": 3,
+        "no_match": 0,
+        "ambiguous": 0,
+        "insufficient": 84
+      },
+      "new_fp_sensitive": [],
+      "raw_occurrences": [
+        {
+          "document": "gen_n1_009",
+          "start": 3401,
+          "end": 3465,
+          "text": "Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA",
+          "family": "processo_ou_recurso_numerado",
+          "rule": "exp_H5_compound_title",
+          "gold": [
+            "g9"
+          ]
+        }
+      ],
+      "raw_occurrence_summary": {
+        "total": 1,
+        "documents": 1,
+        "N1": 1,
+        "N2": 0,
+        "non_gold": 0,
+        "gold_classes": {
+          "real": 1
+        },
+        "top1_document_share": 1.0,
+        "top2_document_share": 1.0
+      },
+      "classification_control": {
+        "real": {
+          "insufficient": 26,
+          "resolved": 32,
+          "no_match": 5,
+          "missing": 32,
+          "ambiguous": 1
+        },
+        "inventada": {
+          "no_match": 31,
+          "insufficient": 13,
+          "missing": 20
+        },
+        "incompleta": {
+          "missing": 53,
+          "insufficient": 12
+        }
+      },
+      "registry": {
+        "name": "compound_procedure_title",
+        "target_failure": "newline / compound citation",
+        "mechanism": "detectar agravo interno em título processual composto seguido de marcador numérico",
+        "expected_gain": 1,
+        "risk": "ramo lexical com apenas um alvo conhecido",
+        "complexity": "HIGH",
+        "precedence": "não observada no corpus",
+        "interaction": "adiciona uma nova branch lexical de título processual"
+      },
+      "safety": "SAFE",
+      "generalization": {
+        "rating": "WEAK",
+        "overfitting_risk": "HIGH"
+      },
+      "LOODO": {
+        "gen_n1_009": {
+          "support_documents_outside": 0,
+          "has_external_support": false
+        }
+      },
+      "counterexamples": {
+        "full_rule_nonreal_or_nongold": [],
+        "broader_anchor_search": {
+          "anchor_occurrences": 1,
+          "captured_anchor_occurrences": 1,
+          "uncaptured_anchor_occurrences": 0,
+          "uncaptured": []
+        }
+      },
+      "family_conflicts": []
+    }
+  },
+  "hypothesis_metrics": [
+    {
+      "hypothesis": "H1",
+      "high_value_gain": 3,
+      "other_TP_gain": 0,
+      "new_FP": 0,
+      "E2E_ID_gain": 3,
+      "safety": "SAFE",
+      "documents": 9,
+      "complexity": "MEDIUM",
+      "generalization_evidence": "STRONG"
+    },
+    {
+      "hypothesis": "H2",
+      "high_value_gain": 3,
+      "other_TP_gain": 2,
+      "new_FP": 0,
+      "E2E_ID_gain": 5,
+      "safety": "SAFE",
+      "documents": 5,
+      "complexity": "MEDIUM",
+      "generalization_evidence": "MODERATE"
+    },
+    {
+      "hypothesis": "H3",
+      "high_value_gain": 2,
+      "other_TP_gain": 0,
+      "new_FP": 0,
+      "E2E_ID_gain": 2,
+      "safety": "SAFE",
+      "documents": 2,
+      "complexity": "LOW",
+      "generalization_evidence": "MODERATE"
+    },
+    {
+      "hypothesis": "H4",
+      "high_value_gain": 1,
+      "other_TP_gain": 0,
+      "new_FP": 0,
+      "E2E_ID_gain": 2,
+      "safety": "SAFE",
+      "documents": 1,
+      "complexity": "LOW",
+      "generalization_evidence": "WEAK"
+    },
+    {
+      "hypothesis": "H5",
+      "high_value_gain": 1,
+      "other_TP_gain": 0,
+      "new_FP": 0,
+      "E2E_ID_gain": 1,
+      "safety": "SAFE",
+      "documents": 1,
+      "complexity": "HIGH",
+      "generalization_evidence": "WEAK"
+    }
+  ],
+  "approved_hypotheses": [
+    "H1",
+    "H2",
+    "H3"
+  ],
+  "rejected_hypotheses": [
+    {
+      "hypothesis": "H4",
+      "reason": "weak generalization evidence / isolated support; only +1 high-value case; cross-family CNJ capture and nested-candidate interaction"
+    },
+    {
+      "hypothesis": "H5",
+      "reason": "HIGH complexity for marginal gain; weak generalization evidence / isolated support; only +1 high-value case"
+    }
+  ],
+  "cumulative_candidate": {
+    "name": "cumulative",
+    "enabled": [
+      "H1",
+      "H2",
+      "H3"
+    ],
+    "metrics": {
+      "predictions": 211,
+      "TP": 127,
+      "FP": 84,
+      "FN": 98,
+      "precision": 0.6018957345971564,
+      "recall": 0.5644444444444444,
+      "F1": 0.5825688073394495,
+      "exact": 73,
+      "identity_preservation": 113,
+      "correct_IDs": 41,
+      "wrong_unique_real": 0,
+      "false_real_inventada": 0,
+      "false_real_incompleta": 0
+    },
+    "boundary": {
+      "exact": 73,
+      "non_exact_safe": 40,
+      "non_exact_damaging": 14
+    },
+    "duplicates": {
+      "exact_duplicates": 0,
+      "nested_duplicates": 15,
+      "overlapping_same_family": 0,
+      "overlapping_cross_family": 7
+    },
+    "performance_seconds": 0.030341662000864744,
+    "high_value_gained": [
+      "g5",
+      "g9",
+      "g4",
+      "g8",
+      "g7",
+      "g6",
+      "g8",
+      "g1"
+    ],
+    "other_detector_affected": [
+      {
+        "gid": "g7",
+        "document": "gen_n2_002",
+        "family": "jurisprudencia_referencia_geral",
+        "category": "immediate ID gain",
+        "blocker": "resolved_correct"
+      },
+      {
+        "gid": "g1",
+        "document": "gen_n2_009",
+        "family": "jurisprudencia_referencia_geral",
+        "category": "immediate ID gain",
+        "blocker": "resolved_correct"
+      }
+    ],
+    "current_tp_control": {
+      "baseline": 119,
+      "preserved": 119,
+      "lost": 0,
+      "degraded": 0,
+      "family_changed": 0,
+      "expanded_safely": 10,
+      "lost_gids": [],
+      "degraded_gids": []
+    },
+    "new_fp": 0,
+    "new_fp_status": {
+      "resolved": 0,
+      "no_match": 0,
+      "ambiguous": 0,
+      "insufficient": 0
+    },
+    "formal_fp_states": {
+      "resolved": 0,
+      "no_match": 0,
+      "ambiguous": 0,
+      "insufficient": 84
+    },
+    "new_fp_sensitive": [],
+    "raw_occurrences": [
+      {
+        "document": "gen_n1_002",
+        "start": 2308,
+        "end": 2350,
+        "text": "Agravo em Recurso Especial nº 1.708.000/SP",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g7"
+        ]
+      },
+      {
+        "document": "gen_n1_007",
+        "start": 946,
+        "end": 968,
+        "text": "AgInt na Rcl 36.670/SP",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g2"
+        ]
+      },
+      {
+        "document": "gen_n1_009",
+        "start": 2449,
+        "end": 2533,
+        "text": "Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g5"
+        ]
+      },
+      {
+        "document": "gen_n1_009",
+        "start": 3065,
+        "end": 3098,
+        "text": "AgInt nos EDcl no REsp 2144995/RJ",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g7"
+        ]
+      },
+      {
+        "document": "gen_n1_009",
+        "start": 3603,
+        "end": 3635,
+        "text": "EDcl no AgInt no REsp 1889127/SE",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g10"
+        ]
+      },
+      {
+        "document": "gen_n1_010",
+        "start": 3049,
+        "end": 3107,
+        "text": "Agravo Interno no Agravo em Recurso Especial nº 1807643/RS",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g9"
+        ]
+      },
+      {
+        "document": "gen_n1_012",
+        "start": 3135,
+        "end": 3170,
+        "text": "Terceiro AG.REG na Rcl nº 62.425/SP",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g9"
+        ]
+      },
+      {
+        "document": "gen_n2_001",
+        "start": 2976,
+        "end": 3040,
+        "text": "EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g8"
+        ]
+      },
+      {
+        "document": "gen_n2_008",
+        "start": 1898,
+        "end": 1932,
+        "text": "EDcl no AgInt no ARESP 1980827/ RS",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g4"
+        ]
+      },
+      {
+        "document": "gen_n2_009",
+        "start": 725,
+        "end": 762,
+        "text": "EDcl no AgInt no ARESP  1 821 663/ SC",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g2"
+        ]
+      },
+      {
+        "document": "gen_n2_011",
+        "start": 2313,
+        "end": 2356,
+        "text": "EDcl no AgInt no Recurso Especial Nº 170076",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H1_prefix_chain",
+        "gold": [
+          "g7"
+        ]
+      },
+      {
+        "document": "gen_n2_001",
+        "start": 1707,
+        "end": 1741,
+        "text": "AgRg no Rec. Esp. n. 1.522.200 (SC",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H2_dotted_alias",
+        "gold": [
+          "g4"
+        ]
+      },
+      {
+        "document": "gen_n2_002",
+        "start": 3202,
+        "end": 3224,
+        "text": "Rec. Esp. No 1.880.529",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H2_dotted_alias",
+        "gold": [
+          "g7"
+        ]
+      },
+      {
+        "document": "gen_n2_008",
+        "start": 3051,
+        "end": 3077,
+        "text": "AgRg no H.C. Nº 891369 (RS",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H2_dotted_alias",
+        "gold": [
+          "g7"
+        ]
+      },
+      {
+        "document": "gen_n2_009",
+        "start": 539,
+        "end": 563,
+        "text": "Rec. Esp. nº  1. 570.531",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H2_dotted_alias",
+        "gold": [
+          "g1"
+        ]
+      },
+      {
+        "document": "gen_n2_011",
+        "start": 2473,
+        "end": 2517,
+        "text": "AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H2_dotted_alias",
+        "gold": [
+          "g8"
+        ]
+      },
+      {
+        "document": "gen_n2_009",
+        "start": 1614,
+        "end": 1640,
+        "text": "AgInt no RESP 21737l8 - SP",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H3_ocr_tail",
+        "gold": [
+          "g6"
+        ]
+      },
+      {
+        "document": "gen_n2_012",
+        "start": 481,
+        "end": 507,
+        "text": "AgRg no RESP 1.528.4S5/ RJ",
+        "family": "processo_ou_recurso_numerado",
+        "rule": "exp_H3_ocr_tail",
+        "gold": [
+          "g1"
+        ]
+      }
+    ],
+    "raw_occurrence_summary": {
+      "total": 18,
+      "documents": 11,
+      "N1": 7,
+      "N2": 11,
+      "non_gold": 0,
+      "gold_classes": {
+        "real": 18
+      },
+      "top1_document_share": 0.16666666666666666,
+      "top2_document_share": 0.3333333333333333
+    },
+    "classification_control": {
+      "real": {
+        "insufficient": 26,
+        "resolved": 41,
+        "no_match": 3,
+        "missing": 25,
+        "ambiguous": 1
+      },
+      "inventada": {
+        "no_match": 31,
+        "insufficient": 13,
+        "missing": 20
+      },
+      "incompleta": {
+        "missing": 53,
+        "insufficient": 12
+      }
+    }
+  },
+  "remaining_high_value_cases": [
+    {
+      "document": "gen_n1_009",
+      "level": "N1",
+      "gold_index": 79,
+      "gid": "g9",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA",
+      "gold_span": [
+        3401,
+        3465
+      ],
+      "gold_class": "real",
+      "gold_id": 6576893354,
+      "blocker": "detector_miss",
+      "structural_issue": "marker/compound title crosses newline",
+      "hypothesis": "H5",
+      "normalized_identity": "2883",
+      "v3_text": null,
+      "experimental_text": null,
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": null,
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "Agravo",
+          "numero_raw": "2.883",
+          "numero_normalizado": "2883",
+          "numero_family": "case_number",
+          "uf_raw": "/MA",
+          "uf": "MA"
+        },
+        "provenance": {
+          "numero": "structural_repair",
+          "uf": "explicit"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 6576893354,
+        "candidate_ids": [
+          6576893354
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": null,
+      "predicted_id": null,
+      "assessment_reason": "detector_miss"
+    },
+    {
+      "document": "gen_n2_013",
+      "level": "N2",
+      "gold_index": 221,
+      "gid": "g4",
+      "gold_family": "processo_ou_recurso_numerado",
+      "gold_text": "AgInt No 7000553-0320217000000",
+      "gold_span": [
+        1883,
+        1913
+      ],
+      "gold_class": "real",
+      "gold_id": 1477658218,
+      "blocker": "detector_miss",
+      "structural_issue": "modifier class followed directly by number",
+      "hypothesis": "H4",
+      "normalized_identity": "70005530320217000000",
+      "v3_text": null,
+      "experimental_text": null,
+      "v3_related_candidates": [],
+      "v3_parser": null,
+      "experimental_parser": null,
+      "oracle_parser": {
+        "family": "processo_ou_recurso_numerado",
+        "tribunal": null,
+        "tribunal_source": "unknown",
+        "data": {
+          "classe_raw": "AgInt",
+          "numero_raw": "7000553-0320217000000",
+          "numero_normalizado": "70005530320217000000",
+          "numero_family": "case_number"
+        },
+        "provenance": {
+          "numero": "structural_repair"
+        }
+      },
+      "oracle_resolver": {
+        "status": "resolved",
+        "id_canonico": 1477658218,
+        "candidate_ids": [
+          1477658218
+        ],
+        "strategy": "case_number_exact",
+        "reason": "case_number_unique",
+        "record_type": "acordao"
+      },
+      "v3_resolver": null,
+      "experimental_resolver": null,
+      "predicted_id": null,
+      "assessment_reason": "detector_miss"
+    }
+  ],
+  "generalization": {
+    "candidate_overfitting_risk": "MODERATE",
+    "rules": 3,
+    "recovered_per_rule": {
+      "H1": 3,
+      "H2": 3,
+      "H3": 2
+    },
+    "hardcoded_ids": false,
+    "hardcoded_documents": false,
+    "threshold_tuning": false,
+    "blind_set_inference": "Os mecanismos aprovados usam gramática processual e ruído OCR; a evidência é limitada ao pequeno gold e não estima performance cega."
+  },
+  "formal_fp_baseline": {
+    "resolved": 3,
+    "no_match": 0,
+    "ambiguous": 0,
+    "insufficient": 84
+  },
+  "comparison_alternatives": [
+    {
+      "path": "Detector V4",
+      "potential": "+10",
+      "known_safety": "0/0/0",
+      "maturity": "experimental"
+    },
+    {
+      "path": "CNJ",
+      "potential": "+14",
+      "known_safety": "1 wrong unique",
+      "maturity": "blocked"
+    },
+    {
+      "path": "Legal",
+      "potential": "+0 E2E",
+      "known_safety": "safe so far",
+      "maturity": "low ROI"
+    },
+    {
+      "path": "Semantic/contextual",
+      "potential": "13 latent",
+      "known_safety": "unknown",
+      "maturity": "unexplored"
+    }
+  ],
+  "diminishing_returns": "Ainda há um último ganho estrutural concentrado se a candidata for aprovada; os casos rejeitados já mostram retorno decrescente e não justificam aliases adicionais.",
+  "blockers": [],
+  "warnings": [
+    "H2 tem suporte observado somente em N2; generalização para N1 é inferência.",
+    "H3 ocorre apenas nos dois alvos OCR; apesar de estrutural e multi-documento, não há negativo afetado no corpus.",
+    "O upper bound anterior de 10 subestimou dois ganhos H2 porque o próprio oracle family_for não reconhecia Rec. Esp.",
+    "H4 é gold-safe, mas captura um CNJ como processo numerado, cria nesting e contorna a política conservadora do Resolver CNJ."
+  ],
+  "audit_questions": {
+    "1_exact_high_value_cases": [
+      "gen_n1_009:g5",
+      "gen_n1_009:g9",
+      "gen_n1_012:g9",
+      "gen_n2_001:g4",
+      "gen_n2_001:g8",
+      "gen_n2_008:g7",
+      "gen_n2_009:g6",
+      "gen_n2_011:g8",
+      "gen_n2_012:g1",
+      "gen_n2_013:g4"
+    ],
+    "2_distinct_mechanisms": 5,
+    "3_multi_case_mechanism": [
+      "H1",
+      "H2",
+      "H3"
+    ],
+    "4_multi_document_support": [
+      "H1",
+      "H2",
+      "H3"
+    ],
+    "5_N1_and_N2_support": [
+      "H1"
+    ],
+    "6_invented_incomplete_counterexamples": 0,
+    "7_dangerous_new_FP": 0,
+    "8_current_TP_regressions": 0,
+    "9_low_risk_high_value_recovered": 3,
+    "10_fragile_or_isolated": 2,
+    "11_minimal_candidate_E2E_gain": 10,
+    "12_cost": {
+      "new_FP": 0,
+      "mechanisms": 3,
+      "maintenance": "moderate",
+      "overfitting": "MODERATE"
+    },
+    "13_concentration": {
+      "H1": 3,
+      "H2": 3,
+      "H3": 2
+    },
+    "14_blind_generalization": "plausível para H1; moderadamente sustentada para H2/H3; performance externa desconhecida",
+    "15_detector_decision": "A) implement CitationDetector V4",
+    "16_include": [
+      "H1",
+      "H2",
+      "H3"
+    ],
+    "17_reject": [
+      "H4",
+      "H5"
+    ],
+    "18_next_front": "CNJ/canonical identity after a minimal V4 implementation"
+  },
+  "recommendation": "A) implement CitationDetector V4",
+  "recommendation_reason": "8/10 high-value recuperados por 3 mecanismos; delta E2E +10; safety 0/0/0.",
+  "determinism": "3/3 identical",
+  "performance": {
+    "v3_pipeline_seconds": 0.02567917900159955,
+    "experimental_v4_pipeline_seconds": 0.030341662000864744,
+    "full_audit_seconds": 1.9273031650009216
+  }
+}

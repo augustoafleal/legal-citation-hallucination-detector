@@ -1,0 +1,953 @@
+<!doctype html><meta charset='utf-8'><title>Detector V4 audit</title>
+<style>body{font:14px system-ui;max-width:1500px;margin:2rem auto;padding:0 1rem}table{border-collapse:collapse;width:100%;margin-bottom:2rem}th,td{border:1px solid #bbb;padding:.4rem;vertical-align:top}pre{white-space:pre-wrap;margin:0}h1,h2{margin-top:2rem}</style>
+<h1>CitationDetector V4 — human/auditor review</h1>
+<p>Hypotheses were frozen before final control review. Gold fields below are audit-only.</p>
+<h2>Grupo A — 10 high-value cases</h2>
+<table><thead><tr><th>doc</th><th>level</th><th>gid</th><th>family</th><th>gold</th><th>V3</th><th>experimental</th><th>hypothesis</th><th>oracle/predicted ID</th></tr></thead><tbody><tr><td><pre>gen_n1_009</pre></td><td><pre>N1</pre></td><td><pre>g5</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO</pre></td><td><pre>None</pre></td><td><pre>Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO</pre></td><td><pre>H1</pre></td><td><pre>3360644937/3360644937</pre></td></tr><tr><td><pre>gen_n1_009</pre></td><td><pre>N1</pre></td><td><pre>g9</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>Agravo Interno na Suspensão
+de Liminar e de Sentença nº 2.883/MA</pre></td><td><pre>None</pre></td><td><pre>None</pre></td><td><pre>H5</pre></td><td><pre>6576893354/None</pre></td></tr><tr><td><pre>gen_n1_012</pre></td><td><pre>N1</pre></td><td><pre>g9</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>Terceiro AG.REG na Rcl nº 62.425/SP</pre></td><td><pre>None</pre></td><td><pre>Terceiro AG.REG na Rcl nº 62.425/SP</pre></td><td><pre>H1</pre></td><td><pre>2428195275/2428195275</pre></td></tr><tr><td><pre>gen_n2_001</pre></td><td><pre>N2</pre></td><td><pre>g4</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgRg no Rec. Esp. n. 1.522.200 (SC)</pre></td><td><pre>None</pre></td><td><pre>AgRg no Rec. Esp. n. 1.522.200 (SC</pre></td><td><pre>H2</pre></td><td><pre>192165489/192165489</pre></td></tr><tr><td><pre>gen_n2_001</pre></td><td><pre>N2</pre></td><td><pre>g8</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP</pre></td><td><pre>None</pre></td><td><pre>EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207</pre></td><td><pre>H1</pre></td><td><pre>6304461308/6304461308</pre></td></tr><tr><td><pre>gen_n2_008</pre></td><td><pre>N2</pre></td><td><pre>g7</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgRg no H.C. Nº 891369 (RS)</pre></td><td><pre>None</pre></td><td><pre>AgRg no H.C. Nº 891369 (RS</pre></td><td><pre>H2</pre></td><td><pre>2849473714/2849473714</pre></td></tr><tr><td><pre>gen_n2_009</pre></td><td><pre>N2</pre></td><td><pre>g6</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgInt no RESP 21737l8 - SP</pre></td><td><pre>AgInt no RESP 21737</pre></td><td><pre>AgInt no RESP 21737l8 - SP</pre></td><td><pre>H3</pre></td><td><pre>6490934118/6490934118</pre></td></tr><tr><td><pre>gen_n2_011</pre></td><td><pre>N2</pre></td><td><pre>g8</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgInt nos EDcl no Rec. Esp. n°
+ 2.050.950-RJ</pre></td><td><pre>None</pre></td><td><pre>AgInt nos EDcl no Rec. Esp. n°
+ 2.050.950-RJ</pre></td><td><pre>H2</pre></td><td><pre>2108195032/2108195032</pre></td></tr><tr><td><pre>gen_n2_012</pre></td><td><pre>N2</pre></td><td><pre>g1</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgRg no RESP 1.528.4S5/ RJ</pre></td><td><pre>AgRg no RESP 1.528.4</pre></td><td><pre>AgRg no RESP 1.528.4S5/ RJ</pre></td><td><pre>H3</pre></td><td><pre>2674928810/2674928810</pre></td></tr><tr><td><pre>gen_n2_013</pre></td><td><pre>N2</pre></td><td><pre>g4</pre></td><td><pre>processo_ou_recurso_numerado</pre></td><td><pre>AgInt No 7000553-0320217000000</pre></td><td><pre>None</pre></td><td><pre>None</pre></td><td><pre>H4</pre></td><td><pre>1477658218/None</pre></td></tr></tbody></table>
+<h2>Grupo B — casos adicionais afetados</h2>
+<table><thead><tr><th>hypothesis</th><th>gid</th><th>doc</th><th>family</th><th>category</th><th>blocker</th></tr></thead><tbody><tr><td><pre>H2</pre></td><td><pre>g7</pre></td><td><pre>gen_n2_002</pre></td><td><pre>jurisprudencia_referencia_geral</pre></td><td><pre>immediate ID gain</pre></td><td><pre>resolved_correct</pre></td></tr><tr><td><pre>H2</pre></td><td><pre>g1</pre></td><td><pre>gen_n2_009</pre></td><td><pre>jurisprudencia_referencia_geral</pre></td><td><pre>immediate ID gain</pre></td><td><pre>resolved_correct</pre></td></tr></tbody></table>
+<h2>Grupo C — novos FPs downstream-sensitive</h2>
+<table><thead><tr><th>doc</th><th>span</th><th>text</th><th>family</th><th>rule</th><th>resolver</th></tr></thead><tbody></tbody></table>
+<h2>Grupo D — uncertain / não recuperados</h2>
+<table><thead><tr><th>doc</th><th>gid</th><th>gold</th><th>issue</th><th>reason</th></tr></thead><tbody><tr><td><pre>gen_n1_009</pre></td><td><pre>g9</pre></td><td><pre>Agravo Interno na Suspensão
+de Liminar e de Sentença nº 2.883/MA</pre></td><td><pre>marker/compound title crosses newline</pre></td><td><pre>detector_miss</pre></td></tr><tr><td><pre>gen_n2_013</pre></td><td><pre>g4</pre></td><td><pre>AgInt No 7000553-0320217000000</pre></td><td><pre>modifier class followed directly by number</pre></td><td><pre>detector_miss</pre></td></tr></tbody></table>
+<h2>Counterexample search</h2>
+<table><thead><tr><th>hypothesis</th><th>broad anchors</th><th>captured</th><th>uncaptured</th><th>full-rule nonreal/nongold</th></tr></thead><tbody><tr><td><pre>H1</pre></td><td><pre>37</pre></td><td><pre>20</pre></td><td><pre>17</pre></td><td><pre>0</pre></td></tr><tr><td><pre>H2</pre></td><td><pre>5</pre></td><td><pre>5</pre></td><td><pre>0</pre></td><td><pre>0</pre></td></tr><tr><td><pre>H3</pre></td><td><pre>2</pre></td><td><pre>2</pre></td><td><pre>0</pre></td><td><pre>0</pre></td></tr><tr><td><pre>H4</pre></td><td><pre>33</pre></td><td><pre>2</pre></td><td><pre>31</pre></td><td><pre>0</pre></td></tr><tr><td><pre>H5</pre></td><td><pre>1</pre></td><td><pre>1</pre></td><td><pre>0</pre></td><td><pre>0</pre></td></tr></tbody></table>
+<h2>Payload detalhado dos casos</h2><pre>
+[
+  {
+    &quot;document&quot;: &quot;gen_n1_009&quot;,
+    &quot;level&quot;: &quot;N1&quot;,
+    &quot;gold_index&quot;: 75,
+    &quot;gid&quot;: &quot;g5&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO&quot;,
+    &quot;gold_span&quot;: [
+      2449,
+      2533
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 3360644937,
+    &quot;blocker&quot;: &quot;detector_boundary_failure&quot;,
+    &quot;structural_issue&quot;: &quot;procedural prefix omitted or numeric tail truncated&quot;,
+    &quot;hypothesis&quot;: &quot;H1&quot;,
+    &quot;normalized_identity&quot;: &quot;1904603&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO&quot;,
+    &quot;v3_related_candidates&quot;: [
+      {
+        &quot;span&quot;: [
+          2503,
+          2533
+        ],
+        &quot;text&quot;: &quot;Recurso Especial nº 1904603/TO&quot;,
+        &quot;rule&quot;: &quot;processo_ou_recurso&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parser&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tribunal&quot;: null,
+          &quot;tribunal_source&quot;: &quot;unknown&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+            &quot;numero_raw&quot;: &quot;1904603&quot;,
+            &quot;numero_normalizado&quot;: &quot;1904603&quot;,
+            &quot;numero_family&quot;: &quot;recurso_number&quot;,
+            &quot;uf_raw&quot;: &quot;/TO&quot;,
+            &quot;uf&quot;: &quot;TO&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;numero&quot;: &quot;normalized&quot;,
+            &quot;uf&quot;: &quot;explicit&quot;
+          }
+        },
+        &quot;resolver&quot;: {
+          &quot;status&quot;: &quot;resolved&quot;,
+          &quot;id_canonico&quot;: 3360644937,
+          &quot;candidate_ids&quot;: [
+            3360644937
+          ],
+          &quot;strategy&quot;: &quot;case_number_exact&quot;,
+          &quot;reason&quot;: &quot;case_number_unique&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      }
+    ],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+        &quot;numero_raw&quot;: &quot;1904603&quot;,
+        &quot;numero_normalizado&quot;: &quot;1904603&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;/TO&quot;,
+        &quot;uf&quot;: &quot;TO&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+        &quot;numero_raw&quot;: &quot;1904603&quot;,
+        &quot;numero_normalizado&quot;: &quot;1904603&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;/TO&quot;,
+        &quot;uf&quot;: &quot;TO&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 3360644937,
+      &quot;candidate_ids&quot;: [
+        3360644937
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 3360644937,
+      &quot;candidate_ids&quot;: [
+        3360644937
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 3360644937,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n1_009&quot;,
+    &quot;level&quot;: &quot;N1&quot;,
+    &quot;gold_index&quot;: 79,
+    &quot;gid&quot;: &quot;g9&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA&quot;,
+    &quot;gold_span&quot;: [
+      3401,
+      3465
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 6576893354,
+    &quot;blocker&quot;: &quot;detector_miss&quot;,
+    &quot;structural_issue&quot;: &quot;marker/compound title crosses newline&quot;,
+    &quot;hypothesis&quot;: &quot;H5&quot;,
+    &quot;normalized_identity&quot;: &quot;2883&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: null,
+    &quot;v3_related_candidates&quot;: [],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: null,
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Agravo&quot;,
+        &quot;numero_raw&quot;: &quot;2.883&quot;,
+        &quot;numero_normalizado&quot;: &quot;2883&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;,
+        &quot;uf_raw&quot;: &quot;/MA&quot;,
+        &quot;uf&quot;: &quot;MA&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 6576893354,
+      &quot;candidate_ids&quot;: [
+        6576893354
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: null,
+    &quot;predicted_id&quot;: null,
+    &quot;assessment_reason&quot;: &quot;detector_miss&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n1_012&quot;,
+    &quot;level&quot;: &quot;N1&quot;,
+    &quot;gold_index&quot;: 106,
+    &quot;gid&quot;: &quot;g9&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;Terceiro AG.REG na Rcl nº 62.425/SP&quot;,
+    &quot;gold_span&quot;: [
+      3135,
+      3170
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 2428195275,
+    &quot;blocker&quot;: &quot;detector_boundary_failure&quot;,
+    &quot;structural_issue&quot;: &quot;procedural prefix omitted or numeric tail truncated&quot;,
+    &quot;hypothesis&quot;: &quot;H1&quot;,
+    &quot;normalized_identity&quot;: &quot;62425&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;Terceiro AG.REG na Rcl nº 62.425/SP&quot;,
+    &quot;v3_related_candidates&quot;: [
+      {
+        &quot;span&quot;: [
+          3154,
+          3170
+        ],
+        &quot;text&quot;: &quot;Rcl nº 62.425/SP&quot;,
+        &quot;rule&quot;: &quot;processo_ou_recurso&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parser&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tribunal&quot;: null,
+          &quot;tribunal_source&quot;: &quot;unknown&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;Rcl&quot;,
+            &quot;numero_raw&quot;: &quot;62.425&quot;,
+            &quot;numero_normalizado&quot;: &quot;62425&quot;,
+            &quot;numero_family&quot;: &quot;case_number&quot;,
+            &quot;uf_raw&quot;: &quot;/SP&quot;,
+            &quot;uf&quot;: &quot;SP&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;numero&quot;: &quot;normalized&quot;,
+            &quot;uf&quot;: &quot;explicit&quot;
+          }
+        },
+        &quot;resolver&quot;: {
+          &quot;status&quot;: &quot;resolved&quot;,
+          &quot;id_canonico&quot;: 2428195275,
+          &quot;candidate_ids&quot;: [
+            2428195275
+          ],
+          &quot;strategy&quot;: &quot;case_number_exact&quot;,
+          &quot;reason&quot;: &quot;case_number_unique&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      }
+    ],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Rcl&quot;,
+        &quot;numero_raw&quot;: &quot;62.425&quot;,
+        &quot;numero_normalizado&quot;: &quot;62425&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;,
+        &quot;uf_raw&quot;: &quot;/SP&quot;,
+        &quot;uf&quot;: &quot;SP&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Rcl&quot;,
+        &quot;numero_raw&quot;: &quot;62.425&quot;,
+        &quot;numero_normalizado&quot;: &quot;62425&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;,
+        &quot;uf_raw&quot;: &quot;/SP&quot;,
+        &quot;uf&quot;: &quot;SP&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2428195275,
+      &quot;candidate_ids&quot;: [
+        2428195275
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2428195275,
+      &quot;candidate_ids&quot;: [
+        2428195275
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 2428195275,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_001&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 119,
+    &quot;gid&quot;: &quot;g4&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgRg no Rec. Esp. n. 1.522.200 (SC)&quot;,
+    &quot;gold_span&quot;: [
+      1707,
+      1742
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 192165489,
+    &quot;blocker&quot;: &quot;detector_miss&quot;,
+    &quot;structural_issue&quot;: &quot;punctuated class alias&quot;,
+    &quot;hypothesis&quot;: &quot;H2&quot;,
+    &quot;normalized_identity&quot;: &quot;1522200&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;AgRg no Rec. Esp. n. 1.522.200 (SC&quot;,
+    &quot;v3_related_candidates&quot;: [],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg&quot;,
+        &quot;numero_raw&quot;: &quot;1.522.200&quot;,
+        &quot;numero_normalizado&quot;: &quot;1522200&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;(SC&quot;,
+        &quot;uf&quot;: &quot;SC&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg&quot;,
+        &quot;numero_raw&quot;: &quot;1.522.200&quot;,
+        &quot;numero_normalizado&quot;: &quot;1522200&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;(SC&quot;,
+        &quot;uf&quot;: &quot;SC&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 192165489,
+      &quot;candidate_ids&quot;: [
+        192165489
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 192165489,
+      &quot;candidate_ids&quot;: [
+        192165489
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 192165489,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_001&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 123,
+    &quot;gid&quot;: &quot;g8&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207 – SP&quot;,
+    &quot;gold_span&quot;: [
+      2976,
+      3045
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 6304461308,
+    &quot;blocker&quot;: &quot;detector_boundary_failure&quot;,
+    &quot;structural_issue&quot;: &quot;procedural prefix omitted or numeric tail truncated&quot;,
+    &quot;hypothesis&quot;: &quot;H1&quot;,
+    &quot;normalized_identity&quot;: &quot;1145207&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;EDcl nos EDcl no AgInt no Agravo em Recurso Especial No  1145207&quot;,
+    &quot;v3_related_candidates&quot;: [
+      {
+        &quot;span&quot;: [
+          3012,
+          3040
+        ],
+        &quot;text&quot;: &quot;Recurso Especial No  1145207&quot;,
+        &quot;rule&quot;: &quot;processo_ou_recurso&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parser&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tribunal&quot;: null,
+          &quot;tribunal_source&quot;: &quot;unknown&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+            &quot;numero_raw&quot;: &quot;1145207&quot;,
+            &quot;numero_normalizado&quot;: &quot;1145207&quot;,
+            &quot;numero_family&quot;: &quot;recurso_number&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;numero&quot;: &quot;normalized&quot;
+          }
+        },
+        &quot;resolver&quot;: {
+          &quot;status&quot;: &quot;resolved&quot;,
+          &quot;id_canonico&quot;: 6304461308,
+          &quot;candidate_ids&quot;: [
+            6304461308
+          ],
+          &quot;strategy&quot;: &quot;case_number_exact&quot;,
+          &quot;reason&quot;: &quot;case_number_unique&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      }
+    ],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+        &quot;numero_raw&quot;: &quot;1145207&quot;,
+        &quot;numero_normalizado&quot;: &quot;1145207&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;Recurso Especial&quot;,
+        &quot;numero_raw&quot;: &quot;1145207&quot;,
+        &quot;numero_normalizado&quot;: &quot;1145207&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 6304461308,
+      &quot;candidate_ids&quot;: [
+        6304461308
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 6304461308,
+      &quot;candidate_ids&quot;: [
+        6304461308
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 6304461308,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_008&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 180,
+    &quot;gid&quot;: &quot;g7&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgRg no H.C. Nº 891369 (RS)&quot;,
+    &quot;gold_span&quot;: [
+      3051,
+      3078
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 2849473714,
+    &quot;blocker&quot;: &quot;detector_miss&quot;,
+    &quot;structural_issue&quot;: &quot;punctuated class alias&quot;,
+    &quot;hypothesis&quot;: &quot;H2&quot;,
+    &quot;normalized_identity&quot;: &quot;891369&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;AgRg no H.C. Nº 891369 (RS&quot;,
+    &quot;v3_related_candidates&quot;: [],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg&quot;,
+        &quot;numero_raw&quot;: &quot;891369&quot;,
+        &quot;numero_normalizado&quot;: &quot;891369&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;,
+        &quot;uf_raw&quot;: &quot;(RS&quot;,
+        &quot;uf&quot;: &quot;RS&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg&quot;,
+        &quot;numero_raw&quot;: &quot;891369&quot;,
+        &quot;numero_normalizado&quot;: &quot;891369&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;,
+        &quot;uf_raw&quot;: &quot;(RS&quot;,
+        &quot;uf&quot;: &quot;RS&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2849473714,
+      &quot;candidate_ids&quot;: [
+        2849473714
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2849473714,
+      &quot;candidate_ids&quot;: [
+        2849473714
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 2849473714,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_009&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 186,
+    &quot;gid&quot;: &quot;g6&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgInt no RESP 21737l8 - SP&quot;,
+    &quot;gold_span&quot;: [
+      1614,
+      1640
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 6490934118,
+    &quot;blocker&quot;: &quot;detector_boundary_failure&quot;,
+    &quot;structural_issue&quot;: &quot;OCR character inside numeric identity&quot;,
+    &quot;hypothesis&quot;: &quot;H3&quot;,
+    &quot;normalized_identity&quot;: &quot;2173718&quot;,
+    &quot;v3_text&quot;: &quot;AgInt no RESP 21737&quot;,
+    &quot;experimental_text&quot;: &quot;AgInt no RESP 21737l8 - SP&quot;,
+    &quot;v3_related_candidates&quot;: [
+      {
+        &quot;span&quot;: [
+          1614,
+          1633
+        ],
+        &quot;text&quot;: &quot;AgInt no RESP 21737&quot;,
+        &quot;rule&quot;: &quot;processo_ou_recurso&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parser&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tribunal&quot;: null,
+          &quot;tribunal_source&quot;: &quot;unknown&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;AgInt no RESP&quot;,
+            &quot;numero_raw&quot;: &quot;21737&quot;,
+            &quot;numero_normalizado&quot;: &quot;21737&quot;,
+            &quot;numero_family&quot;: &quot;recurso_number&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;numero&quot;: &quot;normalized&quot;
+          }
+        },
+        &quot;resolver&quot;: {
+          &quot;status&quot;: &quot;no_match&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: &quot;case_number_exact&quot;,
+          &quot;reason&quot;: &quot;case_number_not_found&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      }
+    ],
+    &quot;v3_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;21737&quot;,
+        &quot;numero_normalizado&quot;: &quot;21737&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;21737l8&quot;,
+        &quot;numero_normalizado&quot;: &quot;2173718&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;ocr_repair&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;21737l8&quot;,
+        &quot;numero_normalizado&quot;: &quot;2173718&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;ocr_repair&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 6490934118,
+      &quot;candidate_ids&quot;: [
+        6490934118
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: {
+      &quot;status&quot;: &quot;no_match&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_not_found&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 6490934118,
+      &quot;candidate_ids&quot;: [
+        6490934118
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 6490934118,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_011&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 205,
+    &quot;gid&quot;: &quot;g8&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ&quot;,
+    &quot;gold_span&quot;: [
+      2473,
+      2517
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 2108195032,
+    &quot;blocker&quot;: &quot;detector_miss&quot;,
+    &quot;structural_issue&quot;: &quot;punctuated class alias&quot;,
+    &quot;hypothesis&quot;: &quot;H2&quot;,
+    &quot;normalized_identity&quot;: &quot;2050950&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: &quot;AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ&quot;,
+    &quot;v3_related_candidates&quot;: [],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt&quot;,
+        &quot;numero_raw&quot;: &quot;2.050.950&quot;,
+        &quot;numero_normalizado&quot;: &quot;2050950&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;-RJ&quot;,
+        &quot;uf&quot;: &quot;RJ&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt&quot;,
+        &quot;numero_raw&quot;: &quot;2.050.950&quot;,
+        &quot;numero_normalizado&quot;: &quot;2050950&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;,
+        &quot;uf_raw&quot;: &quot;-RJ&quot;,
+        &quot;uf&quot;: &quot;RJ&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;,
+        &quot;uf&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2108195032,
+      &quot;candidate_ids&quot;: [
+        2108195032
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2108195032,
+      &quot;candidate_ids&quot;: [
+        2108195032
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 2108195032,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_012&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 208,
+    &quot;gid&quot;: &quot;g1&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgRg no RESP 1.528.4S5/ RJ&quot;,
+    &quot;gold_span&quot;: [
+      481,
+      507
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 2674928810,
+    &quot;blocker&quot;: &quot;detector_boundary_failure&quot;,
+    &quot;structural_issue&quot;: &quot;OCR character inside numeric identity&quot;,
+    &quot;hypothesis&quot;: &quot;H3&quot;,
+    &quot;normalized_identity&quot;: &quot;1528455&quot;,
+    &quot;v3_text&quot;: &quot;AgRg no RESP 1.528.4&quot;,
+    &quot;experimental_text&quot;: &quot;AgRg no RESP 1.528.4S5/ RJ&quot;,
+    &quot;v3_related_candidates&quot;: [
+      {
+        &quot;span&quot;: [
+          481,
+          501
+        ],
+        &quot;text&quot;: &quot;AgRg no RESP 1.528.4&quot;,
+        &quot;rule&quot;: &quot;processo_ou_recurso&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parser&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tribunal&quot;: null,
+          &quot;tribunal_source&quot;: &quot;unknown&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;AgRg no RESP&quot;,
+            &quot;numero_raw&quot;: &quot;1.528.4&quot;,
+            &quot;numero_normalizado&quot;: &quot;15284&quot;,
+            &quot;numero_family&quot;: &quot;recurso_number&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;numero&quot;: &quot;normalized&quot;
+          }
+        },
+        &quot;resolver&quot;: {
+          &quot;status&quot;: &quot;no_match&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: &quot;case_number_exact&quot;,
+          &quot;reason&quot;: &quot;case_number_not_found&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      }
+    ],
+    &quot;v3_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;1.528.4&quot;,
+        &quot;numero_normalizado&quot;: &quot;15284&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;experimental_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;1.528.4S5&quot;,
+        &quot;numero_normalizado&quot;: &quot;1528455&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;ocr_repair&quot;
+      }
+    },
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgRg no RESP&quot;,
+        &quot;numero_raw&quot;: &quot;1.528.4S5&quot;,
+        &quot;numero_normalizado&quot;: &quot;1528455&quot;,
+        &quot;numero_family&quot;: &quot;recurso_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;ocr_repair&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2674928810,
+      &quot;candidate_ids&quot;: [
+        2674928810
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: {
+      &quot;status&quot;: &quot;no_match&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_not_found&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;experimental_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 2674928810,
+      &quot;candidate_ids&quot;: [
+        2674928810
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;predicted_id&quot;: 2674928810,
+    &quot;assessment_reason&quot;: &quot;resolved_correct&quot;
+  },
+  {
+    &quot;document&quot;: &quot;gen_n2_013&quot;,
+    &quot;level&quot;: &quot;N2&quot;,
+    &quot;gold_index&quot;: 221,
+    &quot;gid&quot;: &quot;g4&quot;,
+    &quot;gold_family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;gold_text&quot;: &quot;AgInt No 7000553-0320217000000&quot;,
+    &quot;gold_span&quot;: [
+      1883,
+      1913
+    ],
+    &quot;gold_class&quot;: &quot;real&quot;,
+    &quot;gold_id&quot;: 1477658218,
+    &quot;blocker&quot;: &quot;detector_miss&quot;,
+    &quot;structural_issue&quot;: &quot;modifier class followed directly by number&quot;,
+    &quot;hypothesis&quot;: &quot;H4&quot;,
+    &quot;normalized_identity&quot;: &quot;70005530320217000000&quot;,
+    &quot;v3_text&quot;: null,
+    &quot;experimental_text&quot;: null,
+    &quot;v3_related_candidates&quot;: [],
+    &quot;v3_parser&quot;: null,
+    &quot;experimental_parser&quot;: null,
+    &quot;oracle_parser&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;AgInt&quot;,
+        &quot;numero_raw&quot;: &quot;7000553-0320217000000&quot;,
+        &quot;numero_normalizado&quot;: &quot;70005530320217000000&quot;,
+        &quot;numero_family&quot;: &quot;case_number&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;structural_repair&quot;
+      }
+    },
+    &quot;oracle_resolver&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 1477658218,
+      &quot;candidate_ids&quot;: [
+        1477658218
+      ],
+      &quot;strategy&quot;: &quot;case_number_exact&quot;,
+      &quot;reason&quot;: &quot;case_number_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    },
+    &quot;v3_resolver&quot;: null,
+    &quot;experimental_resolver&quot;: null,
+    &quot;predicted_id&quot;: null,
+    &quot;assessment_reason&quot;: &quot;detector_miss&quot;
+  }
+]
+</pre>

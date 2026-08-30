@@ -43,6 +43,38 @@ _PROCESS_UF_TAIL = re.compile(
     + "|".join(_UF_CODES)
     + r")(?:[ \t\u00a0]*\))?\b"
 )
+
+# V4 keeps the experimental mechanisms deliberately narrow.  These patterns
+# are structural extensions of an already numbered process candidate; they
+# are not general legal-language or OCR normalizers.
+_H1_PREFIX_CHAIN = re.compile(
+    r"(?P<prefix>(?<!\w)"
+    r"(?:(?:Embargos?[ \t\u00a0]+de[ \t\u00a0]+Declaraç[aã]o|EDcl|"
+    r"Agravo[ \t\u00a0]+Interno|AgInt|Agravo[ \t\u00a0]+Regimental|AgRg)"
+    r"[ \t\u00a0]+(?:no|nos|na|nas|em)[ \t\u00a0]+"
+    r"|Agravo[ \t\u00a0]+em[ \t\u00a0]+)+"
+    r"|(?:(?:Primeiro|Segundo|Terceiro|Quarto|Quinto)[ \t\u00a0]+)?"
+    r"AG[.]?[ \t\u00a0]*REG[.]?[ \t\u00a0]+n(?:o|a)[ \t\u00a0]+"
+    r")$",
+    re.IGNORECASE,
+)
+_H2_DOTTED_CLASS = re.compile(
+    r"\b(?:(?:AgInt|AgRg|EDcl|ED)[ \t\u00a0]+(?:no|nos|na|nas)[ \t\u00a0]+)*"
+    r"(?:Rec[ \t\u00a0]*[.][ \t\u00a0]*Esp[ \t\u00a0]*[.]|H[ \t\u00a0]*[.][ \t\u00a0]*C[ \t\u00a0]*[.])[ \t\u00a0]*"
+    r"n(?:[º°.]|o)?[ \t\u00a0]*(?:\n[ \t\u00a0]*)?"
+    r"\d(?:[\d.\-/ \t\u00a0]*\d)?"
+    r"(?:[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:[ \t\u00a0]*\))?)?\b",
+    re.IGNORECASE,
+)
+_H3_OCR_NUMERIC_TAIL = re.compile(
+    r"^(?P<tail>[OIlS]\d(?:[\d.\-/ \t\u00a0OIlS]*\d)?"
+    r"(?:[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:[ \t\u00a0]*\))?)?)\b",
+    re.IGNORECASE,
+)
 _LAW_WITH_DIPLOMA_PATTERN = re.compile(
     r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?(?:\s*,?\s*§\s*\d+(?:[ºo])?)?)(?:\s+do|\s+da)?\s+(?:Constituiç[aã]o(?: Federal)?|C[oó]digo [A-Za-zÀ-ÿ ]+|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+[./-]?[\d./-]*)",
     re.IGNORECASE,
@@ -131,6 +163,13 @@ class CitationDetector:
         candidates = [
             self._expand_process_uf(candidate, text) for candidate in candidates
         ]
+        candidates = [
+            self._expand_process_prefix(candidate, text) for candidate in candidates
+        ]
+        candidates.extend(self._detect_dotted_classes(text))
+        candidates = [
+            self._expand_process_ocr_tail(candidate, text) for candidate in candidates
+        ]
 
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
@@ -147,6 +186,61 @@ class CitationDetector:
         if tail is None:
             return candidate
         end = candidate.end + tail.end()
+        return CitationCandidate(
+            start=candidate.start,
+            end=end,
+            text=text[candidate.start:end],
+            rule=candidate.rule,
+            family=candidate.family,
+        )
+
+    @staticmethod
+    def _expand_process_prefix(candidate: CitationCandidate, text: str) -> CitationCandidate:
+        """Expande um processo por uma cadeia processual imediatamente anterior."""
+        if (
+            candidate.rule != "processo_ou_recurso"
+            or candidate.family != "processo_ou_recurso_numerado"
+        ):
+            return candidate
+
+        window_start = max(0, candidate.start - 140)
+        match = _H1_PREFIX_CHAIN.search(text[window_start:candidate.start])
+        if match is None:
+            return candidate
+
+        start = window_start + match.start("prefix")
+        return CitationCandidate(
+            start=start,
+            end=candidate.end,
+            text=text[start:candidate.end],
+            rule=candidate.rule,
+            family=candidate.family,
+        )
+
+    @staticmethod
+    def _detect_dotted_classes(text: str) -> list[CitationCandidate]:
+        """Detecta somente os aliases pontuados aprovados pela auditoria."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="processo_ou_recurso",
+                family="processo_ou_recurso_numerado",
+            )
+            for match in _H2_DOTTED_CLASS.finditer(text)
+        ]
+
+    @staticmethod
+    def _expand_process_ocr_tail(candidate: CitationCandidate, text: str) -> CitationCandidate:
+        """Estende uma referência existente por uma cauda OCR numérica local."""
+        if candidate.family != "processo_ou_recurso_numerado":
+            return candidate
+        match = _H3_OCR_NUMERIC_TAIL.match(text[candidate.end :])
+        if match is None:
+            return candidate
+
+        end = candidate.end + match.end("tail")
         return CitationCandidate(
             start=candidate.start,
             end=end,
