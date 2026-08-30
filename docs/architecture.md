@@ -18,7 +18,7 @@ flowchart LR
     D --> E[(tribunal, numero_normalizado) -> Case]
     B --> F[notebooks/]
     D --> G[scripts/]
-    H[Texto original] --> I[CitationDetector V3]
+    H[Texto original] --> I[CitationDetector V4]
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
@@ -47,14 +47,25 @@ dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicata
 exatas: `doc_0227` e `doc_0461`.
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` contém o `CitationDetector` V3: um detector determinístico que
+`citations/` contém o `CitationDetector` V4: um detector determinístico que
 recebe texto original e retorna candidatos com offsets, texto, regra e família
-superficial. A V3 preserva a V2 e adiciona somente a expansão estrutural local
-de UF imediatamente adjacente a referências processuais. A V2 preserva a V1 e adiciona a detecção conservadora de
+superficial. A V4 preserva a V3 e promove somente três extensões estruturais:
+H1 expande localmente cadeias processuais adjacentes com guards; H2 reconhece
+`Rec. Esp.` e `H.C.` somente quando associados a uma estrutura processual válida;
+H3 estende localmente uma continuação numérica sob ruído OCR estrutural. H3 não
+é fuzzy matching. H4, modificador diretamente antes de número com risco de
+interação com CNJ, e H5, título processual composto/newline de baixa
+generalização, foram avaliadas e não promovidas. A V2 preserva a V1 e adiciona a detecção conservadora de
 referências jurisprudenciais gerais (`jurisprudencia_geral`): V1 obteve
 105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN (F1 0,543).
-Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552). O detector não
-consulta o banco ou `CaseIndex` e não classifica uma citação.
+Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552) e V4 obteve
+127 TP / 84 FP / 98 FN (F1 0,583). O detector não consulta o banco ou
+`CaseIndex` e não classifica uma citação.
+
+O pipeline de produção é `Texto -> CitationDetector V4 -> CitationParser V1 ->
+CitationResolver V2`. Após a promoção de H1/H2/H3, novas expansões marginais do
+Detector não devem ser adicionadas sem nova evidência independente de
+generalização e segurança.
 
 `CitationParser` V1 recebe exclusivamente uma `CitationCandidate` já
 delimitada e produz `ParsedCitation`: família, tipo, tribunal explícito e um
