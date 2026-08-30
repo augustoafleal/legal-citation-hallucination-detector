@@ -22,9 +22,11 @@ flowchart LR
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
-    L --> M[CitationResolver V2]
+    L --> M[CitationResolver V3]
     M --> N[ResolutionResult]
     M --> D
+    N --> O[StructuralCNJArbitrator]
+    O --> P[ArbitrationResult]
 ```
 
 | Diretório | Responsabilidade atual |
@@ -63,17 +65,19 @@ Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552) e V4 obteve
 `CaseIndex` e não classifica uma citação.
 
 O pipeline de produção é `Texto -> CitationDetector V4 -> CitationParser V1 ->
-CitationResolver V2`. Após a promoção de H1/H2/H3, novas expansões marginais do
+CitationResolver V3 -> StructuralCNJArbitrator`. Após a promoção de H1/H2/H3, novas expansões marginais do
 Detector não devem ser adicionadas sem nova evidência independente de
 generalização e segurança.
 
-`CitationParser` V1 recebe exclusivamente uma `CitationCandidate` já
-delimitada e produz `ParsedCitation`: família, tipo, tribunal explícito e um
-payload específico da família com os campos textualmente presentes. O parser
-não consulta banco, FTS ou `CaseIndex`, não infere tribunal, não classifica a
-citação e não decide se há evidência suficiente.
+`CitationParser` V1 recebe uma `CitationCandidate` já delimitada e produz
+`ParsedCitation`: família, tipo, tribunal explícito e um payload específico da
+família com os campos textualmente presentes. Opcionalmente, a etapa de
+enriquecimento recebe o texto original e associa ao CNJ apenas o prefixo
+estrutural imediatamente adjacente (`tribunal-classe-CNJ`); não atravessa
+frases ou linhas arbitrariamente. O parser não consulta banco, FTS ou
+`CaseIndex`, não classifica a citação e não decide se há evidência suficiente.
 
-`CitationResolver` V2 é o único componente que confronta a interpretação com o
+`CitationResolver` V3 é o único componente que confronta a interpretação com o
 corpus. Ele preserva `case_number_exact` para processo/recurso e promove
 `sumula_number_only`: para a família `sumula_numerada`, um número presente é
 consultado globalmente no corpus de súmulas, sem exigir tribunal. Zero matches
@@ -85,6 +89,22 @@ ambíguos; não há escolha arbitrária, busca aproximada ou fallback por texto.
 O resultado é `ResolutionResult`, com os estados neutros `resolved`,
 `no_match`, `ambiguous` e `insufficient`. `no_match` significa que uma consulta
 segura foi possível, mas não encontrou candidato; `insufficient` significa que
-faltou informação ou que a estratégia não é aprovada nesta V2. CNJ,
-dispositivos legais e jurisprudência geral/contextual permanecem
-`insufficient`.
+faltou informação ou que a estratégia não é aprovada nesta V3. Para CNJ, a V3
+consulta somente a identidade primária formal do acórdão. O tribunal explícito
+(ou o segmento estrutural do número) e a classe textual, quando presentes,
+funcionam como guards; conflito, ausência de identidade primária ou múltiplos
+IDs resultam em abstinência/ambiguidade, sem escolha arbitrária. Dispositivos
+legais e jurisprudência geral/contextual permanecem `insufficient`.
+
+`StructuralCNJArbitrator` é separado do resolver e recebe candidatos, parses e
+resultados já calculados. Ele só une um CNJ primário resolvido a exatamente um
+companheiro sobreposto de processo numerado ou contexto tribunalício quando o
+companheiro carrega um prefixo numérico de pelo menos dez dígitos, a classe e o
+tribunal são compatíveis e a identidade resolvida é a mesma. O intervalo unido
+é recortado literalmente do texto original; em qualquer dúvida, os candidatos
+são preservados. A saída imutável `ArbitrationResult` registra as fontes e os
+itens suprimidos, sem alterar `CitationCandidate`.
+
+Por decisão de segurança, a implementação não usa fallback por menção no corpo,
+nem as políticas `longest-span`, `resolved-wins` ou seleção automática de um ID
+em grupos multi-ID.

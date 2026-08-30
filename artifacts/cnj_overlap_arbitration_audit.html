@@ -1,0 +1,1419 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8">
+<title>CNJ overlap arbitration audit</title><style>
+body{font:15px/1.45 system-ui,sans-serif;margin:2rem auto;max-width:1180px;padding:0 1rem;color:#18202a}
+article{border:1px solid #ccd4df;border-radius:9px;padding:1rem;margin:1rem 0} pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f7fa;padding:.75rem;border-radius:6px}
+table{border-collapse:collapse}th,td{border:1px solid #ccd4df;padding:.45rem .65rem;text-align:left}th{background:#edf2f7}
+</style></head><body><h1>CNJ overlap arbitration audit</h1>
+<p>Decisão: <strong>SAFE_ARBITRATION_EXISTS</strong>. Gold aparece apenas como diagnóstico.</p>
+<table><thead><tr><th>policy</th><th>six handled</th><th>regressions</th><th>complexity</th><th>risk</th><th>safe</th></tr></thead><tbody><tr><td>none</td><td>2</td><td>0</td><td>LOW</td><td>HIGH</td><td>False</td></tr><tr><td>longest_span</td><td>2</td><td>0</td><td>LOW</td><td>HIGH</td><td>False</td></tr><tr><td>resolved_identity_wins</td><td>2</td><td>2</td><td>LOW</td><td>HIGH</td><td>False</td></tr><tr><td>same_resolved_id</td><td>2</td><td>0</td><td>LOW</td><td>HIGH</td><td>False</td></tr><tr><td>structural_cnj_union_merge</td><td>6</td><td>0</td><td>MODERATE</td><td>LOW-MODERATE</td><td>True</td></tr></tbody></table>
+<article><h2>1. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n1_006&quot;,
+  &quot;nivel&quot;: &quot;N1&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 47,
+    &quot;source_indexes&quot;: [
+      47
+    ],
+    &quot;documento&quot;: &quot;gen_n1_006&quot;,
+    &quot;span&quot;: [
+      687,
+      709
+    ],
+    &quot;trecho&quot;: &quot;2137-73.2014.6.21.0000&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;2137-73.2014.6.21.0000&quot;,
+        &quot;numero_normalizado&quot;: &quot;21377320146210000&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 375394498,
+      &quot;candidate_ids&quot;: [
+        375394498
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;21377320146210000&quot;,
+    &quot;normalized_cnj&quot;: &quot;21377320146210000&quot;,
+    &quot;tribunal&quot;: &quot;TSE&quot;,
+    &quot;process_class&quot;: &quot;RESPE&quot;,
+    &quot;primary_process_class&quot;: &quot;RESPE&quot;,
+    &quot;candidate_ids&quot;: [
+      375394498
+    ],
+    &quot;resolved_id&quot;: 375394498
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 44,
+    &quot;gold_gid&quot;: &quot;g2&quot;,
+    &quot;span&quot;: [
+      657,
+      709
+    ],
+    &quot;trecho&quot;: &quot;Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 375394498,
+    &quot;iou&quot;: 0.423077,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [],
+  &quot;matching_artifact_classification&quot;: &quot;matching_artifact&quot;,
+  &quot;context_200&quot;: &quot;R-REspe 378-82.2016.6.05.0151, de clareza solar quanto ao ponto ora debatido. Nem se diga\nque a hipótese comportaria distinção. Reforça o argumento o Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000,\nde resto amplamente conhecido no foro.\n\nI — DA CONTROVÉRSIA\n\nA representação foi ajuizada durante o período eleitoral de 24 de fevereiro de 2021, sob a alegação\nde que o represen&quot;
+}</pre></article><article><h2>2. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n1_008&quot;,
+  &quot;nivel&quot;: &quot;N1&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 70,
+    &quot;source_indexes&quot;: [
+      70
+    ],
+    &quot;documento&quot;: &quot;gen_n1_008&quot;,
+    &quot;span&quot;: [
+      1356,
+      1378
+    ],
+    &quot;trecho&quot;: &quot;3400-05.2011.5.21.0009&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;3400-05.2011.5.21.0009&quot;,
+        &quot;numero_normalizado&quot;: &quot;34000520115210009&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411570,
+      &quot;candidate_ids&quot;: [
+        861411570
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;34000520115210009&quot;,
+    &quot;normalized_cnj&quot;: &quot;34000520115210009&quot;,
+    &quot;tribunal&quot;: &quot;TST&quot;,
+    &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;candidate_ids&quot;: [
+      861411570
+    ],
+    &quot;resolved_id&quot;: 861411570
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 64,
+    &quot;gold_gid&quot;: &quot;g4&quot;,
+    &quot;span&quot;: [
+      1341,
+      1378
+    ],
+    &quot;trecho&quot;: &quot;TST-ED-E-ED-RR-3400-05.2011.5.21.0009&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 861411570,
+    &quot;iou&quot;: 0.594595,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [
+    {
+      &quot;candidate&quot;: {
+        &quot;index&quot;: 69,
+        &quot;source_indexes&quot;: [
+          69
+        ],
+        &quot;documento&quot;: &quot;gen_n1_008&quot;,
+        &quot;span&quot;: [
+          1341,
+          1368
+        ],
+        &quot;trecho&quot;: &quot;TST-ED-E-ED-RR-3400-05.2011&quot;,
+        &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parsed&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+          &quot;tribunal_raw&quot;: &quot;TST&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;tribunal_source&quot;: &quot;explicit&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;RR&quot;
+          },
+          &quot;provenance&quot;: {}
+        },
+        &quot;resolution&quot;: {
+          &quot;status&quot;: &quot;insufficient&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: null,
+          &quot;reason&quot;: &quot;case_number_missing&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      },
+      &quot;relation&quot;: &quot;partial_overlap&quot;,
+      &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+      &quot;runtime_evidence&quot;: {
+        &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+        &quot;child&quot;: {
+          &quot;record_type&quot;: &quot;acordao&quot;,
+          &quot;primary_number&quot;: &quot;34000520115210009&quot;,
+          &quot;normalized_cnj&quot;: &quot;34000520115210009&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;candidate_ids&quot;: [
+            861411570
+          ],
+          &quot;resolved_id&quot;: 861411570
+        },
+        &quot;parent&quot;: {
+          &quot;digits&quot;: &quot;3400052011&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+        },
+        &quot;checks&quot;: {
+          &quot;compatible_family&quot;: true,
+          &quot;same_prefix&quot;: true,
+          &quot;same_class&quot;: true,
+          &quot;same_tribunal&quot;: true
+        }
+      }
+    }
+  ],
+  &quot;matching_artifact_classification&quot;: &quot;semantically_duplicate&quot;,
+  &quot;context_200&quot;: &quot;ou a fiscalização\ndo contrato pela administração contratante. Sob outro ângulo, a solução adotada na origem afronta\na segurança jurídica. Milita em favor da parte o TST-ED-E-ED-RR-3400-05.2011.5.21.0009, que\nreconhece a excepcionalidade da medida.\n\nII — DO DIREITO APLICÁVEL\n\nA sentença julgou parcialmente procedentes os pedidos, deferindo o pagamento de horas extras\nexcedentes da&quot;
+}</pre></article><article><h2>3. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n1_013&quot;,
+  &quot;nivel&quot;: &quot;N1&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 116,
+    &quot;source_indexes&quot;: [
+      116
+    ],
+    &quot;documento&quot;: &quot;gen_n1_013&quot;,
+    &quot;span&quot;: [
+      2578,
+      2603
+    ],
+    &quot;trecho&quot;: &quot;0606252-11.2018.6.26.0000&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;0606252-11.2018.6.26.0000&quot;,
+        &quot;numero_normalizado&quot;: &quot;06062521120186260000&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 1931806554,
+      &quot;candidate_ids&quot;: [
+        1931806554
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;06062521120186260000&quot;,
+    &quot;normalized_cnj&quot;: &quot;06062521120186260000&quot;,
+    &quot;tribunal&quot;: &quot;TSE&quot;,
+    &quot;process_class&quot;: &quot;AI&quot;,
+    &quot;primary_process_class&quot;: &quot;AI&quot;,
+    &quot;candidate_ids&quot;: [
+      1931806554
+    ],
+    &quot;resolved_id&quot;: 1931806554
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 114,
+    &quot;gold_gid&quot;: &quot;g7&quot;,
+    &quot;span&quot;: [
+      2532,
+      2603
+    ],
+    &quot;trecho&quot;: &quot;Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 1931806554,
+    &quot;iou&quot;: 0.352113,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [],
+  &quot;matching_artifact_classification&quot;: &quot;matching_artifact&quot;,
+  &quot;context_200&quot;: &quot;a especializada\nacompanha, sem divergência relevante, esse entendimento. O acórdão recorrido diverge frontalmente\ndo que assentado no Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000.\n\nIV — DA IMPOSSIBILIDADE DE REEXAME FÁTICO\n\nSustenta o recorrente que a decisão regional divergiu da orientação firmada pela instância superior\nquanto ao alcance da inelegibilida&quot;
+}</pre></article><article><h2>4. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n2_003&quot;,
+  &quot;nivel&quot;: &quot;N2&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 132,
+    &quot;source_indexes&quot;: [
+      132
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      766,
+      789
+    ],
+    &quot;trecho&quot;: &quot;41200-79.2011.5.21.0005&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;41200-79.2011.5.21.0005&quot;,
+        &quot;numero_normalizado&quot;: &quot;412007920115210005&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411580,
+      &quot;candidate_ids&quot;: [
+        861411580
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;412007920115210005&quot;,
+    &quot;normalized_cnj&quot;: &quot;412007920115210005&quot;,
+    &quot;tribunal&quot;: &quot;TST&quot;,
+    &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;candidate_ids&quot;: [
+      861411580
+    ],
+    &quot;resolved_id&quot;: 861411580
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 132,
+    &quot;gold_gid&quot;: &quot;g2&quot;,
+    &quot;span&quot;: [
+      736,
+      789
+    ],
+    &quot;trecho&quot;: &quot;Processo n° TST- ED - E-ED-RR-41200-79.2011.5.21.0005&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 861411580,
+    &quot;iou&quot;: 0.433962,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [
+    {
+      &quot;candidate&quot;: {
+        &quot;index&quot;: 131,
+        &quot;source_indexes&quot;: [
+          131
+        ],
+        &quot;documento&quot;: &quot;gen_n2_003&quot;,
+        &quot;span&quot;: [
+          748,
+          779
+        ],
+        &quot;trecho&quot;: &quot;TST- ED - E-ED-RR-41200-79.2011&quot;,
+        &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parsed&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+          &quot;tribunal_raw&quot;: &quot;TST&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;tribunal_source&quot;: &quot;explicit&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;RR&quot;
+          },
+          &quot;provenance&quot;: {}
+        },
+        &quot;resolution&quot;: {
+          &quot;status&quot;: &quot;insufficient&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: null,
+          &quot;reason&quot;: &quot;case_number_missing&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      },
+      &quot;relation&quot;: &quot;partial_overlap&quot;,
+      &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+      &quot;runtime_evidence&quot;: {
+        &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+        &quot;child&quot;: {
+          &quot;record_type&quot;: &quot;acordao&quot;,
+          &quot;primary_number&quot;: &quot;412007920115210005&quot;,
+          &quot;normalized_cnj&quot;: &quot;412007920115210005&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;candidate_ids&quot;: [
+            861411580
+          ],
+          &quot;resolved_id&quot;: 861411580
+        },
+        &quot;parent&quot;: {
+          &quot;digits&quot;: &quot;41200792011&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+        },
+        &quot;checks&quot;: {
+          &quot;compatible_family&quot;: true,
+          &quot;same_prefix&quot;: true,
+          &quot;same_class&quot;: true,
+          &quot;same_tribunal&quot;: true
+        }
+      }
+    }
+  ],
+  &quot;matching_artifact_classification&quot;: &quot;semantically_duplicate&quot;,
+  &quot;context_200&quot;: &quot;mente do que assentado no  precedente do STF\nde 2024, da relatoria de Cármen Lúcia. Não se trata, aqui, de revolver matéria fática. Cumpre\ndestacar o Processo n° TST- ED - E-ED-RR-41200-79.2011.5.21.0005, cuja ratio decidendi\nse amolda integralmente ao caso conereto.\n\nI — DA CONTROVÉRSIA\n\nA reclamada, em defesa, sustenta a validade do regimc de compensação previsto em norma coleti&quot;
+}</pre></article><article><h2>5. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n2_003&quot;,
+  &quot;nivel&quot;: &quot;N2&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 137,
+    &quot;source_indexes&quot;: [
+      137
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      3004,
+      3027
+    ],
+    &quot;trecho&quot;: &quot;1099-66.2011.5.02.\n0251&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;1099-66.2011.5.02.\n0251&quot;,
+        &quot;numero_normalizado&quot;: &quot;10996620115020251&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411566,
+      &quot;candidate_ids&quot;: [
+        861411566
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;10996620115020251&quot;,
+    &quot;normalized_cnj&quot;: &quot;10996620115020251&quot;,
+    &quot;tribunal&quot;: &quot;TST&quot;,
+    &quot;process_class&quot;: &quot;TST:EDEEDARR&quot;,
+    &quot;primary_process_class&quot;: &quot;TST:EDEEDARR&quot;,
+    &quot;candidate_ids&quot;: [
+      861411566
+    ],
+    &quot;resolved_id&quot;: 861411566
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 138,
+    &quot;gold_gid&quot;: &quot;g8&quot;,
+    &quot;span&quot;: [
+      2988,
+      3027
+    ],
+    &quot;trecho&quot;: &quot;TST-ED-E-ED-ARR-1099-66.2011.5.02.\n0251&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 861411566,
+    &quot;iou&quot;: 0.589744,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [
+    {
+      &quot;candidate&quot;: {
+        &quot;index&quot;: 136,
+        &quot;source_indexes&quot;: [
+          136
+        ],
+        &quot;documento&quot;: &quot;gen_n2_003&quot;,
+        &quot;span&quot;: [
+          2988,
+          3016
+        ],
+        &quot;trecho&quot;: &quot;TST-ED-E-ED-ARR-1099-66.2011&quot;,
+        &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+        &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;,
+        &quot;parsed&quot;: {
+          &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;,
+          &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+          &quot;tribunal_raw&quot;: &quot;TST&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;tribunal_source&quot;: &quot;explicit&quot;,
+          &quot;data&quot;: {
+            &quot;ano&quot;: &quot;2011&quot;
+          },
+          &quot;provenance&quot;: {
+            &quot;ano&quot;: &quot;explicit&quot;
+          }
+        },
+        &quot;resolution&quot;: {
+          &quot;status&quot;: &quot;insufficient&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: null,
+          &quot;reason&quot;: &quot;family_not_supported_in_v1&quot;,
+          &quot;record_type&quot;: null
+        }
+      },
+      &quot;relation&quot;: &quot;partial_overlap&quot;,
+      &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+      &quot;runtime_evidence&quot;: {
+        &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+        &quot;child&quot;: {
+          &quot;record_type&quot;: &quot;acordao&quot;,
+          &quot;primary_number&quot;: &quot;10996620115020251&quot;,
+          &quot;normalized_cnj&quot;: &quot;10996620115020251&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDARR&quot;,
+          &quot;primary_process_class&quot;: &quot;TST:EDEEDARR&quot;,
+          &quot;candidate_ids&quot;: [
+            861411566
+          ],
+          &quot;resolved_id&quot;: 861411566
+        },
+        &quot;parent&quot;: {
+          &quot;digits&quot;: &quot;1099662011&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDARR&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;
+        },
+        &quot;checks&quot;: {
+          &quot;compatible_family&quot;: true,
+          &quot;same_prefix&quot;: true,
+          &quot;same_class&quot;: true,
+          &quot;same_tribunal&quot;: true
+        }
+      }
+    }
+  ],
+  &quot;matching_artifact_classification&quot;: &quot;semantically_duplicate&quot;,
+  &quot;context_200&quot;: &quot;e serviços. Ambas as partes recorreram ordinariamente ao Tribunal\nRegional. A pãrte contrária limita-se ã repisar argumentos já superados. Corrobora\nessa leitura o TST-ED-E-ED-ARR-1099-66.2011.5.02.\n0251, de cujo voto condutor se extrai idêntica premissa.\n\nPor tais fundamentos, nego seguimento ao recurso, na forma da fundamentação supra.\n\nPublique-se. Intimem-se.\n\nSão Paulo, 18 de&quot;
+}</pre></article><article><h2>6. target</h2><pre>{
+  &quot;documento&quot;: &quot;gen_n2_005&quot;,
+  &quot;nivel&quot;: &quot;N2&quot;,
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 152,
+    &quot;source_indexes&quot;: [
+      152
+    ],
+    &quot;documento&quot;: &quot;gen_n2_005&quot;,
+    &quot;span&quot;: [
+      2987,
+      3011
+    ],
+    &quot;trecho&quot;: &quot;160000-97.2010.5.21.0006&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;160000-97.2010.5.21.0006&quot;,
+        &quot;numero_normalizado&quot;: &quot;1600009720105210006&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 862014739,
+      &quot;candidate_ids&quot;: [
+        862014739
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;cnj_runtime_key&quot;: {
+    &quot;record_type&quot;: &quot;acordao&quot;,
+    &quot;primary_number&quot;: &quot;1600009720105210006&quot;,
+    &quot;normalized_cnj&quot;: &quot;1600009720105210006&quot;,
+    &quot;tribunal&quot;: &quot;TST&quot;,
+    &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+    &quot;candidate_ids&quot;: [
+      862014739
+    ],
+    &quot;resolved_id&quot;: 862014739
+  },
+  &quot;gold_only&quot;: {
+    &quot;gold_index&quot;: 154,
+    &quot;gold_gid&quot;: &quot;g8&quot;,
+    &quot;span&quot;: [
+      2959,
+      3011
+    ],
+    &quot;trecho&quot;: &quot;Processo n° TST- ED-E-ED-RR-160000-97.2010.5.21.0006&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;gold_id&quot;: 862014739,
+    &quot;iou&quot;: 0.461538,
+    &quot;spatial_relation&quot;: &quot;nested_inside&quot;
+  },
+  &quot;overlapping_v4_candidates&quot;: [
+    {
+      &quot;candidate&quot;: {
+        &quot;index&quot;: 151,
+        &quot;source_indexes&quot;: [
+          151
+        ],
+        &quot;documento&quot;: &quot;gen_n2_005&quot;,
+        &quot;span&quot;: [
+          2971,
+          3001
+        ],
+        &quot;trecho&quot;: &quot;TST- ED-E-ED-RR-160000-97.2010&quot;,
+        &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+        &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+        &quot;parsed&quot;: {
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+          &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+          &quot;tribunal_raw&quot;: &quot;TST&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;tribunal_source&quot;: &quot;explicit&quot;,
+          &quot;data&quot;: {
+            &quot;classe_raw&quot;: &quot;RR&quot;
+          },
+          &quot;provenance&quot;: {}
+        },
+        &quot;resolution&quot;: {
+          &quot;status&quot;: &quot;insufficient&quot;,
+          &quot;id_canonico&quot;: null,
+          &quot;candidate_ids&quot;: [],
+          &quot;strategy&quot;: null,
+          &quot;reason&quot;: &quot;case_number_missing&quot;,
+          &quot;record_type&quot;: &quot;acordao&quot;
+        }
+      },
+      &quot;relation&quot;: &quot;partial_overlap&quot;,
+      &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+      &quot;runtime_evidence&quot;: {
+        &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+        &quot;child&quot;: {
+          &quot;record_type&quot;: &quot;acordao&quot;,
+          &quot;primary_number&quot;: &quot;1600009720105210006&quot;,
+          &quot;normalized_cnj&quot;: &quot;1600009720105210006&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;candidate_ids&quot;: [
+            862014739
+          ],
+          &quot;resolved_id&quot;: 862014739
+        },
+        &quot;parent&quot;: {
+          &quot;digits&quot;: &quot;160000972010&quot;,
+          &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+          &quot;tribunal&quot;: &quot;TST&quot;,
+          &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+        },
+        &quot;checks&quot;: {
+          &quot;compatible_family&quot;: true,
+          &quot;same_prefix&quot;: true,
+          &quot;same_class&quot;: true,
+          &quot;same_tribunal&quot;: true
+        }
+      }
+    }
+  ],
+  &quot;matching_artifact_classification&quot;: &quot;semantically_duplicate&quot;,
+  &quot;context_200&quot;: &quot;ão da condenação aos valores\nindicados na inicial. A doutrina especializada acompanha, sem divergência relevante, esse entendimento.\nEm caso análogo, o Processo n° TST- ED-E-ED-RR-160000-97.2010.5.21.0006 afastou pretensão de igual teor.\nA moldura fática delineada na origem é suficiente para o deslinde da causa. O julgado hostilizado desconsiderou\npor completo o artigo 7º, XXIX, da&quot;
+}</pre></article><article><h2>7. policy_affected_overlap</h2><pre>{
+  &quot;left&quot;: {
+    &quot;index&quot;: 67,
+    &quot;source_indexes&quot;: [
+      67
+    ],
+    &quot;documento&quot;: &quot;gen_n1_008&quot;,
+    &quot;span&quot;: [
+      900,
+      923
+    ],
+    &quot;trecho&quot;: &quot;TST-E-RR-173000-49.2008&quot;,
+    &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+    &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: &quot;TST&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;tribunal_source&quot;: &quot;explicit&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;RR&quot;
+      },
+      &quot;provenance&quot;: {}
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;insufficient&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: null,
+      &quot;reason&quot;: &quot;case_number_missing&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;right&quot;: {
+    &quot;index&quot;: 68,
+    &quot;source_indexes&quot;: [
+      68
+    ],
+    &quot;documento&quot;: &quot;gen_n1_008&quot;,
+    &quot;span&quot;: [
+      909,
+      933
+    ],
+    &quot;trecho&quot;: &quot;173000-49.2008.5.15.0024&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;173000-49.2008.5.15.0024&quot;,
+        &quot;numero_normalizado&quot;: &quot;1730004920085150024&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 653841135,
+      &quot;candidate_ids&quot;: [
+        653841135
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;relation_left_to_right&quot;: &quot;partial_overlap&quot;,
+  &quot;relation_right_to_left&quot;: &quot;partial_overlap&quot;,
+  &quot;same_family&quot;: false,
+  &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+  &quot;runtime_equivalence_evidence&quot;: {
+    &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+    &quot;child&quot;: {
+      &quot;record_type&quot;: &quot;acordao&quot;,
+      &quot;primary_number&quot;: &quot;1730004920085150024&quot;,
+      &quot;normalized_cnj&quot;: &quot;1730004920085150024&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;process_class&quot;: &quot;TST:ERR&quot;,
+      &quot;primary_process_class&quot;: &quot;TST:ERR&quot;,
+      &quot;candidate_ids&quot;: [
+        653841135
+      ],
+      &quot;resolved_id&quot;: 653841135
+    },
+    &quot;parent&quot;: {
+      &quot;digits&quot;: &quot;173000492008&quot;,
+      &quot;process_class&quot;: &quot;TST:ERR&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+    },
+    &quot;checks&quot;: {
+      &quot;compatible_family&quot;: true,
+      &quot;same_prefix&quot;: true,
+      &quot;same_class&quot;: true,
+      &quot;same_tribunal&quot;: true
+    }
+  },
+  &quot;gold_only_left&quot;: [
+    {
+      &quot;gold_index&quot;: 63,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 653841135,
+      &quot;span&quot;: [
+        888,
+        933
+      ],
+      &quot;iou&quot;: 0.511111
+    }
+  ],
+  &quot;gold_only_right&quot;: [
+    {
+      &quot;gold_index&quot;: 63,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 653841135,
+      &quot;span&quot;: [
+        888,
+        933
+      ],
+      &quot;iou&quot;: 0.533333
+    }
+  ]
+}</pre></article><article><h2>8. policy_affected_overlap</h2><pre>{
+  &quot;left&quot;: {
+    &quot;index&quot;: 69,
+    &quot;source_indexes&quot;: [
+      69
+    ],
+    &quot;documento&quot;: &quot;gen_n1_008&quot;,
+    &quot;span&quot;: [
+      1341,
+      1368
+    ],
+    &quot;trecho&quot;: &quot;TST-ED-E-ED-RR-3400-05.2011&quot;,
+    &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+    &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: &quot;TST&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;tribunal_source&quot;: &quot;explicit&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;RR&quot;
+      },
+      &quot;provenance&quot;: {}
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;insufficient&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: null,
+      &quot;reason&quot;: &quot;case_number_missing&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;right&quot;: {
+    &quot;index&quot;: 70,
+    &quot;source_indexes&quot;: [
+      70
+    ],
+    &quot;documento&quot;: &quot;gen_n1_008&quot;,
+    &quot;span&quot;: [
+      1356,
+      1378
+    ],
+    &quot;trecho&quot;: &quot;3400-05.2011.5.21.0009&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;3400-05.2011.5.21.0009&quot;,
+        &quot;numero_normalizado&quot;: &quot;34000520115210009&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411570,
+      &quot;candidate_ids&quot;: [
+        861411570
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;relation_left_to_right&quot;: &quot;partial_overlap&quot;,
+  &quot;relation_right_to_left&quot;: &quot;partial_overlap&quot;,
+  &quot;same_family&quot;: false,
+  &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+  &quot;runtime_equivalence_evidence&quot;: {
+    &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+    &quot;child&quot;: {
+      &quot;record_type&quot;: &quot;acordao&quot;,
+      &quot;primary_number&quot;: &quot;34000520115210009&quot;,
+      &quot;normalized_cnj&quot;: &quot;34000520115210009&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;candidate_ids&quot;: [
+        861411570
+      ],
+      &quot;resolved_id&quot;: 861411570
+    },
+    &quot;parent&quot;: {
+      &quot;digits&quot;: &quot;3400052011&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+    },
+    &quot;checks&quot;: {
+      &quot;compatible_family&quot;: true,
+      &quot;same_prefix&quot;: true,
+      &quot;same_class&quot;: true,
+      &quot;same_tribunal&quot;: true
+    }
+  },
+  &quot;gold_only_left&quot;: [
+    {
+      &quot;gold_index&quot;: 64,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411570,
+      &quot;span&quot;: [
+        1341,
+        1378
+      ],
+      &quot;iou&quot;: 0.72973
+    }
+  ],
+  &quot;gold_only_right&quot;: [
+    {
+      &quot;gold_index&quot;: 64,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411570,
+      &quot;span&quot;: [
+        1341,
+        1378
+      ],
+      &quot;iou&quot;: 0.594595
+    }
+  ]
+}</pre></article><article><h2>9. policy_affected_overlap</h2><pre>{
+  &quot;left&quot;: {
+    &quot;index&quot;: 131,
+    &quot;source_indexes&quot;: [
+      131
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      748,
+      779
+    ],
+    &quot;trecho&quot;: &quot;TST- ED - E-ED-RR-41200-79.2011&quot;,
+    &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+    &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: &quot;TST&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;tribunal_source&quot;: &quot;explicit&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;RR&quot;
+      },
+      &quot;provenance&quot;: {}
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;insufficient&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: null,
+      &quot;reason&quot;: &quot;case_number_missing&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;right&quot;: {
+    &quot;index&quot;: 132,
+    &quot;source_indexes&quot;: [
+      132
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      766,
+      789
+    ],
+    &quot;trecho&quot;: &quot;41200-79.2011.5.21.0005&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;41200-79.2011.5.21.0005&quot;,
+        &quot;numero_normalizado&quot;: &quot;412007920115210005&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411580,
+      &quot;candidate_ids&quot;: [
+        861411580
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;relation_left_to_right&quot;: &quot;partial_overlap&quot;,
+  &quot;relation_right_to_left&quot;: &quot;partial_overlap&quot;,
+  &quot;same_family&quot;: false,
+  &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+  &quot;runtime_equivalence_evidence&quot;: {
+    &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+    &quot;child&quot;: {
+      &quot;record_type&quot;: &quot;acordao&quot;,
+      &quot;primary_number&quot;: &quot;412007920115210005&quot;,
+      &quot;normalized_cnj&quot;: &quot;412007920115210005&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;candidate_ids&quot;: [
+        861411580
+      ],
+      &quot;resolved_id&quot;: 861411580
+    },
+    &quot;parent&quot;: {
+      &quot;digits&quot;: &quot;41200792011&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+    },
+    &quot;checks&quot;: {
+      &quot;compatible_family&quot;: true,
+      &quot;same_prefix&quot;: true,
+      &quot;same_class&quot;: true,
+      &quot;same_tribunal&quot;: true
+    }
+  },
+  &quot;gold_only_left&quot;: [
+    {
+      &quot;gold_index&quot;: 132,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411580,
+      &quot;span&quot;: [
+        736,
+        789
+      ],
+      &quot;iou&quot;: 0.584906
+    }
+  ],
+  &quot;gold_only_right&quot;: [
+    {
+      &quot;gold_index&quot;: 132,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411580,
+      &quot;span&quot;: [
+        736,
+        789
+      ],
+      &quot;iou&quot;: 0.433962
+    }
+  ]
+}</pre></article><article><h2>10. policy_affected_overlap</h2><pre>{
+  &quot;left&quot;: {
+    &quot;index&quot;: 136,
+    &quot;source_indexes&quot;: [
+      136
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      2988,
+      3016
+    ],
+    &quot;trecho&quot;: &quot;TST-ED-E-ED-ARR-1099-66.2011&quot;,
+    &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+    &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: &quot;TST&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;tribunal_source&quot;: &quot;explicit&quot;,
+      &quot;data&quot;: {
+        &quot;ano&quot;: &quot;2011&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;ano&quot;: &quot;explicit&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;insufficient&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: null,
+      &quot;reason&quot;: &quot;family_not_supported_in_v1&quot;,
+      &quot;record_type&quot;: null
+    }
+  },
+  &quot;right&quot;: {
+    &quot;index&quot;: 137,
+    &quot;source_indexes&quot;: [
+      137
+    ],
+    &quot;documento&quot;: &quot;gen_n2_003&quot;,
+    &quot;span&quot;: [
+      3004,
+      3027
+    ],
+    &quot;trecho&quot;: &quot;1099-66.2011.5.02.\n0251&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;1099-66.2011.5.02.\n0251&quot;,
+        &quot;numero_normalizado&quot;: &quot;10996620115020251&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 861411566,
+      &quot;candidate_ids&quot;: [
+        861411566
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;relation_left_to_right&quot;: &quot;partial_overlap&quot;,
+  &quot;relation_right_to_left&quot;: &quot;partial_overlap&quot;,
+  &quot;same_family&quot;: false,
+  &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+  &quot;runtime_equivalence_evidence&quot;: {
+    &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+    &quot;child&quot;: {
+      &quot;record_type&quot;: &quot;acordao&quot;,
+      &quot;primary_number&quot;: &quot;10996620115020251&quot;,
+      &quot;normalized_cnj&quot;: &quot;10996620115020251&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDARR&quot;,
+      &quot;primary_process_class&quot;: &quot;TST:EDEEDARR&quot;,
+      &quot;candidate_ids&quot;: [
+        861411566
+      ],
+      &quot;resolved_id&quot;: 861411566
+    },
+    &quot;parent&quot;: {
+      &quot;digits&quot;: &quot;1099662011&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDARR&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;family&quot;: &quot;jurisprudencia_tribunal_contextual&quot;
+    },
+    &quot;checks&quot;: {
+      &quot;compatible_family&quot;: true,
+      &quot;same_prefix&quot;: true,
+      &quot;same_class&quot;: true,
+      &quot;same_tribunal&quot;: true
+    }
+  },
+  &quot;gold_only_left&quot;: [
+    {
+      &quot;gold_index&quot;: 138,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411566,
+      &quot;span&quot;: [
+        2988,
+        3027
+      ],
+      &quot;iou&quot;: 0.717949
+    }
+  ],
+  &quot;gold_only_right&quot;: [
+    {
+      &quot;gold_index&quot;: 138,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 861411566,
+      &quot;span&quot;: [
+        2988,
+        3027
+      ],
+      &quot;iou&quot;: 0.589744
+    }
+  ]
+}</pre></article><article><h2>11. policy_affected_overlap</h2><pre>{
+  &quot;left&quot;: {
+    &quot;index&quot;: 151,
+    &quot;source_indexes&quot;: [
+      151
+    ],
+    &quot;documento&quot;: &quot;gen_n2_005&quot;,
+    &quot;span&quot;: [
+      2971,
+      3001
+    ],
+    &quot;trecho&quot;: &quot;TST- ED-E-ED-RR-160000-97.2010&quot;,
+    &quot;rule&quot;: &quot;tribunal_contextual&quot;,
+    &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: &quot;TST&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;tribunal_source&quot;: &quot;explicit&quot;,
+      &quot;data&quot;: {
+        &quot;classe_raw&quot;: &quot;RR&quot;
+      },
+      &quot;provenance&quot;: {}
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;insufficient&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [],
+      &quot;strategy&quot;: null,
+      &quot;reason&quot;: &quot;case_number_missing&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;right&quot;: {
+    &quot;index&quot;: 152,
+    &quot;source_indexes&quot;: [
+      152
+    ],
+    &quot;documento&quot;: &quot;gen_n2_005&quot;,
+    &quot;span&quot;: [
+      2987,
+      3011
+    ],
+    &quot;trecho&quot;: &quot;160000-97.2010.5.21.0006&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;160000-97.2010.5.21.0006&quot;,
+        &quot;numero_normalizado&quot;: &quot;1600009720105210006&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;resolved&quot;,
+      &quot;id_canonico&quot;: 862014739,
+      &quot;candidate_ids&quot;: [
+        862014739
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_unique&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;relation_left_to_right&quot;: &quot;partial_overlap&quot;,
+  &quot;relation_right_to_left&quot;: &quot;partial_overlap&quot;,
+  &quot;same_family&quot;: false,
+  &quot;semantic_relation_audit&quot;: &quot;same_reference_different_surface&quot;,
+  &quot;runtime_equivalence_evidence&quot;: {
+    &quot;reason&quot;: &quot;same_primary_cnj_prefix_and_class&quot;,
+    &quot;child&quot;: {
+      &quot;record_type&quot;: &quot;acordao&quot;,
+      &quot;primary_number&quot;: &quot;1600009720105210006&quot;,
+      &quot;normalized_cnj&quot;: &quot;1600009720105210006&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;primary_process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;candidate_ids&quot;: [
+        862014739
+      ],
+      &quot;resolved_id&quot;: 862014739
+    },
+    &quot;parent&quot;: {
+      &quot;digits&quot;: &quot;160000972010&quot;,
+      &quot;process_class&quot;: &quot;TST:EDEEDRR&quot;,
+      &quot;tribunal&quot;: &quot;TST&quot;,
+      &quot;family&quot;: &quot;processo_ou_recurso_numerado&quot;
+    },
+    &quot;checks&quot;: {
+      &quot;compatible_family&quot;: true,
+      &quot;same_prefix&quot;: true,
+      &quot;same_class&quot;: true,
+      &quot;same_tribunal&quot;: true
+    }
+  },
+  &quot;gold_only_left&quot;: [
+    {
+      &quot;gold_index&quot;: 154,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 862014739,
+      &quot;span&quot;: [
+        2959,
+        3011
+      ],
+      &quot;iou&quot;: 0.576923
+    }
+  ],
+  &quot;gold_only_right&quot;: [
+    {
+      &quot;gold_index&quot;: 154,
+      &quot;classification&quot;: &quot;real&quot;,
+      &quot;gold_id&quot;: 862014739,
+      &quot;span&quot;: [
+        2959,
+        3011
+      ],
+      &quot;iou&quot;: 0.461538
+    }
+  ]
+}</pre></article><article><h2>12. ambiguous_preserved</h2><pre>{
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 103,
+    &quot;source_indexes&quot;: [
+      103
+    ],
+    &quot;documento&quot;: &quot;gen_n1_012&quot;,
+    &quot;span&quot;: [
+      1222,
+      1243
+    ],
+    &quot;trecho&quot;: &quot;213-85.2010.5.02.0030&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;213-85.2010.5.02.0030&quot;,
+        &quot;numero_normalizado&quot;: &quot;2138520105020030&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;ambiguous&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [
+        867328396,
+        1973691658
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_multiple_ids&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;context_200&quot;: &quot;para o deslinde da causa.\nO julgado hostilizado desconsiderou por completo o art. 896, § 1º-A, da CLT. A questão de fundo\ncomporta solução singela. A tese encontra respaldo no ARR-213-85.2010.5.02.0030, precedente\nque dirimiu controvérsia idêntica à destes autos. Convém rememorar o histórico da controvérsia\nperante as instâncias ordinárias. Confira-se, a propósito, a Rcl nº 66.8&quot;,
+  &quot;reason&quot;: &quot;ambiguity_preserved&quot;
+}</pre></article><article><h2>13. ambiguous_preserved</h2><pre>{
+  &quot;candidate&quot;: {
+    &quot;index&quot;: 107,
+    &quot;source_indexes&quot;: [
+      107
+    ],
+    &quot;documento&quot;: &quot;gen_n1_012&quot;,
+    &quot;span&quot;: [
+      2062,
+      2085
+    ],
+    &quot;trecho&quot;: &quot;79500-16.2009.5.15.0016&quot;,
+    &quot;rule&quot;: &quot;cnj&quot;,
+    &quot;family&quot;: &quot;processo_cnj&quot;,
+    &quot;parsed&quot;: {
+      &quot;family&quot;: &quot;processo_cnj&quot;,
+      &quot;tipo&quot;: &quot;jurisprudencia&quot;,
+      &quot;tribunal_raw&quot;: null,
+      &quot;tribunal&quot;: null,
+      &quot;tribunal_source&quot;: &quot;unknown&quot;,
+      &quot;data&quot;: {
+        &quot;numero_raw&quot;: &quot;79500-16.2009.5.15.0016&quot;,
+        &quot;numero_normalizado&quot;: &quot;795001620095150016&quot;,
+        &quot;numero_family&quot;: &quot;cnj&quot;
+      },
+      &quot;provenance&quot;: {
+        &quot;numero&quot;: &quot;normalized&quot;
+      }
+    },
+    &quot;resolution&quot;: {
+      &quot;status&quot;: &quot;ambiguous&quot;,
+      &quot;id_canonico&quot;: null,
+      &quot;candidate_ids&quot;: [
+        867273442,
+        1973130981
+      ],
+      &quot;strategy&quot;: &quot;primary_class_guard&quot;,
+      &quot;reason&quot;: &quot;structural_key_multiple_ids&quot;,
+      &quot;record_type&quot;: &quot;acordao&quot;
+    }
+  },
+  &quot;context_200&quot;: &quot;idido na Reclamação nº 22.357/PE. O ponto nodal da\ndiscussão reside na qualificação jurídica dos fatos incontroversos. Nesse sentido, confira-se\no julgamento do processo nº TST-RR-79500-16.2009.5.15.0016, no qual a Corte firmou orientação\nhoje pacificada.\n\nIII — DOS PRECEDENTES INVOCADOS\n\nO acórdão regional manteve a sentença quanto às horas extras e reformou o capítulo relativo\nà&quot;,
+  &quot;reason&quot;: &quot;ambiguity_preserved&quot;
+}</pre></article></body></html>

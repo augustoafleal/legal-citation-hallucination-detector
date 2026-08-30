@@ -87,6 +87,11 @@ _DIPLOMA_PATTERN = re.compile(
 _LAW_NUMBER_PATTERN = re.compile(r"\bLei(?: Complementar)?\s*(?:n[ºo.]?\s*)?(?P<number>\d+[./-]?\d*)(?:/(?P<year>\d{4}))?", re.IGNORECASE)
 _RELATOR_PATTERN = re.compile(r"\b(?:Rel\.?|Relator(?:a)?)\s*(?:Min\.?|Ministra|Ministro|Des\.?)?\s*(?P<name>[A-Z][A-Za-zÀ-ÿ .-]{2,})", re.IGNORECASE)
 _YEAR_PATTERN = re.compile(r"\b(?P<year>19\d{2}|20\d{2})\b")
+_CNJ_CONTEXT_PREFIX = re.compile(
+    r"(?P<tribunal>\b(?:STF|STJ|TSE|TST|STM)\b)"
+    r"\s*[-:]\s*(?P<classe>[A-Za-zÀ-ÿ][A-Za-z0-9À-ÿ.-]*)\s*[-:]?\s*$",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -196,6 +201,43 @@ def _cnj_data(text: str) -> tuple[dict[str, str], dict[str, str]]:
     return {"numero_raw": raw, "numero_normalizado": _digits(raw), "numero_family": "cnj"}, {"numero": "normalized"}
 
 
+def _cnj_context_data(
+    candidate: CitationCandidate,
+    context: str | None,
+    data: dict[str, str],
+    provenance: dict[str, str],
+) -> tuple[str | None, str | None, str]:
+    """Enrich a CNJ with a strictly adjacent ``tribunal-classe-CNJ`` prefix.
+
+    This is intentionally opt-in so ``parse(candidate)`` retains the V1
+    contract.  The prefix cannot cross a newline or sentence delimiter and is
+    therefore not a broad context scan.
+    """
+    if not context:
+        return None, None, "unknown"
+    start = candidate.start
+    if start < 0 or candidate.end > len(context) or context[start : candidate.end] != candidate.text:
+        return None, None, "unknown"
+    # Oracle/integration callers may pass a candidate span that already
+    # contains its local prefix (with ``start == 0``).  Anchor at the CNJ
+    # token inside that span while retaining the same strict locality guard.
+    cnj_offset = candidate.text.find(data.get("numero_raw", ""))
+    anchor = start + cnj_offset if cnj_offset >= 0 else start
+    prefix = context[max(0, anchor - 100) : anchor]
+    if "\n" in prefix or "\r" in prefix:
+        prefix = prefix.rsplit("\n", 1)[-1].rsplit("\r", 1)[-1]
+    match = _CNJ_CONTEXT_PREFIX.search(prefix)
+    if match is None:
+        return None, None, "unknown"
+    tribunal = match.group("tribunal").upper()
+    classe = match.group("classe").rstrip(".-")
+    if not classe:
+        return None, None, "unknown"
+    data["classe_raw"] = classe
+    provenance["classe"] = "contextual_structural"
+    return match.group("tribunal"), tribunal, "explicit"
+
+
 def _sumula_data(text: str) -> tuple[dict[str, str], dict[str, str]]:
     match = _SUMULA_PATTERN.search(text)
     if match is None:
@@ -249,7 +291,7 @@ def _legal_data(text: str) -> tuple[dict[str, str], dict[str, str]]:
 class CitationParser:
     """Converte candidatos delimitados em estrutura textual por família."""
 
-    def parse(self, candidate: CitationCandidate) -> ParsedCitation:
+    def parse(self, candidate: CitationCandidate, *, context: str | None = None) -> ParsedCitation:
         """Retorna os campos explícitos de ``candidate`` sem consultar corpus."""
         if not isinstance(candidate, CitationCandidate):
             raise TypeError("candidate deve ser CitationCandidate")
@@ -261,6 +303,16 @@ class CitationParser:
         tribunal_raw, tribunal, tribunal_source = _tribunal(candidate.text)
         if candidate.family == "processo_cnj":
             data, provenance = _cnj_data(candidate.text)
+            if context is not None:
+                contextual_raw, contextual_tribunal, contextual_source = _cnj_context_data(
+                    candidate, context, data, provenance
+                )
+                if contextual_tribunal is not None:
+                    tribunal_raw, tribunal, tribunal_source = (
+                        contextual_raw,
+                        contextual_tribunal,
+                        contextual_source,
+                    )
         elif candidate.family == "processo_ou_recurso_numerado":
             data, provenance = _process_data(candidate.text)
         elif candidate.family == "sumula_numerada":

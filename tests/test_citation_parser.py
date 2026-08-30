@@ -95,6 +95,28 @@ class CitationParserUnitTests(unittest.TestCase):
         parsed = self.parser.parse(candidate("STJ, Autos 1234567-89.2020.1.23.4567", "processo_cnj"))
         self.assertEqual((parsed.tribunal_raw, parsed.tribunal, parsed.tribunal_source), ("STJ", "STJ", "explicit"))
 
+    def test_cnj_context_enrichment_extracts_adjacent_class(self) -> None:
+        text = "TST-AgARR-12345-67.2015.5.24.0001"
+        start = text.index("12345")
+        parsed = self.parser.parse(
+            CitationCandidate(start, len(text), text[start:], "cnj", "processo_cnj"),
+            context=text,
+        )
+        self.assertEqual(parsed.tribunal, "TST")
+        self.assertEqual(parsed.data["classe_raw"], "AgARR")
+        self.assertEqual(parsed.data["numero_normalizado"], "123456720155240001")
+        self.assertEqual(parsed.provenance["classe"], "contextual_structural")
+
+    def test_cnj_context_does_not_cross_sentence_or_newline(self) -> None:
+        text = "AgARR foi citado antes.\nTST-12345-67.2015.5.24.0001"
+        start = text.index("12345")
+        parsed = self.parser.parse(
+            CitationCandidate(start, len(text), text[start:], "cnj", "processo_cnj"),
+            context=text,
+        )
+        self.assertNotIn("classe_raw", parsed.data)
+        self.assertIsNone(parsed.tribunal)
+
     def test_numbered_case_handles_validated_marker_and_alias_forms(self) -> None:
         parsed = self.parser.parse(candidate("AgRg no Rec. Esp. n. 1.522.200 (SC)", "processo_ou_recurso_numerado"))
         self.assertEqual(parsed.data["classe_raw"], "AgRg")
