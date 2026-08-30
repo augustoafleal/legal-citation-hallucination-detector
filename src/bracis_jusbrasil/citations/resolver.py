@@ -191,6 +191,18 @@ class CitationResolver:
         candidate_ids = case.canonical_ids
         if len(candidate_ids) == 1:
             return ResolutionResult("resolved", candidate_ids[0], candidate_ids, "case_number_exact", "case_number_unique", "acordao")
+
+        cited_class = self._class_signature(parsed.data.get("classe_raw"), parsed.tribunal)
+        matching = self._matching_primary_class_ids(candidate_ids, cited_class)
+        if len(matching) == 1:
+            return ResolutionResult(
+                "resolved",
+                matching[0],
+                matching,
+                "case_number_primary_class",
+                "case_number_primary_class_unique",
+                "acordao",
+            )
         return ResolutionResult("ambiguous", None, candidate_ids, "case_number_exact", "case_has_multiple_canonical_ids", "acordao")
 
     def _resolve_cnj(self, parsed: ParsedCitation) -> ResolutionResult:
@@ -230,11 +242,7 @@ class CitationResolver:
                 for id_canonico in candidate_ids
                 if (identity := self._primary_identities.get(id_canonico)) is not None and identity.classe is not None
             )
-            matching = tuple(
-                id_canonico
-                for id_canonico in known
-                if self._primary_identities[id_canonico].classe == cited_class
-            )
+            matching = self._matching_primary_class_ids(candidate_ids, cited_class)
             if known and not matching:
                 return ResolutionResult("insufficient", None, (), "cnj_primary_identity", "cnj_primary_class_conflict", "acordao")
             if matching:
@@ -243,6 +251,20 @@ class CitationResolver:
         if len(candidate_ids) == 1:
             return ResolutionResult("resolved", candidate_ids[0], candidate_ids, "cnj_primary_identity", "cnj_primary_unique", "acordao")
         return ResolutionResult("ambiguous", None, candidate_ids, "cnj_primary_identity", "cnj_primary_ambiguous", "acordao")
+
+    def _matching_primary_class_ids(
+        self, candidate_ids: tuple[int, ...], cited_class: str | None
+    ) -> tuple[int, ...]:
+        """Retorna IDs primários cujo guard de classe coincide com a citação."""
+        if not cited_class:
+            return ()
+        return tuple(
+            id_canonico
+            for id_canonico in candidate_ids
+            if (identity := self._primary_identities.get(id_canonico)) is not None
+            and identity.classe is not None
+            and identity.classe == cited_class
+        )
 
     def _is_cnj_primary(self, id_canonico: int, number: str) -> bool:
         identity = self._primary_identities.get(id_canonico)

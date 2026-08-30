@@ -1,29 +1,29 @@
 {
   "actionable_components": [
     {
-      "count": 17,
+      "count": 16,
       "name": "CaseIndex/corpus identity",
-      "percent": 45.95
+      "percent": 44.44
     },
     {
       "count": 10,
       "name": "None/irreducible",
-      "percent": 27.03
+      "percent": 27.78
     },
     {
       "count": 7,
       "name": "Detector",
-      "percent": 18.92
+      "percent": 19.44
     },
     {
       "count": 2,
       "name": "Corpus enrichment",
-      "percent": 5.41
+      "percent": 5.56
     },
     {
       "count": 1,
       "name": "Parser",
-      "percent": 2.7
+      "percent": 2.78
     }
   ],
   "ambiguity": [
@@ -354,164 +354,6 @@
       ],
       "required_capability": "ambiguity filtering",
       "root_cause": "corpus_duplicate"
-    },
-    {
-      "actionable_component": "CaseIndex/corpus identity",
-      "candidate_metadata": [
-        {
-          "ano": 2019,
-          "header": "Superior Tribunal de Justiça AgInt nosEMBARGOS DE DIVERGÊNCIA EM RESP Nº 1597443 - PR (2016/0115164-6) RELATORA : MINISTRA NANCY ANDRIGHI AGRAVANTE : NOBRE PARTICIPACOES LTDA ADVOGADO : LUCIO BAGIO ZANUTO JUNIOR E OUTRO (S) - PR029663 AGRAVADO : FAZENDA NACIONAL PROCURADOR : PROCURADOR-GERAL DA FAZE",
-          "id": 2679428592,
-          "natureza": "acordao",
-          "relator": "Nancy Andrighi",
-          "tipo": "jurisprudencia",
-          "tribunal": "STJ"
-        },
-        {
-          "ano": 2018,
-          "header": "AgInt no RECURSO ESPECIAL Nº 1.597.443 - PR (2016/0115164-6) RELATOR : MINISTRO NAPOLEÃO NUNES MAIA FILHO R.P/ACÓRDÃO : MINISTRO SÉRGIO KUKINA AGRAVANTE : FAZENDA NACIONAL AGRAVADO : NOBRE PARTICIPACOES LTDA ADVOGADO : LUCIO BAGIO ZANUTO JUNIOR E OUTRO (S) - PR029663 EMENTA TRIBUTÁRIO. PROCESSUAL CI",
-          "id": 2684973273,
-          "natureza": "acordao",
-          "relator": "Napoleão Nunes Maia Filho",
-          "tipo": "jurisprudencia",
-          "tribunal": "STJ"
-        }
-      ],
-      "context": "ante as instâncias ordinárias. Confira-se, a propósito,\no Recurso Especial nº  1377019/ SP. Antes de avançar, convém delimitar\no objeto da irresignação. Confira-se, a propósito, o AgInt no Recurso Especial nº  1.597.443\n- PR.\n\nÉ o quc se tinha a expor, colocando-se esta consultoria à disposição para os esclarecimentos que se\nfizerem necessários.\n\nFortaleza, 9 de fevereiro de 2025.\n",
-      "documento": "gen_n2_010",
-      "emitted": {
-        "family": "processo_ou_recurso_numerado",
-        "index": 185,
-        "parsed": {
-          "data": {
-            "classe_raw": "AgInt no Recurso Especial",
-            "numero_family": "recurso_number",
-            "numero_normalizado": "1597443",
-            "numero_raw": "1.597.443",
-            "uf": "PR",
-            "uf_raw": "- PR"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "reason": "preserved",
-        "resolution": {
-          "candidate_ids": [
-            2684973273,
-            2679428592
-          ],
-          "id_canonico": null,
-          "reason": "case_has_multiple_canonical_ids",
-          "record_type": "acordao",
-          "status": "ambiguous",
-          "strategy": "case_number_exact"
-        },
-        "rule": "processo_ou_recurso",
-        "source_indexes": [
-          190
-        ],
-        "span": [
-          2963,
-          3007
-        ],
-        "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-      },
-      "emitted_iou": 1.0,
-      "first_blocker": "resolver_ambiguous",
-      "gid": "g7",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 2684973273,
-      "gold_index": 197,
-      "gold_span": [
-        2963,
-        3007
-      ],
-      "gold_text": "AgInt no Recurso Especial nº  1.597.443\n- PR",
-      "nivel": "N2",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "AgInt no Recurso Especial",
-            "numero_family": "recurso_number",
-            "numero_normalizado": "1597443",
-            "numero_raw": "1.597.443",
-            "uf": "PR",
-            "uf_raw": "- PR"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            2684973273,
-            2679428592
-          ],
-          "id_canonico": null,
-          "reason": "case_has_multiple_canonical_ids",
-          "record_type": "acordao",
-          "status": "ambiguous",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [
-        {
-          "family": "processo_ou_recurso_numerado",
-          "index": 190,
-          "iou": 1.0,
-          "parsed": {
-            "data": {
-              "classe_raw": "AgInt no Recurso Especial",
-              "numero_family": "recurso_number",
-              "numero_normalizado": "1597443",
-              "numero_raw": "1.597.443",
-              "uf": "PR",
-              "uf_raw": "- PR"
-            },
-            "family": "processo_ou_recurso_numerado",
-            "provenance": {
-              "numero": "normalized",
-              "uf": "explicit"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              2684973273,
-              2679428592
-            ],
-            "id_canonico": null,
-            "reason": "case_has_multiple_canonical_ids",
-            "record_type": "acordao",
-            "status": "ambiguous",
-            "strategy": "case_number_exact"
-          },
-          "rule": "processo_ou_recurso",
-          "span": [
-            2963,
-            3007
-          ],
-          "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-        }
-      ],
-      "required_capability": "ambiguity filtering",
-      "root_cause": "multi_id_ambiguity"
     }
   ],
   "baseline": {
@@ -531,7 +373,7 @@
       "predictions": 211
     },
     "post_arbitration": {
-      "correct_ids": 59,
+      "correct_ids": 60,
       "duplicate_resolved_outputs": 0,
       "exact": 75,
       "false_real_incompleta": 0,
@@ -539,16 +381,16 @@
       "outputs": 206,
       "wrong_unique_real": 0
     },
-    "resolver_v3_before_arbitration_correct": 55
+    "resolver_v3_before_arbitration_correct": 56
   },
   "classification_baseline": {
     "outputs_with_gold_match": 127,
     "rules": [
       {
-        "correct": 59,
+        "correct": 60,
         "precision": 1.0,
         "rule": "resolved -> real",
-        "support": 59,
+        "support": 60,
         "wrong": 0
       },
       {
@@ -594,11 +436,11 @@
         "resolved": 0
       },
       "real": {
-        "ambiguous": 3,
+        "ambiguous": 2,
         "insufficient": 6,
         "missing": 25,
         "no_match": 3,
-        "resolved": 59
+        "resolved": 60
       }
     },
     "span_readiness": {
@@ -610,7 +452,7 @@
       "jurisprudencia": {
         "gold": 186,
         "matched": 111,
-        "real_correct": 59
+        "real_correct": 60
       },
       "lei": {
         "gold": 39,
@@ -1355,13 +1197,6 @@
     },
     {
       "cases": 1,
-      "component": "CaseIndex/corpus identity",
-      "plausible_gain": 0,
-      "root_cause": "multi_id_ambiguity",
-      "safe_known_gain": 1
-    },
-    {
-      "cases": 1,
       "component": "Parser",
       "plausible_gain": 1,
       "root_cause": "noisy_structural_reference",
@@ -1382,32 +1217,32 @@
     {
       "count": 14,
       "name": "detector_miss",
-      "percent": 37.84
+      "percent": 38.89
     },
     {
       "count": 11,
       "name": "detector_boundary",
-      "percent": 29.73
+      "percent": 30.56
     },
     {
       "count": 5,
       "name": "resolver_insufficient",
-      "percent": 13.51
-    },
-    {
-      "count": 3,
-      "name": "resolver_ambiguous",
-      "percent": 8.11
+      "percent": 13.89
     },
     {
       "count": 3,
       "name": "resolver_no_match",
-      "percent": 8.11
+      "percent": 8.33
+    },
+    {
+      "count": 2,
+      "name": "resolver_ambiguous",
+      "percent": 5.56
     },
     {
       "count": 1,
       "name": "detector_family",
-      "percent": 2.7
+      "percent": 2.78
     }
   ],
   "gold_issues": [
@@ -3604,144 +3439,6 @@
         "root_cause": "legal_identity_missing"
       },
       {
-        "actionable_component": "CaseIndex/corpus identity",
-        "context": "ante as instâncias ordinárias. Confira-se, a propósito,\no Recurso Especial nº  1377019/ SP. Antes de avançar, convém delimitar\no objeto da irresignação. Confira-se, a propósito, o AgInt no Recurso Especial nº  1.597.443\n- PR.\n\nÉ o quc se tinha a expor, colocando-se esta consultoria à disposição para os esclarecimentos que se\nfizerem necessários.\n\nFortaleza, 9 de fevereiro de 2025.\n",
-        "documento": "gen_n2_010",
-        "emitted": {
-          "family": "processo_ou_recurso_numerado",
-          "index": 185,
-          "parsed": {
-            "data": {
-              "classe_raw": "AgInt no Recurso Especial",
-              "numero_family": "recurso_number",
-              "numero_normalizado": "1597443",
-              "numero_raw": "1.597.443",
-              "uf": "PR",
-              "uf_raw": "- PR"
-            },
-            "family": "processo_ou_recurso_numerado",
-            "provenance": {
-              "numero": "normalized",
-              "uf": "explicit"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "reason": "preserved",
-          "resolution": {
-            "candidate_ids": [
-              2684973273,
-              2679428592
-            ],
-            "id_canonico": null,
-            "reason": "case_has_multiple_canonical_ids",
-            "record_type": "acordao",
-            "status": "ambiguous",
-            "strategy": "case_number_exact"
-          },
-          "rule": "processo_ou_recurso",
-          "source_indexes": [
-            190
-          ],
-          "span": [
-            2963,
-            3007
-          ],
-          "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-        },
-        "emitted_iou": 1.0,
-        "first_blocker": "resolver_ambiguous",
-        "gid": "g7",
-        "gold_family": "processo_ou_recurso_numerado",
-        "gold_id": 2684973273,
-        "gold_index": 197,
-        "gold_span": [
-          2963,
-          3007
-        ],
-        "gold_text": "AgInt no Recurso Especial nº  1.597.443\n- PR",
-        "nivel": "N2",
-        "oracle": {
-          "parsed": {
-            "data": {
-              "classe_raw": "AgInt no Recurso Especial",
-              "numero_family": "recurso_number",
-              "numero_normalizado": "1597443",
-              "numero_raw": "1.597.443",
-              "uf": "PR",
-              "uf_raw": "- PR"
-            },
-            "family": "processo_ou_recurso_numerado",
-            "provenance": {
-              "numero": "normalized",
-              "uf": "explicit"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              2684973273,
-              2679428592
-            ],
-            "id_canonico": null,
-            "reason": "case_has_multiple_canonical_ids",
-            "record_type": "acordao",
-            "status": "ambiguous",
-            "strategy": "case_number_exact"
-          }
-        },
-        "related_candidates": [
-          {
-            "family": "processo_ou_recurso_numerado",
-            "index": 190,
-            "iou": 1.0,
-            "parsed": {
-              "data": {
-                "classe_raw": "AgInt no Recurso Especial",
-                "numero_family": "recurso_number",
-                "numero_normalizado": "1597443",
-                "numero_raw": "1.597.443",
-                "uf": "PR",
-                "uf_raw": "- PR"
-              },
-              "family": "processo_ou_recurso_numerado",
-              "provenance": {
-                "numero": "normalized",
-                "uf": "explicit"
-              },
-              "tipo": "jurisprudencia",
-              "tribunal": null,
-              "tribunal_raw": null,
-              "tribunal_source": "unknown"
-            },
-            "resolution": {
-              "candidate_ids": [
-                2684973273,
-                2679428592
-              ],
-              "id_canonico": null,
-              "reason": "case_has_multiple_canonical_ids",
-              "record_type": "acordao",
-              "status": "ambiguous",
-              "strategy": "case_number_exact"
-            },
-            "rule": "processo_ou_recurso",
-            "span": [
-              2963,
-              3007
-            ],
-            "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-          }
-        ],
-        "required_capability": "ambiguity filtering",
-        "root_cause": "multi_id_ambiguity"
-      },
-      {
         "actionable_component": "Parser",
         "context": "am recebidos\nem seus regulares efeitos e as contrarrazões apresentadas tempestivamente.\nÉ de rigor, portanto, o acolhimcnto da tese ora sustentada. Não destoa dessc entendimento\no EDcl no AgInt no Recurso Especial Nº 170076O (SP). O raciocínio desenvolvido no acórdão recorrido parte\nde premissa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a pres",
         "documento": "gen_n2_011",
@@ -3942,7 +3639,7 @@
         "root_cause": "legal_identity_missing"
       }
     ],
-    "count": 21
+    "count": 20
   },
   "legal": {
     "records": [
@@ -5512,7 +5209,7 @@
     ],
     "strategies": [
       {
-        "correct_real_total": 64,
+        "correct_real_total": 65,
         "e2e_gain": 5,
         "evaluable_real": 5,
         "false_real": 1,
@@ -5526,7 +5223,7 @@
         "strategy": "article_only"
       },
       {
-        "correct_real_total": 59,
+        "correct_real_total": 60,
         "e2e_gain": 0,
         "evaluable_real": 4,
         "false_real": 0,
@@ -5540,7 +5237,7 @@
         "strategy": "article_diploma"
       },
       {
-        "correct_real_total": 59,
+        "correct_real_total": 60,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
@@ -5554,7 +5251,7 @@
         "strategy": "article_law"
       },
       {
-        "correct_real_total": 59,
+        "correct_real_total": 60,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
@@ -5568,7 +5265,7 @@
         "strategy": "article_law_year"
       },
       {
-        "correct_real_total": 59,
+        "correct_real_total": 60,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
@@ -6046,23 +5743,23 @@
   ],
   "recovery_ladder": [
     {
-      "cumulative": 59,
+      "cumulative": 60,
       "newly_recovered": 0,
       "stage": "current full pipeline"
     },
     {
-      "cumulative": 66,
+      "cumulative": 67,
       "newly_recovered": 7,
       "stage": "oracle detection + current parser/resolver"
     },
     {
-      "cumulative": 66,
+      "cumulative": 67,
       "newly_recovered": 0,
       "stage": "oracle parser representation"
     },
     {
       "cumulative": 67,
-      "newly_recovered": 1,
+      "newly_recovered": 0,
       "stage": "ideal deterministic structural identity"
     },
     {
@@ -8754,144 +8451,6 @@
       "root_cause": "legal_identity_missing"
     },
     {
-      "actionable_component": "CaseIndex/corpus identity",
-      "context": "ante as instâncias ordinárias. Confira-se, a propósito,\no Recurso Especial nº  1377019/ SP. Antes de avançar, convém delimitar\no objeto da irresignação. Confira-se, a propósito, o AgInt no Recurso Especial nº  1.597.443\n- PR.\n\nÉ o quc se tinha a expor, colocando-se esta consultoria à disposição para os esclarecimentos que se\nfizerem necessários.\n\nFortaleza, 9 de fevereiro de 2025.\n",
-      "documento": "gen_n2_010",
-      "emitted": {
-        "family": "processo_ou_recurso_numerado",
-        "index": 185,
-        "parsed": {
-          "data": {
-            "classe_raw": "AgInt no Recurso Especial",
-            "numero_family": "recurso_number",
-            "numero_normalizado": "1597443",
-            "numero_raw": "1.597.443",
-            "uf": "PR",
-            "uf_raw": "- PR"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "reason": "preserved",
-        "resolution": {
-          "candidate_ids": [
-            2684973273,
-            2679428592
-          ],
-          "id_canonico": null,
-          "reason": "case_has_multiple_canonical_ids",
-          "record_type": "acordao",
-          "status": "ambiguous",
-          "strategy": "case_number_exact"
-        },
-        "rule": "processo_ou_recurso",
-        "source_indexes": [
-          190
-        ],
-        "span": [
-          2963,
-          3007
-        ],
-        "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-      },
-      "emitted_iou": 1.0,
-      "first_blocker": "resolver_ambiguous",
-      "gid": "g7",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 2684973273,
-      "gold_index": 197,
-      "gold_span": [
-        2963,
-        3007
-      ],
-      "gold_text": "AgInt no Recurso Especial nº  1.597.443\n- PR",
-      "nivel": "N2",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "AgInt no Recurso Especial",
-            "numero_family": "recurso_number",
-            "numero_normalizado": "1597443",
-            "numero_raw": "1.597.443",
-            "uf": "PR",
-            "uf_raw": "- PR"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            2684973273,
-            2679428592
-          ],
-          "id_canonico": null,
-          "reason": "case_has_multiple_canonical_ids",
-          "record_type": "acordao",
-          "status": "ambiguous",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [
-        {
-          "family": "processo_ou_recurso_numerado",
-          "index": 190,
-          "iou": 1.0,
-          "parsed": {
-            "data": {
-              "classe_raw": "AgInt no Recurso Especial",
-              "numero_family": "recurso_number",
-              "numero_normalizado": "1597443",
-              "numero_raw": "1.597.443",
-              "uf": "PR",
-              "uf_raw": "- PR"
-            },
-            "family": "processo_ou_recurso_numerado",
-            "provenance": {
-              "numero": "normalized",
-              "uf": "explicit"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              2684973273,
-              2679428592
-            ],
-            "id_canonico": null,
-            "reason": "case_has_multiple_canonical_ids",
-            "record_type": "acordao",
-            "status": "ambiguous",
-            "strategy": "case_number_exact"
-          },
-          "rule": "processo_ou_recurso",
-          "span": [
-            2963,
-            3007
-          ],
-          "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-        }
-      ],
-      "required_capability": "ambiguity filtering",
-      "root_cause": "multi_id_ambiguity"
-    },
-    {
       "actionable_component": "Parser",
       "context": "am recebidos\nem seus regulares efeitos e as contrarrazões apresentadas tempestivamente.\nÉ de rigor, portanto, o acolhimcnto da tese ora sustentada. Não destoa dessc entendimento\no EDcl no AgInt no Recurso Especial Nº 170076O (SP). O raciocínio desenvolvido no acórdão recorrido parte\nde premissa equivocada. Não destoa desse entendimento o AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ.\n\nIII — DOS  PRECEDENTES INVOCADOS\n\nA sentença reconheceu a pres",
       "documento": "gen_n2_011",
@@ -9237,37 +8796,37 @@
     {
       "count": 14,
       "name": "legal identity model",
-      "percent": 37.84
+      "percent": 38.89
     },
     {
       "count": 9,
       "name": "impossible with runtime evidence",
-      "percent": 24.32
+      "percent": 25.0
     },
     {
       "count": 7,
       "name": "detector change",
-      "percent": 18.92
+      "percent": 19.44
     },
     {
-      "count": 3,
+      "count": 2,
       "name": "ambiguity filtering",
-      "percent": 8.11
+      "percent": 5.56
     },
     {
       "count": 2,
       "name": "corpus metadata enrichment",
-      "percent": 5.41
+      "percent": 5.56
     },
     {
       "count": 1,
       "name": "gold issue",
-      "percent": 2.7
+      "percent": 2.78
     },
     {
       "count": 1,
       "name": "parser/context change",
-      "percent": 2.7
+      "percent": 2.78
     }
   ],
   "roadmap": {
@@ -9280,42 +8839,37 @@
     {
       "count": 14,
       "name": "legal_identity_missing",
-      "percent": 37.84
+      "percent": 38.89
     },
     {
       "count": 9,
       "name": "unsupported_reference_family",
-      "percent": 24.32
+      "percent": 25.0
     },
     {
       "count": 7,
       "name": "detector_residual",
-      "percent": 18.92
+      "percent": 19.44
     },
     {
       "count": 2,
       "name": "corpus_duplicate",
-      "percent": 5.41
+      "percent": 5.56
     },
     {
       "count": 2,
       "name": "sumula_metadata_missing",
-      "percent": 5.41
+      "percent": 5.56
     },
     {
       "count": 1,
       "name": "gold_corpus_inconsistency",
-      "percent": 2.7
-    },
-    {
-      "count": 1,
-      "name": "multi_id_ambiguity",
-      "percent": 2.7
+      "percent": 2.78
     },
     {
       "count": 1,
       "name": "noisy_structural_reference",
-      "percent": 2.7
+      "percent": 2.78
     }
   ],
   "safe_gain": [
@@ -9332,19 +8886,7 @@
   },
   "status": "PASS",
   "structural_numbered_experiment": {
-    "changes": [
-      {
-        "cited_class": "AGINT",
-        "documento": "gen_n2_010",
-        "original_ids": [
-          2684973273,
-          2679428592
-        ],
-        "output_index": 185,
-        "selected_id": 2684973273,
-        "text": "AgInt no Recurso Especial nº  1.597.443\n- PR"
-      }
-    ],
+    "changes": [],
     "metrics": {
       "correct_ids": 60,
       "duplicate_resolved_outputs": 0,
@@ -9593,5 +9135,5 @@
       }
     ]
   },
-  "timing_seconds": 0.05847290399833582
+  "timing_seconds": 0.042982300990843214
 }

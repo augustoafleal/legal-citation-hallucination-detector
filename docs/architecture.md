@@ -78,13 +78,17 @@ frases ou linhas arbitrariamente. O parser não consulta banco, FTS ou
 `CaseIndex`, não classifica a citação e não decide se há evidência suficiente.
 
 `CitationResolver` V3 é o único componente que confronta a interpretação com o
-corpus. Ele preserva `case_number_exact` para processo/recurso e promove
+corpus. Ele preserva `case_number_exact` para processo/recurso e, quando um
+número numerado retorna múltiplas identidades, promove somente a classe
+primária explicitamente citada que seleciona exatamente um ID. Sem classe,
+com conflito ou com mais de um match, a ambiguidade é preservada. Também promove
 `sumula_number_only`: para a família `sumula_numerada`, um número presente é
 consultado globalmente no corpus de súmulas, sem exigir tribunal. Zero matches
 retorna `no_match`, um match retorna `resolved` e múltiplos matches retornam
 `ambiguous`; o dispatch explícito com tribunal preserva a estratégia V1
 `sumula_number_tribunal`. Grupos canônicos com mais de um `doc_id` permanecem
-ambíguos; não há escolha arbitrária, busca aproximada ou fallback por texto.
+ambíguos quando não há esse guard estrutural; não há escolha arbitrária, busca
+aproximada ou fallback por texto.
 
 O resultado é `ResolutionResult`, com os estados neutros `resolved`,
 `no_match`, `ambiguous` e `insufficient`. `no_match` significa que uma consulta

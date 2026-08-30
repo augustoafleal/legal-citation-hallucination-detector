@@ -2,7 +2,7 @@
 
 Este módulo é deliberadamente read-only em relação à produção: ele recompõe a
 pipeline Detector V4 -> Parser contextual -> Resolver V3 -> arbitragem,
-calcula os 37 reais restantes por matching IoU determinístico e registra apenas
+calcula os 36 reais restantes por matching IoU determinístico e registra apenas
 artefatos de análise em ``artifacts/``.
 """
 
@@ -346,11 +346,7 @@ def numbered_primary_class_guard(
         result = output.result
         if output.candidate.family == "processo_ou_recurso_numerado" and result.status == "ambiguous":
             cited_class = resolver._class_signature(output.parsed.data.get("classe_raw"), output.parsed.tribunal)
-            matching = tuple(
-                candidate_id for candidate_id in result.candidate_ids
-                if resolver.primary_identities.get(candidate_id) is not None
-                and resolver.primary_identities[candidate_id].classe == cited_class
-            )
+            matching = resolver._matching_primary_class_ids(result.candidate_ids, cited_class)
             if len(matching) == 1:
                 result = ResolutionResult(
                     "resolved", matching[0], matching, "case_number_primary_class",
@@ -586,7 +582,7 @@ def recovery_ladder(
     # uma representação manual extra que seja justificável sem nova capacidade.
     # ``oracle_correct`` é a execução de superfícies gold isoladas e não pode
     # substituir a baseline: ela perde quatro ganhos já produzidos por merge.
-    # A ladder cumulativa preserva os 59 outputs atuais e adiciona somente os
+    # A ladder cumulativa preserva os 60 outputs atuais e adiciona somente os
     # sete restantes que a superfície oracle resolve com o pipeline vigente.
     detector_cumulative = current_correct + detector_gain
     return [
@@ -658,10 +654,10 @@ def build_payload() -> dict[str, object]:
             for item in gold if item.index in before_matches
         )
         after = output_metrics(gold, outputs)
-        if (before_correct, after["correct_ids"], after["outputs"], after["wrong_unique_real"], after["false_real_inventada"], after["false_real_incompleta"], after["duplicate_resolved_outputs"]) != (55, 59, 206, 0, 0, 0, 0):
+        if (before_correct, after["correct_ids"], after["outputs"], after["wrong_unique_real"], after["false_real_inventada"], after["false_real_incompleta"], after["duplicate_resolved_outputs"]) != (56, 60, 206, 0, 0, 0, 0):
             raise BaselineError(f"baseline V3/arbitragem divergente: before={before_correct}, after={after}")
         remaining = remaining_inventory(gold, texts, raw, outputs, resolver)
-        if len(remaining) != 37:
+        if len(remaining) != 36:
             raise BaselineError(f"remaining real divergente: {len(remaining)}")
         diagnostics = diagnostic_lists(remaining, connection)
         numbered_guard_outputs, numbered_guard_changes = numbered_primary_class_guard(outputs, resolver)
@@ -670,7 +666,7 @@ def build_payload() -> dict[str, object]:
             len(numbered_guard_changes), numbered_guard_metrics["correct_ids"],
             numbered_guard_metrics["wrong_unique_real"], numbered_guard_metrics["false_real_inventada"],
             numbered_guard_metrics["false_real_incompleta"], numbered_guard_metrics["duplicate_resolved_outputs"],
-        ) != (1, 60, 0, 0, 0, 0):
+        ) != (0, 60, 0, 0, 0, 0):
             raise BaselineError(f"experimento class guard divergente: {numbered_guard_changes} / {numbered_guard_metrics}")
         legal_records_value = legal_records(connection)
         indexes = legal_indexes(legal_records_value)
@@ -745,7 +741,7 @@ def build_payload() -> dict[str, object]:
             },
             "remaining_real": remaining,
             **categories,
-            "recovery_ladder": recovery_ladder(gold, texts, resolver, int(after["correct_ids"]), 7, 1),
+            "recovery_ladder": recovery_ladder(gold, texts, resolver, int(after["correct_ids"]), 7, 0),
             "detector": {
                 "first_blocked": sum(item["first_blocker"].startswith("detector_") for item in remaining),
                 "immediate_gain": 7, "deferred_gain": 19, "saturation": "nearing saturation",
