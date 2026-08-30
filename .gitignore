@@ -173,8 +173,8 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 .agents/
-material_desafio_jusbrasil_bracis/
-
+material_desafio_jusbrasil_bracis_old/
+artifacts/
 # Artefatos temporários de exploração
 .jupyter_cache/
 *.tmp
