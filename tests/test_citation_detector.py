@@ -249,7 +249,7 @@ class CitationDetectorTests(unittest.TestCase):
 class CitationDetectorV4Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl").reset_index(names="gold_idx")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
         gold["nivel"] = "N" + gold["nivel"].astype(str).str.removeprefix("N")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in sorted((DATASET_DIR / "txt").glob("*.txt"))}
         detector = CitationDetector()

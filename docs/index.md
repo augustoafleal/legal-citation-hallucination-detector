@@ -7,23 +7,24 @@ description: Visão geral e inventário dos materiais do desafio Jusbrasil para 
 
 Bem-vindo ao material do desafio Jusbrasil na BRACIS 2026. A tarefa é construir uma solução que encontre citações em peças jurídicas sintéticas e as classifique como **reais**, **inventadas** ou **incompletas**, resolvendo as referências reais contra a base canônica distribuída.
 
-Esta página apresenta o desafio e inventaria os arquivos disponíveis. O conteúdo foi inspecionado localmente; o arquivo compactado de distribuição não foi modificado.
+Leia a [documentação consolidada da competição](competition.md), que reúne as regras do Kaggle, o contrato de dados, a métrica, a submissão, o cronograma, o FAQ e as regras fundamentais da plataforma. A fonte principal é a [página oficial no Kaggle](https://www.kaggle.com/competitions/desafio-jusbrasil-bracis-2026).
 
 ## Documentação técnica
 
 - [Arquitetura](architecture.md): organização atual do bootstrap e seus limites.
 - [Notebooks](notebooks.md): convenções para exploração reprodutível.
 - [Scripts](scripts.md): sanity check read-only disponível.
+- [Competição](competition.md): regras e especificação oficial consolidada.
 - [Dados e materiais](#arquivos-disponiveis): localização dos arquivos distribuídos, sem cópia do SQLite.
 
 !!! tip "Por onde começar"
 
-    1. Leia o [enunciado](#enunciado) para entender o contrato de entrada e saída.
-    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset.xlsx` como amostra de desenvolvimento.
+    1. Leia a [documentação consolidada](competition.md) para entender o contrato de entrada e saída.
+    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset.csv` como amostra de desenvolvimento.
     3. Use `desafio1_bracis.db` como a fonte de verdade para decidir e resolver citações.
-    4. Gere o CSV final com `json_to_submission.py`.
+    4. Reproduza localmente a métrica com `kaggle_metric.py` e gere o CSV final com `json_to_submission.py`.
 
-## A tarefa
+## Resumo da tarefa
 
 Cada arquivo de entrada é uma peça judicial em texto simples. Para cada citação presente, a solução deve produzir um JSON com:
 
@@ -49,22 +50,22 @@ O pareamento com o gabarito usa a sobreposição dos spans (IoU ≥ 0,5), portan
 ## Arquivos disponíveis
 
 ```text
-material_desafio_jusbrasil_bracis.zip              # arquivo compactado de distribuição
 material_desafio_jusbrasil_bracis/
-├── Dados do Caça-Alucinações - BRACIS 2026.pdf # enunciado (6 páginas)
 ├── desafio1_bracis.db                             # base canônica SQLite (~89 MiB)
-├── goldenset.xlsx                                 # gabarito da amostra de desenvolvimento
+├── goldenset.csv                                  # gabarito da amostra de desenvolvimento
 ├── json_to_submission.py                          # conversor de JSONs para CSV de submissão
+├── kaggle_metric.py                               # métrica oficial
+├── sample_submission.csv                          # modelo de submissão
 └── txt/                                           # 26 documentos jurídicos sintéticos de entrada
     ├── gen_n1_001.txt … gen_n1_013.txt
     └── gen_n2_001.txt … gen_n2_013.txt
 ```
 
-Há 30 arquivos no diretório extraído: quatro arquivos de nível superior e 26 textos. Não foram distribuídos um `README` ou o `kaggle_metric.py` citado pelo enunciado; o script também não está no `.zip`.
+Há 31 arquivos na cópia local atual: cinco arquivos de nível superior e 26 textos. O PDF instrucional da versão anterior está preservado em `material_desafio_jusbrasil_bracis_old2/`, fora do pacote atual.
 
 ## Enunciado
 
-`Dados do Caça-Alucinações - BRACIS 2026.pdf` é um PDF A4 de seis páginas que estabelece o contrato e a estratégia de consulta à base.
+O enunciado consolidado nesta documentação estabelece o contrato e a estratégia de consulta à base. Uma cópia local histórica de `Dados do Caça-Alucinações - BRACIS 2026.pdf` é um PDF A4 de seis páginas.
 
 Os documentos estão divididos em dois níveis. O nível 1 tem apresentação regular e peso 1×. O nível 2, com peso 2×, altera a superfície das referências: abreviações, pontuação, espaçamento, UF, possíveis confusões de OCR e quebras de linha. Por construção, esse ruído não substitui um dígito por outro; a normalização deve recuperar a referência verdadeira.
 
@@ -110,7 +111,7 @@ Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas
 
 ## Gabarito de desenvolvimento
 
-`goldenset.xlsx` contém uma linha por citação esperada da amostra de desenvolvimento, na planilha `goldenset`. São 225 linhas distribuídas pelos 26 documentos, de 7 a 10 citações por peça (média de 8,65).
+`goldenset.csv` contém uma linha por citação esperada da amostra de desenvolvimento. São 225 linhas distribuídas pelos 26 documentos, de 7 a 10 citações por peça (média de 8,65).
 
 | Campo | Descrição |
 | --- | --- |
@@ -132,15 +133,16 @@ Existem 186 citações de jurisprudência e 39 de lei. As 96 linhas classificada
 
 !!! note "Observação de consistência"
 
-    Comparando `texto[inicio:fim]` com o `trecho` do XLSX, ao interpretar `\\n` como quebra de linha, as 225 linhas coincidem com os textos atuais. O arquivo `gen_n2_010.txt` foi corrigido na revisão oficial de 28/08/2026.
+    Comparando `texto[inicio:fim]` com o `trecho` do gabarito anterior em XLSX, ao interpretar `\\n` como quebra de linha, as 225 linhas coincidem com os textos atuais. A distribuição atual transporta os mesmos valores em CSV. O arquivo `gen_n2_010.txt` foi corrigido na revisão oficial de 28/08/2026.
 
 ## Revisão do dataset — 28/08/2026
 
 A revisão oficial removeu os acórdãos duplicados `doc_0227` e `doc_0461` do
-SQLite, corrigiu `gen_n2_010.txt` e substituiu `goldenset.csv` por
-`goldenset.xlsx`. A base passou a ter 1.016 registros, incluindo 998 acórdãos,
-13 dispositivos e 5 súmulas. No contrato de saída, `id_canonico` é um único
-valor para cada citação real.
+SQLite e corrigiu `gen_n2_010.txt`. A cópia local anterior tinha o gabarito em
+`goldenset.xlsx`; a distribuição atual usa `goldenset.csv` com os mesmos valores.
+A base tem 1.016 registros, incluindo 998 acórdãos, 13 dispositivos e 5
+súmulas. No contrato de saída, `id_canonico` é um único valor para cada citação
+real.
 
 ## Conversão da submissão
 

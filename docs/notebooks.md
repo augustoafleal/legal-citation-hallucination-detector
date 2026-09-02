@@ -70,7 +70,7 @@ foram removidos por serem duplicatas exatas.
 
 O sexto notebook é uma etapa exploratória sobre a superfície das citações da
 revisão corrente do desafio. Ele lê somente os 26 arquivos `txt` e as 225 linhas
-do `goldenset.xlsx`, valida os 225 spans contra os offsets do texto e separa
+do `goldenset.csv`, valida os 225 spans contra os offsets do texto e separa
 explicitamente detecção, parsing e resolução; somente as duas primeiras são
 estudadas. A taxonomia textual cobre processos CNJ, processos ou recursos
 numerados, súmulas, referências jurisprudenciais contextuais ou gerais e três

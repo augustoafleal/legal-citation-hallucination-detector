@@ -193,7 +193,7 @@ class CitationParserUnitTests(unittest.TestCase):
 class CitationParserOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         parser = CitationParser()
         cls.rows = []

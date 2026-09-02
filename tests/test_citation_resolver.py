@@ -150,7 +150,7 @@ class CitationResolverUnitTests(unittest.TestCase):
 class CitationResolverOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         with connect_database(get_database_path(), read_only=True) as connection:
             cls.resolver = CitationResolver(case_index=build_case_index(connection), connection=connection)
