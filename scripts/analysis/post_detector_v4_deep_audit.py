@@ -20,7 +20,7 @@ import unicodedata
 from pathlib import Path
 from typing import Iterable, Mapping, Sequence
 
-from openpyxl import load_workbook
+import csv
 
 from bracis_jusbrasil.cases import CaseIndex, build_case_index
 from bracis_jusbrasil.cases.parser import parse_case_identity
@@ -181,29 +181,27 @@ class BaselineError(RuntimeError):
 
 
 def load_gold() -> list[GoldRow]:
-    workbook = load_workbook(DATASET_DIR / "goldenset.xlsx", read_only=True, data_only=True)
-    rows = list(workbook["goldenset"].iter_rows(values_only=True))
-    header = {str(value): index for index, value in enumerate(rows[0])}
     result: list[GoldRow] = []
-    for index, raw_values in enumerate(rows[1:]):
-        values = tuple(raw_values) + (None,) * (len(header) - len(raw_values))
-        raw_level = values[header["nivel"]]
-        level = str(int(raw_level)) if isinstance(raw_level, (int, float)) else str(raw_level).removeprefix("N")
-        raw_id = values[header["id_canonico"]]
-        result.append(
-            GoldRow(
-                index=index,
-                gid=str(values[header["citacao_id"]]),
-                level=f"N{level}",
-                document_id=str(values[header["documento_id"]]),
-                start=int(values[header["inicio"]]),
-                end=int(values[header["fim"]]),
-                text=str(values[header["trecho"]]).replace("\\n", "\n"),
-                citation_type=str(values[header["tipo"]]),
-                classification=str(values[header["classificacao"]]),
-                canonical_id=None if raw_id is None else int(raw_id),
+    with (DATASET_DIR / "goldenset.csv").open(encoding="utf-8", newline="") as stream:
+        rows = csv.DictReader(stream)
+        for index, values in enumerate(rows):
+            raw_level = values["nivel"]
+            level = str(raw_level).removeprefix("N")
+            raw_id = values["id_canonico"].strip()
+            result.append(
+                GoldRow(
+                    index=index,
+                    gid=str(values["citacao_id"]),
+                    level=f"N{level}",
+                    document_id=str(values["documento_id"]),
+                    start=int(values["inicio"]),
+                    end=int(values["fim"]),
+                    text=str(values["trecho"]).replace("\\n", "\n"),
+                    citation_type=str(values["tipo"]),
+                    classification=str(values["classificacao"]),
+                    canonical_id=None if not raw_id else int(raw_id),
+                )
             )
-        )
     return result
 
 

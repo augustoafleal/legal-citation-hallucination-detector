@@ -24,9 +24,9 @@ import official_kaggle_metric_audit as official  # noqa: E402
 import post_resolver_v3_remaining_audit as post  # noqa: E402
 
 OUT = ROOT / "artifacts" / "classification_metric_audit.json"
-EXPECTED_SCORE = 0.4580715948875153
-EXPECTED_DETECTOR = (211, 127, 84, 98, 73)
-EXPECTED_POST = (60, 206, 0, 0, 0)
+EXPECTED_SCORE = 0.48365269398459604
+EXPECTED_DETECTOR = (219, 137, 82, 88, 83)
+EXPECTED_POST = (67, 214, 0, 0, 0)
 CLASSES = ("real", "inventada", "incompleta")
 STATUSES = ("resolved", "no_match", "ambiguous", "insufficient")
 
@@ -310,8 +310,8 @@ def main() -> int:
             "oracle_gain": {"matched_gold_labels_oracle_score": oracle_score, "delta_vs_P0": oracle_score - p0_score, "type": "ORACLE ONLY; uses gold class only for upper-bound evaluation, never as feature"},
             "human_review_candidates": {"count": len(review), "guidance": "PROCURE identificador suficiente, número completo, tribunal/UF/classe, unicidade, zero candidatos por inexistência versus limitação técnica", "cases": review},
             "detector_comparison": {"residual_cases": len(residual), "residual_marginal_deltas": residual_deltas, "residual_total_independent_marginal": sum(residual_deltas), "classification_safe_delta": p3["delta_vs_P0"], "comparison": "classification safe gain is compared to detector residual oracle marginals; independent deltas are not additive global gains"},
-            "recommendation": {"next_front_decision": "BOTH_NEED_MORE_EVIDENCE", "human_review_timing": "REVIEW_7_NOW", "primary_metric": "official Kaggle score", "hard_constraint": "false_real_inventada=false_real_incompleta=wrong_unique_real=0", "reason": "P3 gives a small closed-set gain, but it is supported by only two documents and depends on an analytic legal lookup absent from production; review the seven detector residuals while validating classification on blind data", "roadmap": {"NOW": "review the 7 detector residual cases, with the 2 prefix cases first", "THEN": "blind-set validation of the explicit law-number/year rule; do not implement yet", "LATER_IF_NEEDED": "implement only a structurally justified classifier if safety and external validation persist"}},
-            "validation": {"tests": "82/82 OK after CSV migration", "compileall": "PASS", "database_inspection": "PASS; PRAGMA integrity_check=ok", "official_scorer": p0_score, "mkdocs": "PASS --strict", "git_diff_check": "PASS", "determinism": {"runs": 3, "identical": True}, "production_changed": False, "dataset_changed": False},
+            "recommendation": {"next_front_decision": "DETECTOR_V5_PROMOTED", "human_review_timing": "COMPLETED", "primary_metric": "official Kaggle score", "hard_constraint": "false_real_inventada=false_real_incompleta=wrong_unique_real=0", "reason": "The seven detector residuals were validated and the user authorized promotion; P3 classification remains an analytical candidate requiring blind validation.", "roadmap": {"NOW": "use CitationDetector V5 and preserve its safety guards", "THEN": "blind-set validation of the explicit law-number/year rule; do not implement yet", "LATER_IF_NEEDED": "implement only a structurally justified classifier if safety and external validation persist"}},
+            "validation": {"tests": "82/82 OK after CSV migration", "compileall": "PASS", "database_inspection": "PASS; PRAGMA integrity_check=ok", "official_scorer": p0_score, "mkdocs": "PASS --strict", "git_diff_check": "PASS", "determinism": {"runs": 3, "identical": True}, "production_changed": True, "dataset_changed": False},
         }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")

@@ -181,11 +181,10 @@ class CitationDetectorTests(unittest.TestCase):
                 self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
                 self.assertEqual(candidate.text, text[candidate.start:candidate.end])
 
-    def test_h1_rejects_narrative_delimiters_and_newline_compound_titles(self) -> None:
+    def test_h1_rejects_narrative_delimiters(self) -> None:
         examples = (
             ("A discussão sobre Agravo genérico antecede o REsp nº 123456.", False),
             ("Agravo em; REsp nº 123456.", False),
-            ("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA", True),
         )
         for text, no_candidate in examples:
             with self.subTest(text=text):
@@ -238,15 +237,77 @@ class CitationDetectorTests(unittest.TestCase):
                 self.assertNotIn("X5", candidate.text)
                 self.assertNotIn("O5", candidate.text)
 
-    def test_h4_cnj_and_h5_compound_title_remain_outside_v4(self) -> None:
-        self.assertEqual(self.detector.detect("AgInt No 7000553-0320217000000"), ())
-        self.assertEqual(
-            self.detector.detect("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA"),
-            (),
+    def test_v5_promotes_human_reviewed_residual_structures(self) -> None:
+        examples = (
+            ("Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000", "processo_cnj"),
+            ("Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000", "processo_cnj"),
+            ("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA", "processo_ou_recurso_numerado"),
+            ("RHC nº\n88.033/RS", "processo_ou_recurso_numerado"),
+            ("AR\nn. 2785 (SP)", "processo_ou_recurso_numerado"),
+            ("RMS Nº  67109-TO", "processo_ou_recurso_numerado"),
+            ("AgInt No 7000553-0320217000000", "processo_ou_recurso_numerado"),
         )
+        for text, family in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.family == family]
+                self.assertEqual(len(candidates), 1)
+                self.assertEqual(candidates[0].text, text)
+                self.assertEqual(candidates[0].text, text[candidates[0].start:candidates[0].end])
+
+    def test_v5_formal_cnj_prefix_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: prefixo narrativo não atravessa sentença até o CNJ."""
+        text = (
+            "Recurso Especial Eleitoral nº foi mencionado. "
+            "Autos 1234567-89.2020.1.23.4567"
+        )
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        candidate = candidates[0]
+        self.assertEqual(candidate.text, "1234567-89.2020.1.23.4567")
+        self.assertEqual(candidate.family, "processo_cnj")
+        self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+
+    def test_v5_newline_boundary_regression(self) -> None:
+        """BOUNDARY_REGRESSION: RHC não atravessa narrativa após newline."""
+        text = "RHC\nfoi citado no relatório antes do nº 88.033/RS."
+        self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_modifier_direct_number_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: ordinal narrativo não é identificador processual."""
+        text = "AgInt No 12ª sessão da pauta."
+        self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_modifier_cnj_interaction_regression(self) -> None:
+        """PARSER_SCOPE_REGRESSION: CNJ formatado fica somente na família CNJ."""
+        text = "AgInt No 1234567-89.2020.1.23.4567"
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0].family, "processo_cnj")
+        self.assertEqual(candidates[0].text, "1234567-89.2020.1.23.4567")
+
+    def test_v5_compound_title_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: cadeia parcial ou sem número não é título formal."""
+        examples = (
+            "O agravo interno debateu a suspensão de liminar e de sentença, sem número.",
+            "Agravo Interno na Suspensão Liminar nº 12",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_header_distractor_regression(self) -> None:
+        """HEADER_DISTRACTOR: números administrativos não ativam extensões V5."""
+        text = (
+            "Processo nº 1234567-89.2020.1.23.4567; protocolo 2024; "
+            "OAB 12345; fls. 12; AgInt No 1º da pauta."
+        )
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0].family, "processo_cnj")
+        self.assertEqual(candidates[0].text, "1234567-89.2020.1.23.4567")
 
 
-class CitationDetectorV4Tests(unittest.TestCase):
+class CitationDetectorV5Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
@@ -263,18 +324,18 @@ class CitationDetectorV4Tests(unittest.TestCase):
         cls.predictions["nivel"] = cls.predictions["documento_id"].map(gold.drop_duplicates("documento_id").set_index("documento_id")["nivel"])
         cls.matches = greedy_match(gold, cls.predictions)
 
-    def test_v4_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 211)
+    def test_v5_candidate_count_offsets_and_exact_matches(self) -> None:
+        self.assertEqual(len(self.predictions), 219)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 127)
-        self.assertEqual(int(self.matches["exact"].sum()), 73)
+        self.assertEqual(len(self.matches), 137)
+        self.assertEqual(int(self.matches["exact"].sum()), 83)
 
-    def test_v4_metrics_by_level_and_type(self) -> None:
+    def test_v5_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (127, 84, 98)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (76, 42, 40)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (51, 42, 58)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (111, 57, 75)),
+            "global": (self.gold, self.predictions, (137, 82, 88)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (83, 40, 33)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (54, 42, 55)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (121, 55, 65)),
             "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 23)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
@@ -287,20 +348,20 @@ class CitationDetectorV4Tests(unittest.TestCase):
         new_predictions = self.predictions.loc[self.predictions["rule"].eq("jurisprudencia_geral")]
         new_matches = self.matches.loc[self.matches["pred_idx"].isin(new_predictions["pred_idx"])]
 
-        self.assertEqual(len(v1_predictions), 199)
+        self.assertEqual(len(v1_predictions), 207)
         self.assertEqual(
             v1_predictions.groupby("rule").size().to_dict(),
             {
                 "cnj": 51,
                 "dispositivo_legal": 28,
                 "lei_com_diploma": 15,
-                "processo_ou_recurso": 66,
+                "processo_ou_recurso": 74,
                 "sumula_numerada": 10,
                 "tribunal_contextual": 29,
             },
         )
-        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (115, 84, 110))
-        self.assertEqual(int(v1_matches["exact"].sum()), 67)
+        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (125, 82, 100))
+        self.assertEqual(int(v1_matches["exact"].sum()), 77)
         self.assertEqual(len(new_predictions), 12)
         self.assertEqual(len(new_matches), 12)
         self.assertTrue(set(v1_matches["gold_idx"]).issubset(set(self.matches["gold_idx"])))

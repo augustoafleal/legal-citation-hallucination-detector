@@ -297,3 +297,15 @@ metadata legal estruturada, o pool semântico/contextual, LOODO e uma lista
 reduzida para revisão humana. O notebook permanece evidência histórica anterior
 à promoção; CNJ, estratégias legais e resolução semântica continuam fora de
 produção.
+
+### Atualização posterior: CitationDetector V5
+
+Após a revisão humana dos sete residuais do Detector, os padrões foram
+promovidos com guards estruturais ao componente de produção. A V5 recupera
+prefixos formais de CNJ, `RHC`/`RMS`/`AR` com marcador e quebra de linha local,
+modificadores processuais seguidos diretamente de identificador não-CNJ e o
+título composto de agravo interno/suspensão. No corpus congelado, o resultado
+passou de 127 TP / 84 FP / 98 FN na V4 para 137 TP / 82 FP / 88 FN na V5,
+sem `wrong_unique_real`, `false_real_inventada` ou `false_real_incompleta` no
+pipeline completo. A decisão está registrada em
+`artifacts/detector_residual_human_review.json`.

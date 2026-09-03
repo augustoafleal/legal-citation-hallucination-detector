@@ -1,8 +1,8 @@
 """Auditoria pós-Resolver V3 dos reais ainda não recuperados.
 
 Este módulo é deliberadamente read-only em relação à produção: ele recompõe a
-pipeline Detector V4 -> Parser contextual -> Resolver V3 -> arbitragem,
-calcula os 36 reais restantes por matching IoU determinístico e registra apenas
+pipeline Detector V5 -> Parser contextual -> Resolver V3 -> arbitragem,
+calcula os 29 reais restantes por matching IoU determinístico e registra apenas
 artefatos de análise em ``artifacts/``.
 """
 
@@ -582,8 +582,8 @@ def recovery_ladder(
     # uma representação manual extra que seja justificável sem nova capacidade.
     # ``oracle_correct`` é a execução de superfícies gold isoladas e não pode
     # substituir a baseline: ela perde quatro ganhos já produzidos por merge.
-    # A ladder cumulativa preserva os 60 outputs atuais e adiciona somente os
-    # sete restantes que a superfície oracle resolve com o pipeline vigente.
+    # A ladder cumulativa começa na V5 atual; os sete residuais revisados já
+    # foram promovidos e não são contados novamente como ganho oracle.
     detector_cumulative = current_correct + detector_gain
     return [
         {"stage": "current full pipeline", "newly_recovered": 0, "cumulative": current_correct},
@@ -642,8 +642,8 @@ def build_payload() -> dict[str, object]:
                 for item, index in ((item, raw_matches[item.index]) for item in gold if item.index in raw_matches)
             ),
         }
-        if tuple(detector[key] for key in ("predictions", "TP", "FP", "FN", "exact")) != (211, 127, 84, 98, 73):
-            raise BaselineError(f"Detector V4 divergente: {detector}")
+        if tuple(detector[key] for key in ("predictions", "TP", "FP", "FN", "exact")) != (219, 137, 82, 88, 83):
+            raise BaselineError(f"Detector V5 divergente: {detector}")
         before_matches = deep.match_predictions(gold, [
             deep.Prediction(item.index, item.document_id, item.candidate.start, item.candidate.end, item.candidate.text, item.candidate.rule, item.candidate.family, item.parsed, item.result)
             for item in raw
@@ -654,10 +654,10 @@ def build_payload() -> dict[str, object]:
             for item in gold if item.index in before_matches
         )
         after = output_metrics(gold, outputs)
-        if (before_correct, after["correct_ids"], after["outputs"], after["wrong_unique_real"], after["false_real_inventada"], after["false_real_incompleta"], after["duplicate_resolved_outputs"]) != (56, 60, 206, 0, 0, 0, 0):
+        if (before_correct, after["correct_ids"], after["outputs"], after["wrong_unique_real"], after["false_real_inventada"], after["false_real_incompleta"], after["duplicate_resolved_outputs"]) != (63, 67, 214, 0, 0, 0, 0):
             raise BaselineError(f"baseline V3/arbitragem divergente: before={before_correct}, after={after}")
         remaining = remaining_inventory(gold, texts, raw, outputs, resolver)
-        if len(remaining) != 36:
+        if len(remaining) != 29:
             raise BaselineError(f"remaining real divergente: {len(remaining)}")
         diagnostics = diagnostic_lists(remaining, connection)
         numbered_guard_outputs, numbered_guard_changes = numbered_primary_class_guard(outputs, resolver)
@@ -666,7 +666,7 @@ def build_payload() -> dict[str, object]:
             len(numbered_guard_changes), numbered_guard_metrics["correct_ids"],
             numbered_guard_metrics["wrong_unique_real"], numbered_guard_metrics["false_real_inventada"],
             numbered_guard_metrics["false_real_incompleta"], numbered_guard_metrics["duplicate_resolved_outputs"],
-        ) != (0, 60, 0, 0, 0, 0):
+        ) != (0, 67, 0, 0, 0, 0):
             raise BaselineError(f"experimento class guard divergente: {numbered_guard_changes} / {numbered_guard_metrics}")
         legal_records_value = legal_records(connection)
         indexes = legal_indexes(legal_records_value)
@@ -741,10 +741,10 @@ def build_payload() -> dict[str, object]:
             },
             "remaining_real": remaining,
             **categories,
-            "recovery_ladder": recovery_ladder(gold, texts, resolver, int(after["correct_ids"]), 7, 0),
+            "recovery_ladder": recovery_ladder(gold, texts, resolver, int(after["correct_ids"]), 0, 0),
             "detector": {
                 "first_blocked": sum(item["first_blocker"].startswith("detector_") for item in remaining),
-                "immediate_gain": 7, "deferred_gain": 19, "saturation": "nearing saturation",
+                "immediate_gain": 0, "deferred_gain": 19, "saturation": "nearing saturation",
             },
             "parser": {
                 "immediate_gain": 0, "conditional_gain": 1,
@@ -780,7 +780,7 @@ def build_payload() -> dict[str, object]:
             "path_comparison": [
                 {"path": "numbered primary-class guard", "cases": 1, "safe_gain": 1, "plausible_gain": 1, "risk": "LOW", "complexity": "LOW", "roi": "HIGH", "generalization": "MODERATE"},
                 {"path": "canonical legal/corpus identity", "cases": 14, "safe_gain": 0, "plausible_gain": 14, "risk": "MEDIUM", "complexity": "HIGH", "roi": "MEDIUM", "generalization": "HIGH if source identity exists"},
-                {"path": "detector residual", "cases": 26, "safe_gain": 0, "plausible_gain": 5, "risk": "MEDIUM", "complexity": "MEDIUM", "roi": "MEDIUM", "generalization": "LOW/MODERATE"},
+                {"path": "detector residual", "cases": 19, "safe_gain": 0, "plausible_gain": 19, "risk": "MEDIUM", "complexity": "MEDIUM", "roi": "MEDIUM", "generalization": "LOW/MODERATE"},
                 {"path": "sumula metadata", "cases": 2, "safe_gain": 0, "plausible_gain": 2, "risk": "MEDIUM", "complexity": "MEDIUM", "roi": "LOW", "generalization": "LOW"},
                 {"path": "terminal OCR context repair", "cases": 1, "safe_gain": 0, "plausible_gain": 1, "risk": "MEDIUM", "complexity": "LOW", "roi": "LOW", "generalization": "LOW"},
                 {"path": "selective classification", "cases": 12, "safe_gain": 0, "plausible_gain": 12, "risk": "LOW on closed set", "complexity": "LOW", "roi": "MEDIUM", "generalization": "requires blind validation"},

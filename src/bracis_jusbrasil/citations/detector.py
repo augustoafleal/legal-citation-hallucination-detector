@@ -14,7 +14,7 @@ _TRIBUNAL_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _PROCESS_CLASS_PATTERN = re.compile(
-    r"\b(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|Agravo|Recurso Especial|Recurso Extraordinário|Habeas Corpus|Reclamação)\b",
+    r"\b(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|RHC|RMS|AR|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|Agravo|Recurso Especial|Recurso Extraordinário|Habeas Corpus|Reclamação)\b",
     re.IGNORECASE,
 )
 _SUMULA_PATTERN = re.compile(
@@ -38,13 +38,21 @@ _UF_CODES = (
     "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR "
     "SC SP SE TO"
 ).split()
+_V5_PROCESS_PATTERN = re.compile(
+    r"\b(?:RHC|RMS|AR)\s*(?:n[ºo.]?\s*)?[ \t\u00a0]*(?:\n[ \t\u00a0]*)?"
+    r"\d[\d.\-/ \t\u00a0]*\d"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
+    re.IGNORECASE,
+)
 _PROCESS_UF_TAIL = re.compile(
     r"^[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
     + "|".join(_UF_CODES)
     + r")(?:[ \t\u00a0]*\))?\b"
 )
 
-# V4 keeps the experimental mechanisms deliberately narrow.  These patterns
+# V5 keeps the experimental mechanisms deliberately narrow.  These patterns
 # are structural extensions of an already numbered process candidate; they
 # are not general legal-language or OCR normalizers.
 _H1_PREFIX_CHAIN = re.compile(
@@ -73,6 +81,34 @@ _H3_OCR_NUMERIC_TAIL = re.compile(
     r"(?:[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
     + "|".join(_UF_CODES)
     + r")(?:[ \t\u00a0]*\))?)?)\b",
+    re.IGNORECASE,
+)
+_V5_CNJ_PROCEDURAL_PREFIX = re.compile(
+    r"(?P<prefix>(?<!\w)(?:"
+    r"Recurso[ \t\u00a0]+Especial[ \t\u00a0]+Eleitoral|"
+    r"Agravo[ \t\u00a0]+Regimental[ \t\u00a0]+no[ \t\u00a0]+"
+    r"Agravo[ \t\u00a0]+de[ \t\u00a0]+Instrumento"
+    r")[ \t\u00a0]+n(?:[º°.]|o)?[ \t\u00a0]*)$",
+    re.IGNORECASE,
+)
+_V5_STANDALONE_MODIFIER = re.compile(
+    r"\b(?:AgInt|AgRg|EDcl|ED)\s+n(?:[º°.]|o)?[ \t\u00a0]+"
+    r"(?P<number>\d[\d.\-/ \t\u00a0]*\d)"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
+    re.IGNORECASE,
+)
+_V5_COMPOUND_PROCEDURE_TITLE = re.compile(
+    r"\bAgravo[ \t\u00a0\r\n]+Interno[ \t\u00a0\r\n]+n(?:a|o)[ \t\u00a0\r\n]+"
+    r"Suspens[aã]o[ \t\u00a0\r\n]+de[ \t\u00a0\r\n]+"
+    r"(?:Liminar(?:[ \t\u00a0\r\n]+e[ \t\u00a0\r\n]+de[ \t\u00a0\r\n]+Senten[cç]a|)|"
+    r"Seguran[cç]a)[ \t\u00a0\r\n]*"
+    r"n(?:[º°.]|o)?[ \t\u00a0\r\n]*(?:\n[ \t\u00a0]*)?"
+    r"\d[\d.\-/ \t\u00a0]*\d"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
     re.IGNORECASE,
 )
 _LAW_WITH_DIPLOMA_PATTERN = re.compile(
@@ -140,7 +176,7 @@ def _family_for(text: str, citation_type: str) -> str:
 
 
 class CitationDetector:
-    """Encontra candidatos V3 sem consultar corpus ou índice de casos."""
+    """Encontra candidatos V5 sem consultar corpus ou índice de casos."""
 
     def detect(self, text: str) -> tuple[CitationCandidate, ...]:
         """Retorna candidatos ordenados, deduplicados por intervalo exato."""
@@ -163,10 +199,16 @@ class CitationDetector:
         candidates = [
             self._expand_process_uf(candidate, text) for candidate in candidates
         ]
+        candidates.extend(self._detect_v5_process_forms(text))
+        candidates = [
+            self._expand_cnj_prefix(candidate, text) for candidate in candidates
+        ]
         candidates = [
             self._expand_process_prefix(candidate, text) for candidate in candidates
         ]
         candidates.extend(self._detect_dotted_classes(text))
+        candidates.extend(self._detect_v5_standalone_modifiers(text))
+        candidates.extend(self._detect_v5_compound_titles(text))
         candidates = [
             self._expand_process_ocr_tail(candidate, text) for candidate in candidates
         ]
@@ -176,6 +218,38 @@ class CitationDetector:
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _detect_v5_process_forms(text: str) -> list[CitationCandidate]:
+        """Detecta RHC, RMS e AR com marcador/número local e UF opcional."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="processo_ou_recurso",
+                family="processo_ou_recurso_numerado",
+            )
+            for match in _V5_PROCESS_PATTERN.finditer(text)
+        ]
+
+    @staticmethod
+    def _expand_cnj_prefix(candidate: CitationCandidate, text: str) -> CitationCandidate:
+        """Expande um CNJ por um título processual formal imediatamente anterior."""
+        if candidate.rule != "cnj" or candidate.family != "processo_cnj":
+            return candidate
+        window_start = max(0, candidate.start - 120)
+        match = _V5_CNJ_PROCEDURAL_PREFIX.search(text[window_start : candidate.start])
+        if match is None:
+            return candidate
+        start = window_start + match.start("prefix")
+        return CitationCandidate(
+            start=start,
+            end=candidate.end,
+            text=text[start : candidate.end],
+            rule=candidate.rule,
+            family=candidate.family,
+        )
 
     @staticmethod
     def _expand_process_uf(candidate: CitationCandidate, text: str) -> CitationCandidate:
@@ -229,6 +303,39 @@ class CitationDetector:
                 family="processo_ou_recurso_numerado",
             )
             for match in _H2_DOTTED_CLASS.finditer(text)
+        ]
+
+    @staticmethod
+    def _detect_v5_standalone_modifiers(text: str) -> list[CitationCandidate]:
+        """Detecta modificador processual seguido diretamente de identificador."""
+        candidates = []
+        for match in _V5_STANDALONE_MODIFIER.finditer(text):
+            number = match.group("number")
+            if _CNJ_PATTERN.fullmatch(number):
+                continue
+            candidates.append(
+                CitationCandidate(
+                    start=match.start(),
+                    end=match.end(),
+                    text=match.group(0),
+                    rule="processo_ou_recurso",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _detect_v5_compound_titles(text: str) -> list[CitationCandidate]:
+        """Detecta títulos compostos de agravo com marcador numérico local."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="processo_ou_recurso",
+                family="processo_ou_recurso_numerado",
+            )
+            for match in _V5_COMPOUND_PROCEDURE_TITLE.finditer(text)
         ]
 
     @staticmethod

@@ -3,27 +3,22 @@
     {
       "count": 16,
       "name": "CaseIndex/corpus identity",
-      "percent": 44.44
+      "percent": 55.17
     },
     {
       "count": 10,
       "name": "None/irreducible",
-      "percent": 27.78
-    },
-    {
-      "count": 7,
-      "name": "Detector",
-      "percent": 19.44
+      "percent": 34.48
     },
     {
       "count": 2,
       "name": "Corpus enrichment",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 1,
       "name": "Parser",
-      "percent": 2.78
+      "percent": 3.45
     }
   ],
   "ambiguity": [
@@ -53,7 +48,7 @@
       "documento": "gen_n1_012",
       "emitted": {
         "family": "processo_cnj",
-        "index": 101,
+        "index": 106,
         "parsed": {
           "data": {
             "numero_family": "cnj",
@@ -83,7 +78,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          103
+          108
         ],
         "span": [
           1222,
@@ -134,7 +129,7 @@
       "related_candidates": [
         {
           "family": "processo_cnj",
-          "index": 103,
+          "index": 108,
           "iou": 0.84,
           "parsed": {
             "data": {
@@ -199,7 +194,7 @@
       "documento": "gen_n1_012",
       "emitted": {
         "family": "processo_cnj",
-        "index": 105,
+        "index": 110,
         "parsed": {
           "data": {
             "classe_raw": "RR",
@@ -231,7 +226,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          107
+          112
         ],
         "span": [
           2062,
@@ -284,7 +279,7 @@
       "related_candidates": [
         {
           "family": "processo_ou_recurso_numerado",
-          "index": 106,
+          "index": 111,
           "iou": 0.47619,
           "parsed": {
             "data": {
@@ -314,7 +309,7 @@
         },
         {
           "family": "processo_cnj",
-          "index": 107,
+          "index": 112,
           "iou": 0.547619,
           "parsed": {
             "data": {
@@ -366,38 +361,38 @@
     },
     "dataset_sha256": "d759681be82ee00f383b49a5c76c42dd475564e042272e00730252468dcb6e71",
     "detector": {
-      "FN": 98,
-      "FP": 84,
-      "TP": 127,
-      "exact": 73,
-      "predictions": 211
+      "FN": 88,
+      "FP": 82,
+      "TP": 137,
+      "exact": 83,
+      "predictions": 219
     },
     "post_arbitration": {
-      "correct_ids": 60,
+      "correct_ids": 67,
       "duplicate_resolved_outputs": 0,
-      "exact": 75,
+      "exact": 85,
       "false_real_incompleta": 0,
       "false_real_inventada": 0,
-      "outputs": 206,
+      "outputs": 214,
       "wrong_unique_real": 0
     },
-    "resolver_v3_before_arbitration_correct": 56
+    "resolver_v3_before_arbitration_correct": 63
   },
   "classification_baseline": {
-    "outputs_with_gold_match": 127,
+    "outputs_with_gold_match": 137,
     "rules": [
       {
-        "correct": 60,
+        "correct": 67,
         "precision": 1.0,
         "rule": "resolved -> real",
-        "support": 60,
+        "support": 67,
         "wrong": 0
       },
       {
-        "correct": 33,
-        "precision": 0.916667,
+        "correct": 36,
+        "precision": 0.923077,
         "rule": "no_match -> inventada",
-        "support": 36,
+        "support": 39,
         "wrong": 3
       },
       {
@@ -431,28 +426,28 @@
       "inventada": {
         "ambiguous": 0,
         "insufficient": 11,
-        "missing": 20,
-        "no_match": 33,
+        "missing": 17,
+        "no_match": 36,
         "resolved": 0
       },
       "real": {
         "ambiguous": 2,
         "insufficient": 6,
-        "missing": 25,
+        "missing": 18,
         "no_match": 3,
-        "resolved": 60
+        "resolved": 67
       }
     },
     "span_readiness": {
       "incompleta": 12,
-      "inventada": 44,
-      "real": 71
+      "inventada": 47,
+      "real": 78
     },
     "type_readiness": {
       "jurisprudencia": {
         "gold": 186,
-        "matched": 111,
-        "real_correct": 60
+        "matched": 121,
+        "real_correct": 67
       },
       "lei": {
         "gold": 39,
@@ -464,92 +459,6 @@
   },
   "cnj_residual": {
     "cases": [
-      {
-        "actionable_component": "Detector",
-        "candidate_metadata": [],
-        "context": " equivocada. Vale invocar o\nAgR-REspe 378-82.2016.6.05.0151, de clareza solar quanto ao ponto ora debatido. Nem se diga\nque a hipótese comportaria distinção. Reforça o argumento o Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000,\nde resto amplamente conhecido no foro.\n\nI — DA CONTROVÉRSIA\n\nA representação foi ajuizada durante o período eleitoral de 24 de fevereiro de 2021, sob a alegação\nde que o representado teria oferecido vantagem pecuniária",
-        "documento": "gen_n1_006",
-        "emitted": null,
-        "emitted_iou": null,
-        "first_blocker": "detector_boundary",
-        "gid": "g2",
-        "gold_family": "processo_cnj",
-        "gold_id": 375394498,
-        "gold_index": 44,
-        "gold_span": [
-          657,
-          709
-        ],
-        "gold_text": "Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000",
-        "nivel": "N1",
-        "oracle": {
-          "parsed": {
-            "data": {
-              "numero_family": "cnj",
-              "numero_normalizado": "21377320146210000",
-              "numero_raw": "2137-73.2014.6.21.0000"
-            },
-            "family": "processo_cnj",
-            "provenance": {
-              "numero": "normalized"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              375394498
-            ],
-            "id_canonico": 375394498,
-            "reason": "cnj_primary_unique",
-            "record_type": "acordao",
-            "status": "resolved",
-            "strategy": "cnj_primary_identity"
-          }
-        },
-        "related_candidates": [
-          {
-            "family": "processo_cnj",
-            "index": 47,
-            "iou": 0.423077,
-            "parsed": {
-              "data": {
-                "numero_family": "cnj",
-                "numero_normalizado": "21377320146210000",
-                "numero_raw": "2137-73.2014.6.21.0000"
-              },
-              "family": "processo_cnj",
-              "provenance": {
-                "numero": "normalized"
-              },
-              "tipo": "jurisprudencia",
-              "tribunal": null,
-              "tribunal_raw": null,
-              "tribunal_source": "unknown"
-            },
-            "resolution": {
-              "candidate_ids": [
-                375394498
-              ],
-              "id_canonico": 375394498,
-              "reason": "cnj_primary_unique",
-              "record_type": "acordao",
-              "status": "resolved",
-              "strategy": "cnj_primary_identity"
-            },
-            "rule": "cnj",
-            "span": [
-              687,
-              709
-            ],
-            "text": "2137-73.2014.6.21.0000"
-          }
-        ],
-        "required_capability": "detector change",
-        "root_cause": "detector_residual"
-      },
       {
         "actionable_component": "CaseIndex/corpus identity",
         "candidate_metadata": [
@@ -576,7 +485,7 @@
         "documento": "gen_n1_012",
         "emitted": {
           "family": "processo_cnj",
-          "index": 101,
+          "index": 106,
           "parsed": {
             "data": {
               "numero_family": "cnj",
@@ -606,7 +515,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            103
+            108
           ],
           "span": [
             1222,
@@ -657,7 +566,7 @@
         "related_candidates": [
           {
             "family": "processo_cnj",
-            "index": 103,
+            "index": 108,
             "iou": 0.84,
             "parsed": {
               "data": {
@@ -722,7 +631,7 @@
         "documento": "gen_n1_012",
         "emitted": {
           "family": "processo_cnj",
-          "index": 105,
+          "index": 110,
           "parsed": {
             "data": {
               "classe_raw": "RR",
@@ -754,7 +663,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            107
+            112
           ],
           "span": [
             2062,
@@ -807,7 +716,7 @@
         "related_candidates": [
           {
             "family": "processo_ou_recurso_numerado",
-            "index": 106,
+            "index": 111,
             "iou": 0.47619,
             "parsed": {
               "data": {
@@ -837,7 +746,7 @@
           },
           {
             "family": "processo_cnj",
-            "index": 107,
+            "index": 112,
             "iou": 0.547619,
             "parsed": {
               "data": {
@@ -879,99 +788,13 @@
         "root_cause": "corpus_duplicate"
       },
       {
-        "actionable_component": "Detector",
-        "candidate_metadata": [],
-        "context": "e firmou orientação hoje pacificada. A doutrina especializada\nacompanha, sem divergência relevante, esse entendimento. O acórdão recorrido diverge frontalmente\ndo que assentado no Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000.\n\nIV — DA IMPOSSIBILIDADE DE REEXAME FÁTICO\n\nSustenta o recorrente que a decisão regional divergiu da orientação firmada pela instância superior\nquanto ao alcance da inelegibilidade, motivo pelo qual requer o processame",
-        "documento": "gen_n1_013",
-        "emitted": null,
-        "emitted_iou": null,
-        "first_blocker": "detector_boundary",
-        "gid": "g7",
-        "gold_family": "processo_cnj",
-        "gold_id": 1931806554,
-        "gold_index": 114,
-        "gold_span": [
-          2532,
-          2603
-        ],
-        "gold_text": "Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000",
-        "nivel": "N1",
-        "oracle": {
-          "parsed": {
-            "data": {
-              "numero_family": "cnj",
-              "numero_normalizado": "06062521120186260000",
-              "numero_raw": "0606252-11.2018.6.26.0000"
-            },
-            "family": "processo_cnj",
-            "provenance": {
-              "numero": "normalized"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              1931806554
-            ],
-            "id_canonico": 1931806554,
-            "reason": "cnj_primary_unique",
-            "record_type": "acordao",
-            "status": "resolved",
-            "strategy": "cnj_primary_identity"
-          }
-        },
-        "related_candidates": [
-          {
-            "family": "processo_cnj",
-            "index": 116,
-            "iou": 0.352113,
-            "parsed": {
-              "data": {
-                "numero_family": "cnj",
-                "numero_normalizado": "06062521120186260000",
-                "numero_raw": "0606252-11.2018.6.26.0000"
-              },
-              "family": "processo_cnj",
-              "provenance": {
-                "numero": "normalized"
-              },
-              "tipo": "jurisprudencia",
-              "tribunal": null,
-              "tribunal_raw": null,
-              "tribunal_source": "unknown"
-            },
-            "resolution": {
-              "candidate_ids": [
-                1931806554
-              ],
-              "id_canonico": 1931806554,
-              "reason": "cnj_primary_unique",
-              "record_type": "acordao",
-              "status": "resolved",
-              "strategy": "cnj_primary_identity"
-            },
-            "rule": "cnj",
-            "span": [
-              2578,
-              2603
-            ],
-            "text": "0606252-11.2018.6.26.0000"
-          }
-        ],
-        "required_capability": "detector change",
-        "root_cause": "detector_residual"
-      },
-      {
         "actionable_component": "None/irreducible",
         "candidate_metadata": [],
         "context": "esignação. A hipótese atrai a incidência do art 60 da Lei nº 13.467/2017. Ainda que assim não\nfosse, subsiste fundamento autônomo a amparar a pretensão. Confirã-se, a propósito,\no TST-AgARR-25823-78.2015.5.24.\n0091.\n\nIII — DOS PRECEDENTES INVOCADOS\n\nO reclamante foi admitido em 16 de outubro de 2023 para exercer a\nfunção de operador de produção, tendo sido dispensado sem justa causa após\nperíodo contratual superior a cinco anos. P",
         "documento": "gen_n2_005",
         "emitted": {
           "family": "processo_cnj",
-          "index": 146,
+          "index": 151,
           "parsed": {
             "data": {
               "classe_raw": "AgARR",
@@ -1000,7 +823,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            150
+            155
           ],
           "span": [
             1911,
@@ -1050,7 +873,7 @@
         "related_candidates": [
           {
             "family": "jurisprudencia_tribunal_contextual",
-            "index": 149,
+            "index": 154,
             "iou": 0.676471,
             "parsed": {
               "data": {
@@ -1082,7 +905,7 @@
           },
           {
             "family": "processo_cnj",
-            "index": 150,
+            "index": 155,
             "iou": 0.705882,
             "parsed": {
               "data": {
@@ -1125,17 +948,12 @@
       {
         "count": 2,
         "name": "ambiguous",
-        "percent": 40.0
-      },
-      {
-        "count": 2,
-        "name": "missing",
-        "percent": 40.0
+        "percent": 66.67
       },
       {
         "count": 1,
         "name": "insufficient",
-        "percent": 20.0
+        "percent": 33.33
       }
     ],
     "verdict": "mostly closed"
@@ -1165,13 +983,6 @@
       "component": "None/irreducible",
       "plausible_gain": 0,
       "root_cause": "unsupported_reference_family",
-      "safe_known_gain": 0
-    },
-    {
-      "cases": 7,
-      "component": "Detector",
-      "plausible_gain": 7,
-      "root_cause": "detector_residual",
       "safe_known_gain": 0
     },
     {
@@ -1205,8 +1016,8 @@
   ],
   "detector": {
     "deferred_gain": 19,
-    "first_blocked": 26,
-    "immediate_gain": 7,
+    "first_blocked": 19,
+    "immediate_gain": 0,
     "saturation": "nearing saturation"
   },
   "determinism": {
@@ -1215,34 +1026,34 @@
   },
   "first_blockers": [
     {
-      "count": 14,
-      "name": "detector_miss",
-      "percent": 38.89
+      "count": 9,
+      "name": "detector_boundary",
+      "percent": 31.03
     },
     {
-      "count": 11,
-      "name": "detector_boundary",
-      "percent": 30.56
+      "count": 9,
+      "name": "detector_miss",
+      "percent": 31.03
     },
     {
       "count": 5,
       "name": "resolver_insufficient",
-      "percent": 13.89
+      "percent": 17.24
     },
     {
       "count": 3,
       "name": "resolver_no_match",
-      "percent": 8.33
+      "percent": 10.34
     },
     {
       "count": 2,
       "name": "resolver_ambiguous",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 1,
       "name": "detector_family",
-      "percent": 2.78
+      "percent": 3.45
     }
   ],
   "gold_issues": [
@@ -1252,7 +1063,7 @@
       "documento": "gen_n2_005",
       "emitted": {
         "family": "processo_cnj",
-        "index": 146,
+        "index": 151,
         "parsed": {
           "data": {
             "classe_raw": "AgARR",
@@ -1281,7 +1092,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          150
+          155
         ],
         "span": [
           1911,
@@ -1331,7 +1142,7 @@
       "related_candidates": [
         {
           "family": "jurisprudencia_tribunal_contextual",
-          "index": 149,
+          "index": 154,
           "iou": 0.676471,
           "parsed": {
             "data": {
@@ -1363,7 +1174,7 @@
         },
         {
           "family": "processo_cnj",
-          "index": 150,
+          "index": 155,
           "iou": 0.705882,
           "parsed": {
             "data": {
@@ -1873,7 +1684,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 65,
+            "index": 66,
             "iou": 0.177778,
             "parsed": {
               "data": {
@@ -1913,7 +1724,7 @@
         "documento": "gen_n1_008",
         "emitted": {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 70,
+          "index": 71,
           "parsed": {
             "data": {
               "artigo": "818"
@@ -1938,7 +1749,7 @@
           },
           "rule": "dispositivo_legal",
           "source_indexes": [
-            72
+            73
           ],
           "span": [
             2332,
@@ -1987,7 +1798,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 72,
+            "index": 73,
             "iou": 0.533333,
             "parsed": {
               "data": {
@@ -2027,7 +1838,7 @@
         "documento": "gen_n1_008",
         "emitted": {
           "family": "sumula_numerada",
-          "index": 73,
+          "index": 74,
           "parsed": {
             "data": {
               "sumula_numero": "331",
@@ -2053,7 +1864,7 @@
           },
           "rule": "sumula_numerada",
           "source_indexes": [
-            75
+            76
           ],
           "span": [
             3099,
@@ -2100,7 +1911,7 @@
         "related_candidates": [
           {
             "family": "sumula_numerada",
-            "index": 75,
+            "index": 76,
             "iou": 0.588235,
             "parsed": {
               "data": {
@@ -2181,7 +1992,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 98,
+            "index": 102,
             "iou": 0.194444,
             "parsed": {
               "data": {
@@ -2263,7 +2074,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 102,
+            "index": 107,
             "iou": 0.333333,
             "parsed": {
               "data": {
@@ -2303,7 +2114,7 @@
         "documento": "gen_n1_012",
         "emitted": {
           "family": "processo_cnj",
-          "index": 101,
+          "index": 106,
           "parsed": {
             "data": {
               "numero_family": "cnj",
@@ -2333,7 +2144,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            103
+            108
           ],
           "span": [
             1222,
@@ -2384,7 +2195,7 @@
         "related_candidates": [
           {
             "family": "processo_cnj",
-            "index": 103,
+            "index": 108,
             "iou": 0.84,
             "parsed": {
               "data": {
@@ -2429,7 +2240,7 @@
         "documento": "gen_n1_012",
         "emitted": {
           "family": "processo_cnj",
-          "index": 105,
+          "index": 110,
           "parsed": {
             "data": {
               "classe_raw": "RR",
@@ -2461,7 +2272,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            107
+            112
           ],
           "span": [
             2062,
@@ -2514,7 +2325,7 @@
         "related_candidates": [
           {
             "family": "processo_ou_recurso_numerado",
-            "index": 106,
+            "index": 111,
             "iou": 0.47619,
             "parsed": {
               "data": {
@@ -2544,7 +2355,7 @@
           },
           {
             "family": "processo_cnj",
-            "index": 107,
+            "index": 112,
             "iou": 0.547619,
             "parsed": {
               "data": {
@@ -2633,7 +2444,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 113,
+            "index": 118,
             "iou": 0.148936,
             "parsed": {
               "data": {
@@ -2713,7 +2524,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 128,
+            "index": 133,
             "iou": 0.209302,
             "parsed": {
               "data": {
@@ -2753,7 +2564,7 @@
         "documento": "gen_n2_005",
         "emitted": {
           "family": "processo_cnj",
-          "index": 146,
+          "index": 151,
           "parsed": {
             "data": {
               "classe_raw": "AgARR",
@@ -2782,7 +2593,7 @@
           },
           "rule": "cnj",
           "source_indexes": [
-            150
+            155
           ],
           "span": [
             1911,
@@ -2832,7 +2643,7 @@
         "related_candidates": [
           {
             "family": "jurisprudencia_tribunal_contextual",
-            "index": 149,
+            "index": 154,
             "iou": 0.676471,
             "parsed": {
               "data": {
@@ -2864,7 +2675,7 @@
           },
           {
             "family": "processo_cnj",
-            "index": 150,
+            "index": 155,
             "iou": 0.705882,
             "parsed": {
               "data": {
@@ -2948,7 +2759,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 153,
+            "index": 158,
             "iou": 0.225,
             "parsed": {
               "data": {
@@ -2988,7 +2799,7 @@
         "documento": "gen_n2_006",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 152,
+          "index": 157,
           "parsed": {
             "data": {
               "artigo": "276",
@@ -3016,7 +2827,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            157
+            162
           ],
           "span": [
             681,
@@ -3065,7 +2876,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 156,
+            "index": 161,
             "iou": 0.259259,
             "parsed": {
               "data": {
@@ -3097,7 +2908,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 157,
+            "index": 162,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -3140,7 +2951,7 @@
         "documento": "gen_n2_010",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 180,
+          "index": 186,
           "parsed": {
             "data": {
               "artigo": "186",
@@ -3168,7 +2979,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            185
+            191
           ],
           "span": [
             1640,
@@ -3217,7 +3028,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 184,
+            "index": 190,
             "iou": 0.384615,
             "parsed": {
               "data": {
@@ -3249,7 +3060,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 185,
+            "index": 191,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -3292,7 +3103,7 @@
         "documento": "gen_n2_010",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 182,
+          "index": 188,
           "parsed": {
             "data": {
               "artigo": "14",
@@ -3320,7 +3131,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            187
+            193
           ],
           "span": [
             2107,
@@ -3369,7 +3180,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 186,
+            "index": 192,
             "iou": 0.170732,
             "parsed": {
               "data": {
@@ -3401,7 +3212,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 187,
+            "index": 193,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -3444,7 +3255,7 @@
         "documento": "gen_n2_011",
         "emitted": {
           "family": "processo_ou_recurso_numerado",
-          "index": 191,
+          "index": 197,
           "parsed": {
             "data": {
               "classe_raw": "AgInt no Recurso Especial",
@@ -3472,7 +3283,7 @@
           },
           "rule": "processo_ou_recurso",
           "source_indexes": [
-            196
+            202
           ],
           "span": [
             2313,
@@ -3521,7 +3332,7 @@
         "related_candidates": [
           {
             "family": "processo_ou_recurso_numerado",
-            "index": 196,
+            "index": 202,
             "iou": 0.877551,
             "parsed": {
               "data": {
@@ -3604,7 +3415,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 204,
+            "index": 210,
             "iou": 0.2,
             "parsed": {
               "data": {
@@ -4108,7 +3919,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 65,
+            "index": 66,
             "iou": 0.177778,
             "parsed": {
               "data": {
@@ -4149,7 +3960,7 @@
         "documento": "gen_n1_008",
         "emitted": {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 70,
+          "index": 71,
           "parsed": {
             "data": {
               "artigo": "818"
@@ -4174,7 +3985,7 @@
           },
           "rule": "dispositivo_legal",
           "source_indexes": [
-            72
+            73
           ],
           "span": [
             2332,
@@ -4223,7 +4034,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 72,
+            "index": 73,
             "iou": 0.533333,
             "parsed": {
               "data": {
@@ -4304,7 +4115,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 98,
+            "index": 102,
             "iou": 0.194444,
             "parsed": {
               "data": {
@@ -4387,7 +4198,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 102,
+            "index": 107,
             "iou": 0.333333,
             "parsed": {
               "data": {
@@ -4470,7 +4281,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 113,
+            "index": 118,
             "iou": 0.148936,
             "parsed": {
               "data": {
@@ -4551,7 +4362,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 128,
+            "index": 133,
             "iou": 0.209302,
             "parsed": {
               "data": {
@@ -4632,7 +4443,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 153,
+            "index": 158,
             "iou": 0.225,
             "parsed": {
               "data": {
@@ -4673,7 +4484,7 @@
         "documento": "gen_n2_006",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 152,
+          "index": 157,
           "parsed": {
             "data": {
               "artigo": "276",
@@ -4701,7 +4512,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            157
+            162
           ],
           "span": [
             681,
@@ -4750,7 +4561,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 156,
+            "index": 161,
             "iou": 0.259259,
             "parsed": {
               "data": {
@@ -4782,7 +4593,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 157,
+            "index": 162,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -4826,7 +4637,7 @@
         "documento": "gen_n2_010",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 180,
+          "index": 186,
           "parsed": {
             "data": {
               "artigo": "186",
@@ -4854,7 +4665,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            185
+            191
           ],
           "span": [
             1640,
@@ -4903,7 +4714,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 184,
+            "index": 190,
             "iou": 0.384615,
             "parsed": {
               "data": {
@@ -4935,7 +4746,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 185,
+            "index": 191,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -4979,7 +4790,7 @@
         "documento": "gen_n2_010",
         "emitted": {
           "family": "lei_dispositivo_com_diploma",
-          "index": 182,
+          "index": 188,
           "parsed": {
             "data": {
               "artigo": "14",
@@ -5007,7 +4818,7 @@
           },
           "rule": "lei_com_diploma",
           "source_indexes": [
-            187
+            193
           ],
           "span": [
             2107,
@@ -5056,7 +4867,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 186,
+            "index": 192,
             "iou": 0.170732,
             "parsed": {
               "data": {
@@ -5088,7 +4899,7 @@
           },
           {
             "family": "lei_dispositivo_com_diploma",
-            "index": 187,
+            "index": 193,
             "iou": 1.0,
             "parsed": {
               "data": {
@@ -5172,7 +4983,7 @@
         "related_candidates": [
           {
             "family": "lei_dispositivo_sem_diploma",
-            "index": 204,
+            "index": 210,
             "iou": 0.2,
             "parsed": {
               "data": {
@@ -5209,11 +5020,11 @@
     ],
     "strategies": [
       {
-        "correct_real_total": 65,
+        "correct_real_total": 72,
         "e2e_gain": 5,
         "evaluable_real": 5,
         "false_real": 1,
-        "formal_fp_resolved": 19,
+        "formal_fp_resolved": 17,
         "oracle_correct_real": 14,
         "safety": [
           0,
@@ -5223,11 +5034,11 @@
         "strategy": "article_only"
       },
       {
-        "correct_real_total": 60,
+        "correct_real_total": 67,
         "e2e_gain": 0,
         "evaluable_real": 4,
         "false_real": 0,
-        "formal_fp_resolved": 2,
+        "formal_fp_resolved": 0,
         "oracle_correct_real": 2,
         "safety": [
           0,
@@ -5237,11 +5048,11 @@
         "strategy": "article_diploma"
       },
       {
-        "correct_real_total": 60,
+        "correct_real_total": 67,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
-        "formal_fp_resolved": 2,
+        "formal_fp_resolved": 0,
         "oracle_correct_real": 0,
         "safety": [
           0,
@@ -5251,11 +5062,11 @@
         "strategy": "article_law"
       },
       {
-        "correct_real_total": 60,
+        "correct_real_total": 67,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
-        "formal_fp_resolved": 2,
+        "formal_fp_resolved": 0,
         "oracle_correct_real": 0,
         "safety": [
           0,
@@ -5265,11 +5076,11 @@
         "strategy": "article_law_year"
       },
       {
-        "correct_real_total": 60,
+        "correct_real_total": 67,
         "e2e_gain": 0,
         "evaluable_real": 0,
         "false_real": 0,
-        "formal_fp_resolved": 2,
+        "formal_fp_resolved": 0,
         "oracle_correct_real": 0,
         "safety": [
           0,
@@ -5403,7 +5214,7 @@
       "documento": "gen_n1_008",
       "emitted": {
         "family": "sumula_numerada",
-        "index": 73,
+        "index": 74,
         "parsed": {
           "data": {
             "sumula_numero": "331",
@@ -5429,7 +5240,7 @@
         },
         "rule": "sumula_numerada",
         "source_indexes": [
-          75
+          76
         ],
         "span": [
           3099,
@@ -5476,7 +5287,7 @@
       "related_candidates": [
         {
           "family": "sumula_numerada",
-          "index": 75,
+          "index": 76,
           "iou": 0.588235,
           "parsed": {
             "data": {
@@ -5518,7 +5329,7 @@
       "documento": "gen_n2_011",
       "emitted": {
         "family": "processo_ou_recurso_numerado",
-        "index": 191,
+        "index": 197,
         "parsed": {
           "data": {
             "classe_raw": "AgInt no Recurso Especial",
@@ -5546,7 +5357,7 @@
         },
         "rule": "processo_ou_recurso",
         "source_indexes": [
-          196
+          202
         ],
         "span": [
           2313,
@@ -5595,7 +5406,7 @@
       "related_candidates": [
         {
           "family": "processo_ou_recurso_numerado",
-          "index": 196,
+          "index": 202,
           "iou": 0.877551,
           "parsed": {
             "data": {
@@ -5661,11 +5472,11 @@
       "safe_gain": 0
     },
     {
-      "cases": 26,
+      "cases": 19,
       "complexity": "MEDIUM",
       "generalization": "LOW/MODERATE",
       "path": "detector residual",
-      "plausible_gain": 5,
+      "plausible_gain": 19,
       "risk": "MEDIUM",
       "roi": "MEDIUM",
       "safe_gain": 0
@@ -5720,13 +5531,6 @@
       "safe_known_gain": 0
     },
     {
-      "cases": 7,
-      "component": "Detector",
-      "plausible_gain": 7,
-      "root_cause": "detector_residual",
-      "safe_known_gain": 0
-    },
-    {
       "cases": 2,
       "component": "Corpus enrichment",
       "plausible_gain": 2,
@@ -5743,13 +5547,13 @@
   ],
   "recovery_ladder": [
     {
-      "cumulative": 60,
+      "cumulative": 67,
       "newly_recovered": 0,
       "stage": "current full pipeline"
     },
     {
       "cumulative": 67,
-      "newly_recovered": 7,
+      "newly_recovered": 0,
       "stage": "oracle detection + current parser/resolver"
     },
     {
@@ -6116,91 +5920,6 @@
       "root_cause": "legal_identity_missing"
     },
     {
-      "actionable_component": "Detector",
-      "context": " equivocada. Vale invocar o\nAgR-REspe 378-82.2016.6.05.0151, de clareza solar quanto ao ponto ora debatido. Nem se diga\nque a hipótese comportaria distinção. Reforça o argumento o Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000,\nde resto amplamente conhecido no foro.\n\nI — DA CONTROVÉRSIA\n\nA representação foi ajuizada durante o período eleitoral de 24 de fevereiro de 2021, sob a alegação\nde que o representado teria oferecido vantagem pecuniária",
-      "documento": "gen_n1_006",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_boundary",
-      "gid": "g2",
-      "gold_family": "processo_cnj",
-      "gold_id": 375394498,
-      "gold_index": 44,
-      "gold_span": [
-        657,
-        709
-      ],
-      "gold_text": "Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000",
-      "nivel": "N1",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "numero_family": "cnj",
-            "numero_normalizado": "21377320146210000",
-            "numero_raw": "2137-73.2014.6.21.0000"
-          },
-          "family": "processo_cnj",
-          "provenance": {
-            "numero": "normalized"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            375394498
-          ],
-          "id_canonico": 375394498,
-          "reason": "cnj_primary_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "cnj_primary_identity"
-        }
-      },
-      "related_candidates": [
-        {
-          "family": "processo_cnj",
-          "index": 47,
-          "iou": 0.423077,
-          "parsed": {
-            "data": {
-              "numero_family": "cnj",
-              "numero_normalizado": "21377320146210000",
-              "numero_raw": "2137-73.2014.6.21.0000"
-            },
-            "family": "processo_cnj",
-            "provenance": {
-              "numero": "normalized"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              375394498
-            ],
-            "id_canonico": 375394498,
-            "reason": "cnj_primary_unique",
-            "record_type": "acordao",
-            "status": "resolved",
-            "strategy": "cnj_primary_identity"
-          },
-          "rule": "cnj",
-          "span": [
-            687,
-            709
-          ],
-          "text": "2137-73.2014.6.21.0000"
-        }
-      ],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
-    },
-    {
       "actionable_component": "CaseIndex/corpus identity",
       "context": "s que, no entender\nda defesa, impõem o provimento do recurso.\n\n\nA moldura fática delineada na origem é suficiente para o deslinde da causa. A pretensão encontra\namparo expresso no art. 93, IX, da Constituição da República.\n\nI — DA CONTROVÉRSIA\n\nA sentença condenatória fixou a pena-base acima do mínimo legal em razão da valoração negativa\ndas circunstâncias do crime, estabelecendo o regime inicial fechado. O acórdão recorrido manteve\na do",
       "documento": "gen_n1_007",
@@ -6323,7 +6042,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 65,
+          "index": 66,
           "iou": 0.177778,
           "parsed": {
             "data": {
@@ -6363,7 +6082,7 @@
       "documento": "gen_n1_008",
       "emitted": {
         "family": "lei_dispositivo_sem_diploma",
-        "index": 70,
+        "index": 71,
         "parsed": {
           "data": {
             "artigo": "818"
@@ -6388,7 +6107,7 @@
         },
         "rule": "dispositivo_legal",
         "source_indexes": [
-          72
+          73
         ],
         "span": [
           2332,
@@ -6437,7 +6156,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 72,
+          "index": 73,
           "iou": 0.533333,
           "parsed": {
             "data": {
@@ -6477,7 +6196,7 @@
       "documento": "gen_n1_008",
       "emitted": {
         "family": "sumula_numerada",
-        "index": 73,
+        "index": 74,
         "parsed": {
           "data": {
             "sumula_numero": "331",
@@ -6503,7 +6222,7 @@
         },
         "rule": "sumula_numerada",
         "source_indexes": [
-          75
+          76
         ],
         "span": [
           3099,
@@ -6550,7 +6269,7 @@
       "related_candidates": [
         {
           "family": "sumula_numerada",
-          "index": 75,
+          "index": 76,
           "iou": 0.588235,
           "parsed": {
             "data": {
@@ -6626,110 +6345,6 @@
       "root_cause": "unsupported_reference_family"
     },
     {
-      "actionable_component": "Detector",
-      "context": "Esp 5672508/RJ, cuja ratio decidendi se amolda integralmente ao caso concreto. Ainda que\nassim não fosse, subsiste fundamento autônomo a amparar a pretensão. Reforça o argumento o Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA, de resto amplamente conhecida no foro. A leitura conjunta\ndos dispositivos invocados conduz à mesma conclusão. Corrobora essa leitura o EDcl no AgInt no REsp 1889127/SE,\nde cujo voto condutor se extrai idêntica premiss",
-      "documento": "gen_n1_009",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_miss",
-      "gid": "g9",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 6576893354,
-      "gold_index": 79,
-      "gold_span": [
-        3401,
-        3465
-      ],
-      "gold_text": "Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA",
-      "nivel": "N1",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "Agravo",
-            "numero_family": "case_number",
-            "numero_normalizado": "2883",
-            "numero_raw": "2.883",
-            "uf": "MA",
-            "uf_raw": "/MA"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "structural_repair",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            6576893354
-          ],
-          "id_canonico": 6576893354,
-          "reason": "case_number_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
-    },
-    {
-      "actionable_component": "Detector",
-      "context": "osimetria, limitando-se a afastar uma das agravantes reconhecidas em primeiro grau. A doutrina\nespecializada acompanha, sem divergência relevante, esse entendimento. Ao apreciar o RHC nº\n88.033/RS, o colegiado consolidou entendimento diametralmente oposto ao sustentado pela parte\nadversa. É de rigor, portanto, o acolhimento da tese ora sustentada. Ampara a pretensão a jurisprudência\npacífica desta Corte, à qual s",
-      "documento": "gen_n1_010",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_miss",
-      "gid": "g2",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 2566417138,
-      "gold_index": 82,
-      "gold_span": [
-        933,
-        949
-      ],
-      "gold_text": "RHC nº\n88.033/RS",
-      "nivel": "N1",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "HC",
-            "numero_family": "case_number",
-            "numero_normalizado": "88033",
-            "numero_raw": "88.033",
-            "uf": "RS",
-            "uf_raw": "/RS"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            2566417138
-          ],
-          "id_canonico": 2566417138,
-          "reason": "case_number_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
-    },
-    {
       "actionable_component": "CaseIndex/corpus identity",
       "context": "se a afastar uma das agravantes reconhecidas em primeiro grau. A moldura\nfática delineada na origem é suficiente para o deslinde da causa. Deixou o Tribunal de origem\nde aplicar o art. 5º, LV, da Constituição Federal, embora expressamente prequestionado.\n\nIII — DOS PRECEDENTES INVOCADOS\n\nA instrução criminal transcorreu com a oitiva de quatro testemunhas de acusação e duas de defesa,\nalém do interrogatório do réu. O laudo pericial d",
       "documento": "gen_n1_011",
@@ -6775,7 +6390,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 98,
+          "index": 102,
           "iou": 0.194444,
           "parsed": {
             "data": {
@@ -6899,7 +6514,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 102,
+          "index": 107,
           "iou": 0.333333,
           "parsed": {
             "data": {
@@ -6939,7 +6554,7 @@
       "documento": "gen_n1_012",
       "emitted": {
         "family": "processo_cnj",
-        "index": 101,
+        "index": 106,
         "parsed": {
           "data": {
             "numero_family": "cnj",
@@ -6969,7 +6584,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          103
+          108
         ],
         "span": [
           1222,
@@ -7020,7 +6635,7 @@
       "related_candidates": [
         {
           "family": "processo_cnj",
-          "index": 103,
+          "index": 108,
           "iou": 0.84,
           "parsed": {
             "data": {
@@ -7065,7 +6680,7 @@
       "documento": "gen_n1_012",
       "emitted": {
         "family": "processo_cnj",
-        "index": 105,
+        "index": 110,
         "parsed": {
           "data": {
             "classe_raw": "RR",
@@ -7097,7 +6712,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          107
+          112
         ],
         "span": [
           2062,
@@ -7150,7 +6765,7 @@
       "related_candidates": [
         {
           "family": "processo_ou_recurso_numerado",
-          "index": 106,
+          "index": 111,
           "iou": 0.47619,
           "parsed": {
             "data": {
@@ -7180,7 +6795,7 @@
         },
         {
           "family": "processo_cnj",
-          "index": 107,
+          "index": 112,
           "iou": 0.547619,
           "parsed": {
             "data": {
@@ -7269,7 +6884,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 113,
+          "index": 118,
           "iou": 0.148936,
           "parsed": {
             "data": {
@@ -7302,91 +6917,6 @@
       ],
       "required_capability": "legal identity model",
       "root_cause": "legal_identity_missing"
-    },
-    {
-      "actionable_component": "Detector",
-      "context": "e firmou orientação hoje pacificada. A doutrina especializada\nacompanha, sem divergência relevante, esse entendimento. O acórdão recorrido diverge frontalmente\ndo que assentado no Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000.\n\nIV — DA IMPOSSIBILIDADE DE REEXAME FÁTICO\n\nSustenta o recorrente que a decisão regional divergiu da orientação firmada pela instância superior\nquanto ao alcance da inelegibilidade, motivo pelo qual requer o processame",
-      "documento": "gen_n1_013",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_boundary",
-      "gid": "g7",
-      "gold_family": "processo_cnj",
-      "gold_id": 1931806554,
-      "gold_index": 114,
-      "gold_span": [
-        2532,
-        2603
-      ],
-      "gold_text": "Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000",
-      "nivel": "N1",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "numero_family": "cnj",
-            "numero_normalizado": "06062521120186260000",
-            "numero_raw": "0606252-11.2018.6.26.0000"
-          },
-          "family": "processo_cnj",
-          "provenance": {
-            "numero": "normalized"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            1931806554
-          ],
-          "id_canonico": 1931806554,
-          "reason": "cnj_primary_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "cnj_primary_identity"
-        }
-      },
-      "related_candidates": [
-        {
-          "family": "processo_cnj",
-          "index": 116,
-          "iou": 0.352113,
-          "parsed": {
-            "data": {
-              "numero_family": "cnj",
-              "numero_normalizado": "06062521120186260000",
-              "numero_raw": "0606252-11.2018.6.26.0000"
-            },
-            "family": "processo_cnj",
-            "provenance": {
-              "numero": "normalized"
-            },
-            "tipo": "jurisprudencia",
-            "tribunal": null,
-            "tribunal_raw": null,
-            "tribunal_source": "unknown"
-          },
-          "resolution": {
-            "candidate_ids": [
-              1931806554
-            ],
-            "id_canonico": 1931806554,
-            "reason": "cnj_primary_unique",
-            "record_type": "acordao",
-            "status": "resolved",
-            "strategy": "cnj_primary_identity"
-          },
-          "rule": "cnj",
-          "span": [
-            2578,
-            2603
-          ],
-          "text": "0606252-11.2018.6.26.0000"
-        }
-      ],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
     },
     {
       "actionable_component": "None/irreducible",
@@ -7474,7 +7004,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 128,
+          "index": 133,
           "iou": 0.209302,
           "parsed": {
             "data": {
@@ -7554,7 +7084,7 @@
       "documento": "gen_n2_005",
       "emitted": {
         "family": "processo_cnj",
-        "index": 146,
+        "index": 151,
         "parsed": {
           "data": {
             "classe_raw": "AgARR",
@@ -7583,7 +7113,7 @@
         },
         "rule": "cnj",
         "source_indexes": [
-          150
+          155
         ],
         "span": [
           1911,
@@ -7633,7 +7163,7 @@
       "related_candidates": [
         {
           "family": "jurisprudencia_tribunal_contextual",
-          "index": 149,
+          "index": 154,
           "iou": 0.676471,
           "parsed": {
             "data": {
@@ -7665,7 +7195,7 @@
         },
         {
           "family": "processo_cnj",
-          "index": 150,
+          "index": 155,
           "iou": 0.705882,
           "parsed": {
             "data": {
@@ -7749,7 +7279,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 153,
+          "index": 158,
           "iou": 0.225,
           "parsed": {
             "data": {
@@ -7789,7 +7319,7 @@
       "documento": "gen_n2_006",
       "emitted": {
         "family": "lei_dispositivo_com_diploma",
-        "index": 152,
+        "index": 157,
         "parsed": {
           "data": {
             "artigo": "276",
@@ -7817,7 +7347,7 @@
         },
         "rule": "lei_com_diploma",
         "source_indexes": [
-          157
+          162
         ],
         "span": [
           681,
@@ -7866,7 +7396,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 156,
+          "index": 161,
           "iou": 0.259259,
           "parsed": {
             "data": {
@@ -7898,7 +7428,7 @@
         },
         {
           "family": "lei_dispositivo_com_diploma",
-          "index": 157,
+          "index": 162,
           "iou": 1.0,
           "parsed": {
             "data": {
@@ -8096,63 +7626,12 @@
       "root_cause": "unsupported_reference_family"
     },
     {
-      "actionable_component": "Detector",
-      "context": " orientação firmada no AgInt no RESP 21737l8 - SP foi reafirmada em julgamentos\nposteriores. Registre-se que o tema comporta enfrcntamento sob dupla perspectiva. Cumpre destacar a AR\nn. 2785 (SP), cuja ratio decidendi sc amolda integralmente ao caso\nconcreto.\n\nII — DO DIREITO APLICÁVEL\n\nA defesa sustenta constrangimento ilegal decorrente do excesso de prazo\npara a formação da culpa, uma vez que o paciente perman",
-      "documento": "gen_n2_009",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_miss",
-      "gid": "g7",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 2549252487,
-      "gold_index": 187,
-      "gold_span": [
-        1771,
-        1786
-      ],
-      "gold_text": "AR\nn. 2785 (SP)",
-      "nivel": "N2",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "numero_family": "case_number",
-            "numero_normalizado": "2785",
-            "numero_raw": "2785",
-            "uf": "SP",
-            "uf_raw": "(SP"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "structural_repair",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            2549252487
-          ],
-          "id_canonico": 2549252487,
-          "reason": "case_number_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
-    },
-    {
       "actionable_component": "CaseIndex/corpus identity",
       "context": " recebidos em seus regulares efeitos e as contrarrazões apresentadas tempestivamente.\nO raciocínio desenvolvido no acórdão recorrido parte de premissa equivocada. Cumpre\nlembrar o artigo 186 do Código Civil, de aplicação cogente.\n\nIV — DOS PRECEDENTES INVOCADOS\n\nA sentença reconheceu a prescrição parcial da pretensão e julgou parcialmente procedentes os pedidos,\ncondenando a ré ao pagamento das parcelas vencidas no quinquê",
       "documento": "gen_n2_010",
       "emitted": {
         "family": "lei_dispositivo_com_diploma",
-        "index": 180,
+        "index": 186,
         "parsed": {
           "data": {
             "artigo": "186",
@@ -8180,7 +7659,7 @@
         },
         "rule": "lei_com_diploma",
         "source_indexes": [
-          185
+          191
         ],
         "span": [
           1640,
@@ -8229,7 +7708,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 184,
+          "index": 190,
           "iou": 0.384615,
           "parsed": {
             "data": {
@@ -8261,7 +7740,7 @@
         },
         {
           "family": "lei_dispositivo_com_diploma",
-          "index": 185,
+          "index": 191,
           "iou": 1.0,
           "parsed": {
             "data": {
@@ -8304,7 +7783,7 @@
       "documento": "gen_n2_010",
       "emitted": {
         "family": "lei_dispositivo_com_diploma",
-        "index": 182,
+        "index": 188,
         "parsed": {
           "data": {
             "artigo": "14",
@@ -8332,7 +7811,7 @@
         },
         "rule": "lei_com_diploma",
         "source_indexes": [
-          187
+          193
         ],
         "span": [
           2107,
@@ -8381,7 +7860,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 186,
+          "index": 192,
           "iou": 0.170732,
           "parsed": {
             "data": {
@@ -8413,7 +7892,7 @@
         },
         {
           "family": "lei_dispositivo_com_diploma",
-          "index": 187,
+          "index": 193,
           "iou": 1.0,
           "parsed": {
             "data": {
@@ -8456,7 +7935,7 @@
       "documento": "gen_n2_011",
       "emitted": {
         "family": "processo_ou_recurso_numerado",
-        "index": 191,
+        "index": 197,
         "parsed": {
           "data": {
             "classe_raw": "AgInt no Recurso Especial",
@@ -8484,7 +7963,7 @@
         },
         "rule": "processo_ou_recurso",
         "source_indexes": [
-          196
+          202
         ],
         "span": [
           2313,
@@ -8533,7 +8012,7 @@
       "related_candidates": [
         {
           "family": "processo_ou_recurso_numerado",
-          "index": 196,
+          "index": 202,
           "iou": 0.877551,
           "parsed": {
             "data": {
@@ -8616,7 +8095,7 @@
       "related_candidates": [
         {
           "family": "lei_dispositivo_sem_diploma",
-          "index": 204,
+          "index": 210,
           "iou": 0.2,
           "parsed": {
             "data": {
@@ -8689,144 +8168,38 @@
       "related_candidates": [],
       "required_capability": "impossible with runtime evidence",
       "root_cause": "unsupported_reference_family"
-    },
-    {
-      "actionable_component": "Detector",
-      "context": " inquérito, sem que tenha havido designação de data para\na sessão de julgamento. A moldura fática delineada na origem é suficiente para o deslinde\nda eausa. A propósito, veja-se o RMS Nº  67109-TO, que bem ilustra a orientação dominante.\n\nRequer, por fim, a juntada do presente memorial aos autos, para que produza seus\nregulares efeitos.\n\nTermos em que pede deferimento.\n\nRecife, 7 de setembro de 2021.\n",
-      "documento": "gen_n2_012",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_miss",
-      "gid": "g10",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 2675221299,
-      "gold_index": 217,
-      "gold_span": [
-        3158,
-        3174
-      ],
-      "gold_text": "RMS Nº  67109-TO",
-      "nivel": "N2",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "MS",
-            "numero_family": "case_number",
-            "numero_normalizado": "67109",
-            "numero_raw": "67109",
-            "uf": "TO",
-            "uf_raw": "-TO"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "normalized",
-            "uf": "explicit"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            2675221299
-          ],
-          "id_canonico": 2675221299,
-          "reason": "case_number_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
-    },
-    {
-      "actionable_component": "Detector",
-      "context": "toria foi confirmada\npelos depoimentos prestados em juízo, sob o erivo do contraditório. Cumpre observar\nque a orientação dos tribunais superiores é firme no ponto. Vale invocar o AgInt No 7000553-0320217000000,\nde clareza solar quanto ao ponto ora debatido. Registre-se que o tema comporta enfrentamento\nsob dupla perspectiva. A propósito, veja-se a  Recl. Nº 66 152 (PR), que bem ilustra a orientação\ndominante. É de rigor, port",
-      "documento": "gen_n2_013",
-      "emitted": null,
-      "emitted_iou": null,
-      "first_blocker": "detector_miss",
-      "gid": "g4",
-      "gold_family": "processo_ou_recurso_numerado",
-      "gold_id": 1477658218,
-      "gold_index": 221,
-      "gold_span": [
-        1883,
-        1913
-      ],
-      "gold_text": "AgInt No 7000553-0320217000000",
-      "nivel": "N2",
-      "oracle": {
-        "parsed": {
-          "data": {
-            "classe_raw": "AgInt",
-            "numero_family": "case_number",
-            "numero_normalizado": "70005530320217000000",
-            "numero_raw": "7000553-0320217000000"
-          },
-          "family": "processo_ou_recurso_numerado",
-          "provenance": {
-            "numero": "structural_repair"
-          },
-          "tipo": "jurisprudencia",
-          "tribunal": null,
-          "tribunal_raw": null,
-          "tribunal_source": "unknown"
-        },
-        "resolution": {
-          "candidate_ids": [
-            1477658218
-          ],
-          "id_canonico": 1477658218,
-          "reason": "case_number_unique",
-          "record_type": "acordao",
-          "status": "resolved",
-          "strategy": "case_number_exact"
-        }
-      },
-      "related_candidates": [],
-      "required_capability": "detector change",
-      "root_cause": "detector_residual"
     }
   ],
   "required_capabilities": [
     {
       "count": 14,
       "name": "legal identity model",
-      "percent": 38.89
+      "percent": 48.28
     },
     {
       "count": 9,
       "name": "impossible with runtime evidence",
-      "percent": 25.0
-    },
-    {
-      "count": 7,
-      "name": "detector change",
-      "percent": 19.44
+      "percent": 31.03
     },
     {
       "count": 2,
       "name": "ambiguity filtering",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 2,
       "name": "corpus metadata enrichment",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 1,
       "name": "gold issue",
-      "percent": 2.78
+      "percent": 3.45
     },
     {
       "count": 1,
       "name": "parser/context change",
-      "percent": 2.78
+      "percent": 3.45
     }
   ],
   "roadmap": {
@@ -8839,37 +8212,32 @@
     {
       "count": 14,
       "name": "legal_identity_missing",
-      "percent": 38.89
+      "percent": 48.28
     },
     {
       "count": 9,
       "name": "unsupported_reference_family",
-      "percent": 25.0
-    },
-    {
-      "count": 7,
-      "name": "detector_residual",
-      "percent": 19.44
+      "percent": 31.03
     },
     {
       "count": 2,
       "name": "corpus_duplicate",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 2,
       "name": "sumula_metadata_missing",
-      "percent": 5.56
+      "percent": 6.9
     },
     {
       "count": 1,
       "name": "gold_corpus_inconsistency",
-      "percent": 2.78
+      "percent": 3.45
     },
     {
       "count": 1,
       "name": "noisy_structural_reference",
-      "percent": 2.78
+      "percent": 3.45
     }
   ],
   "safe_gain": [
@@ -8888,12 +8256,12 @@
   "structural_numbered_experiment": {
     "changes": [],
     "metrics": {
-      "correct_ids": 60,
+      "correct_ids": 67,
       "duplicate_resolved_outputs": 0,
-      "exact": 75,
+      "exact": 85,
       "false_real_incompleta": 0,
       "false_real_inventada": 0,
-      "outputs": 206,
+      "outputs": 214,
       "wrong_unique_real": 0
     },
     "name": "numbered_primary_class_guard",
@@ -9025,7 +8393,7 @@
         "documento": "gen_n1_008",
         "emitted": {
           "family": "sumula_numerada",
-          "index": 73,
+          "index": 74,
           "parsed": {
             "data": {
               "sumula_numero": "331",
@@ -9051,7 +8419,7 @@
           },
           "rule": "sumula_numerada",
           "source_indexes": [
-            75
+            76
           ],
           "span": [
             3099,
@@ -9098,7 +8466,7 @@
         "related_candidates": [
           {
             "family": "sumula_numerada",
-            "index": 75,
+            "index": 76,
             "iou": 0.588235,
             "parsed": {
               "data": {
@@ -9135,5 +8503,5 @@
       }
     ]
   },
-  "timing_seconds": 0.042982300990843214
+  "timing_seconds": 0.030774156999541447
 }
