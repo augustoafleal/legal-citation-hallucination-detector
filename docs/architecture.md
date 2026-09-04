@@ -18,7 +18,7 @@ flowchart LR
     D --> E[(tribunal, numero_normalizado) -> Case]
     B --> F[notebooks/]
     D --> G[scripts/]
-    H[Texto original] --> I[CitationDetector V5]
+    H[Texto original] --> I[CitationDetector V6]
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
@@ -49,7 +49,7 @@ dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicata
 exatas: `doc_0227` e `doc_0461`.
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` contém o `CitationDetector` V5: um detector determinístico que
+`citations/` contém o `CitationDetector` V6: um detector determinístico que
 recebe texto original e retorna candidatos com offsets, texto, regra e família
 superficial. A V5 preserva a V4 e promove quatro extensões estruturais
 confirmadas pela revisão humana dos sete residuais:
@@ -59,6 +59,14 @@ confirmadas pela revisão humana dos sete residuais:
 - modificador (`AgInt`, `AgRg`, `EDcl` ou `ED`) diretamente seguido de número
   não-CNJ;
 - título composto de agravo interno e suspensão, com whitespace/newline local.
+
+Além das extensões V5, a V6 reconhece CNJs não canônicos/degradados com
+exatamente 20 dígitos quando há marcador processual positivo e local. A regra
+`degraded_compact_cnj` preserva dígitos e offsets do texto original, aceita
+somente separadores estruturais e no máximo uma quebra local dentro do número,
+e não faz OCR. O marcador é composto por classes/modificadores processuais
+controlados; cadeias administrativas intermediárias, como `REsp OAB/SP ...`,
+não pertencem à gramática e são rejeitadas sem blacklist.
 
 As extensões são exclusivamente textuais, determinísticas e guardadas; não
 consultam IDs, documentos, gold, banco ou `CaseIndex`, e não fazem reparo fuzzy.
@@ -71,11 +79,12 @@ residuais e promovidas apenas nas formas guardadas acima. A V2 preserva a V1 e a
 referências jurisprudenciais gerais (`jurisprudencia_geral`): V1 obteve
 105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN (F1 0,543).
 Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552), V4 obteve
-127 TP / 84 FP / 98 FN (F1 0,583) e V5 obteve 137 TP / 82 FP / 88 FN
-(F1 0,617; 83 matches exatos). O detector não consulta o banco ou
+127 TP / 84 FP / 98 FN (F1 0,583), V5 obteve 137 TP / 82 FP / 88 FN
+(F1 0,617; 83 matches exatos) e V6 obteve 140 TP / 82 FP / 85 FN
+(86 matches exatos). O detector não consulta o banco ou
 `CaseIndex` e não classifica uma citação.
 
-O pipeline de produção é `Texto -> CitationDetector V5 -> CitationParser V1 ->
+O pipeline de produção é `Texto -> CitationDetector V6 -> CitationParser V1 ->
 CitationResolver V3 -> StructuralCNJArbitrator`. Após a promoção de H1/H2/H3, novas expansões marginais do
 Detector não devem ser adicionadas sem nova evidência independente de
 generalização e segurança.

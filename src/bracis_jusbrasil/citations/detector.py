@@ -52,6 +52,38 @@ _PROCESS_UF_TAIL = re.compile(
     + r")(?:[ \t\u00a0]*\))?\b"
 )
 
+# V6 is deliberately narrower than the experimental R2 marker scan.  It
+# recognizes a noncanonical CNJ only when a contiguous, positive procedural
+# marker precedes it; arbitrary uppercase token chains are not procedural.
+_DEGRADED_CNJ_BODY = re.compile(
+    r"(?<!\w)\d[\d .\-\t\n]{18,80}\d(?=\s*(?:[./(),;:!?]|[A-Za-zÀ-ÿ]|$))"
+)
+_CANONICAL_CNJ_BODY = re.compile(r"^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$")
+_DEGRADED_MARKER_SPACE = r"[ \t\u00a0]"
+_DEGRADED_MARKER_SPACES = _DEGRADED_MARKER_SPACE + "+"
+_DEGRADED_MODIFIER = r"(?:AgInt|AgRg|AgR|EDcl|ED)"
+_DEGRADED_MODIFIER_CHAIN = (
+    rf"(?:(?:{_DEGRADED_MODIFIER})(?:{_DEGRADED_MARKER_SPACES}"
+    rf"(?:no|nos|na|nas|em){_DEGRADED_MARKER_SPACES}|"
+    rf"{_DEGRADED_MARKER_SPACE}*-{_DEGRADED_MARKER_SPACE}*))*"
+)
+_DEGRADED_DIRECT_PRIMARY = (
+    r"(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|RHC|RMS|AR|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|"
+    r"Agravo(?:[ \t\u00a0]+Regimental)?|Recurso[ \t\u00a0]+Especial(?:[ \t\u00a0]+Eleitoral)?|"
+    r"Recurso[ \t\u00a0]+Extraordin[aá]rio|Habeas[ \t\u00a0]+Corpus|Reclamaç[aã]o)"
+)
+_DEGRADED_STRUCTURAL_ALIAS = r"(?:REspe[.]?|Ag[.][ \t\u00a0]*Int[.])"
+_DEGRADED_MARKER = re.compile(
+    rf"(?P<marker>(?<!\w){_DEGRADED_MODIFIER_CHAIN}"
+    rf"(?:{_DEGRADED_DIRECT_PRIMARY}|{_DEGRADED_STRUCTURAL_ALIAS})"
+    rf"{_DEGRADED_MARKER_SPACE}*(?:(?:n(?:[º°.o]|o)?){_DEGRADED_MARKER_SPACE}*)?)$",
+    re.IGNORECASE,
+)
+_DEGRADED_UF_TAIL = re.compile(
+    r"\s*(?:/|\()\s*(?:" + "|".join(_UF_CODES) + r")\s*\)?(?![A-Za-zÀ-ÿ])",
+    re.IGNORECASE,
+)
+
 # V5 keeps the experimental mechanisms deliberately narrow.  These patterns
 # are structural extensions of an already numbered process candidate; they
 # are not general legal-language or OCR normalizers.
@@ -176,7 +208,7 @@ def _family_for(text: str, citation_type: str) -> str:
 
 
 class CitationDetector:
-    """Encontra candidatos V5 sem consultar corpus ou índice de casos."""
+    """Encontra candidatos V6 sem consultar corpus ou índice de casos."""
 
     def detect(self, text: str) -> tuple[CitationCandidate, ...]:
         """Retorna candidatos ordenados, deduplicados por intervalo exato."""
@@ -212,12 +244,62 @@ class CitationDetector:
         candidates = [
             self._expand_process_ocr_tail(candidate, text) for candidate in candidates
         ]
+        candidates.extend(
+            candidate
+            for candidate in self._detect_degraded_compact_cnj(text)
+            if not any(
+                self._span_iou(candidate, existing) >= 0.5
+                for existing in candidates
+            )
+        )
 
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _detect_degraded_compact_cnj(text: str) -> list[CitationCandidate]:
+        """Detecta somente o CNJ degradado com marcador M1 controlado."""
+        candidates = []
+        for number in _DEGRADED_CNJ_BODY.finditer(text):
+            raw_identity = number.group(0)
+            observed_digits = "".join(char for char in raw_identity if char.isdigit())
+            if len(observed_digits) != 20:
+                continue
+            if _CANONICAL_CNJ_BODY.fullmatch(re.sub(r"\s+", "", raw_identity)):
+                continue
+
+            window_start = max(0, number.start() - 96)
+            marker = _DEGRADED_MARKER.search(text[window_start : number.start()])
+            if marker is None:
+                continue
+            start = window_start + marker.start("marker")
+            local = text[start : number.end()]
+            if local.count("\n") > 1 or "\n\n" in local or re.search(r"[!?;]", local):
+                continue
+
+            end = number.end()
+            uf = _DEGRADED_UF_TAIL.match(text[end:])
+            if uf is not None:
+                end += uf.end()
+            candidates.append(
+                CitationCandidate(
+                    start=start,
+                    end=end,
+                    text=text[start:end],
+                    rule="degraded_compact_cnj",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _span_iou(left: CitationCandidate, right: CitationCandidate) -> float:
+        intersection = max(0, min(left.end, right.end) - max(left.start, right.start))
+        union = max(left.end, right.end) - min(left.start, right.start)
+        return intersection / union if union else 0.0
 
     @staticmethod
     def _detect_v5_process_forms(text: str) -> list[CitationCandidate]:
