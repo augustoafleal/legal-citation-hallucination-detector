@@ -13,6 +13,7 @@ RULE_TYPES = {
     "cnj": "jurisprudencia",
     "processo_ou_recurso": "jurisprudencia",
     "degraded_compact_cnj": "jurisprudencia",
+    "compound_procedural_chain": "jurisprudencia",
     "sumula_numerada": "jurisprudencia",
     "lei_com_diploma": "lei",
     "dispositivo_legal": "lei",
@@ -367,8 +368,68 @@ class CitationDetectorTests(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertFalse(any(item.rule == "degraded_compact_cnj" for item in self.detector.detect(text)))
 
+    def test_v7_detects_only_approved_complete_compound_chains(self) -> None:
+        examples = (
+            "ED-E-ED-RR-65-63.2010.5.01.0075",
+            "TST-E-RR-173000-49.2008.5.15.0024",
+            "TST-ED-E-ED-RR-3400-05.2011.5.21.0009",
+            "E-ED-RR-41200-79.2011.5.21.0005",
+            "ED-E-ED-RR-160000-97.2010.5.21.0006",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.rule == "compound_procedural_chain"]
+                self.assertEqual(len(candidates), 1)
+                candidate = candidates[0]
+                self.assertEqual(candidate.text, text)
+                self.assertEqual((candidate.start, candidate.end), (0, len(text)))
+                self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
 
-class CitationDetectorV6Tests(unittest.TestCase):
+    def test_v7_rejects_partial_and_arbitrary_compound_chains(self) -> None:
+        examples = (
+            "TST-E-RR-173000-49.2008",
+            "TST-ED-E-ED-ARR-1099-66.2011.5.02.",
+            "ED-E-ED-RR-65-63.2010.5.01",
+            "ABC-E-RR-173000-49.2008.5.15.0024",
+            "ED-XYZ-RR-173000-49.2008.5.15.0024",
+            "ED-E-FOO-173000-49.2008.5.15.0024",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector._detect_compound_procedural_chain(text), [])
+                self.assertFalse(any(item.rule == "compound_procedural_chain" for item in self.detector.detect(text)))
+
+    def test_v7_enforces_boundaries_separator_and_repetition(self) -> None:
+        examples = (
+            "E-65-63.2010.5.01.0075",
+            "ED-TST-RR-65-63.2010.5.01.0075",
+            "ED - RR - 65-63.2010.5.01.0075",
+            "ED-ED-ED-RR-65-63.2010.5.01.0075",
+            "ED-E-ED-RR-E-RR-65-63.2010.5.01.0075",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector._detect_compound_procedural_chain(text), [])
+
+    def test_v7_accepts_one_to_seven_digit_prefixes_only(self) -> None:
+        for digits in range(1, 8):
+            with self.subTest(digits=digits):
+                text = f"ED-RR-{'1' * digits}-23.2020.5.01.0001"
+                self.assertEqual(len(self.detector._detect_compound_procedural_chain(text)), 1)
+        self.assertEqual(
+            self.detector._detect_compound_procedural_chain("ED-RR-12345678-23.2020.5.01.0001"),
+            [],
+        )
+
+    def test_v7_span_excludes_narrative_and_trailing_punctuation(self) -> None:
+        chain = "ED-E-ED-RR-65-63.2010.5.01.0075"
+        text = f"Conforme {chain}, precedente aplicável."
+        candidate = self.detector._detect_compound_procedural_chain(text)[0]
+        self.assertEqual(candidate.text, chain)
+        self.assertEqual((candidate.start, candidate.end), (text.index(chain), text.index(chain) + len(chain)))
+
+
+class CitationDetectorV7Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
@@ -385,25 +446,25 @@ class CitationDetectorV6Tests(unittest.TestCase):
         cls.predictions["nivel"] = cls.predictions["documento_id"].map(gold.drop_duplicates("documento_id").set_index("documento_id")["nivel"])
         cls.matches = greedy_match(gold, cls.predictions)
 
-    def test_v5_baseline_is_preserved_by_v6(self) -> None:
-        baseline = self.predictions.loc[~self.predictions["rule"].eq("degraded_compact_cnj")]
-        matches = greedy_match(self.gold, baseline)
-        self.assertEqual(len(baseline), 219)
-        self.assertEqual(len(matches), 137)
-        self.assertEqual(int(matches["exact"].sum()), 83)
+    def test_v7_compound_candidates_are_bounded_and_all_match_gold(self) -> None:
+        compound = self.predictions.loc[self.predictions["rule"].eq("compound_procedural_chain")]
+        compound_matches = self.matches.loc[self.matches["pred_idx"].isin(compound["pred_idx"])]
+        self.assertEqual(len(compound), 6)
+        self.assertEqual(len(compound_matches), 6)
+        self.assertEqual(set(compound["family"]), {"processo_ou_recurso_numerado"})
 
-    def test_v6_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 222)
+    def test_v7_candidate_count_offsets_and_exact_matches(self) -> None:
+        self.assertEqual(len(self.predictions), 218)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 140)
-        self.assertEqual(int(self.matches["exact"].sum()), 86)
+        self.assertEqual(len(self.matches), 141)
+        self.assertEqual(int(self.matches["exact"].sum()), 88)
 
-    def test_v6_metrics_by_level_and_type(self) -> None:
+    def test_v7_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (140, 82, 85)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (83, 40, 33)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (57, 42, 52)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (124, 55, 62)),
+            "global": (self.gold, self.predictions, (141, 77, 84)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (84, 37, 32)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (57, 40, 52)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (125, 50, 61)),
             "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 23)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
@@ -416,21 +477,22 @@ class CitationDetectorV6Tests(unittest.TestCase):
         new_predictions = self.predictions.loc[self.predictions["rule"].eq("jurisprudencia_geral")]
         new_matches = self.matches.loc[self.matches["pred_idx"].isin(new_predictions["pred_idx"])]
 
-        self.assertEqual(len(v1_predictions), 210)
+        self.assertEqual(len(v1_predictions), 206)
         self.assertEqual(
             v1_predictions.groupby("rule").size().to_dict(),
             {
-                "cnj": 51,
+                "cnj": 46,
+                "compound_procedural_chain": 6,
                 "degraded_compact_cnj": 3,
                 "dispositivo_legal": 28,
                 "lei_com_diploma": 15,
                 "processo_ou_recurso": 74,
                 "sumula_numerada": 10,
-                "tribunal_contextual": 29,
+                "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (128, 82, 97))
-        self.assertEqual(int(v1_matches["exact"].sum()), 80)
+        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (129, 77, 96))
+        self.assertEqual(int(v1_matches["exact"].sum()), 82)
         self.assertEqual(len(new_predictions), 12)
         self.assertEqual(len(new_matches), 12)
         self.assertTrue(set(v1_matches["gold_idx"]).issubset(set(self.matches["gold_idx"])))

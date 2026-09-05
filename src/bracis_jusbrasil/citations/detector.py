@@ -84,6 +84,14 @@ _DEGRADED_UF_TAIL = re.compile(
     re.IGNORECASE,
 )
 
+_COMPOUND_PROCEDURAL_CHAIN = re.compile(
+    r"(?<![A-Za-z0-9À-ÿ]-)(?<!\w)"
+    r"(?P<chain>(?:TST-(?:ED|E|RR)(?:-(?:ED|E|RR)){0,3}|"
+    r"(?:ED|E|RR)(?:-(?:ED|E|RR)){1,4}))"
+    r"-(?P<number>\d{1,7}-\d{2}[.]\d{4}[.]\d[.]\d{2}[.]\d{4})(?!\w)",
+    re.IGNORECASE,
+)
+
 # V5 keeps the experimental mechanisms deliberately narrow.  These patterns
 # are structural extensions of an already numbered process candidate; they
 # are not general legal-language or OCR normalizers.
@@ -252,6 +260,13 @@ class CitationDetector:
                 for existing in candidates
             )
         )
+        for candidate in self._detect_compound_procedural_chain(text):
+            candidates = [
+                existing
+                for existing in candidates
+                if self._span_iou(candidate, existing) < 0.5
+            ]
+            candidates.append(candidate)
 
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
@@ -290,6 +305,26 @@ class CitationDetector:
                     end=end,
                     text=text[start:end],
                     rule="degraded_compact_cnj",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _detect_compound_procedural_chain(text: str) -> list[CitationCandidate]:
+        """Detecta a cadeia processual V7 com número CNJ/TST completo."""
+        candidates = []
+        for match in _COMPOUND_PROCEDURAL_CHAIN.finditer(text):
+            tokens = match.group("chain").upper().split("-")
+            process_tokens = tokens[1:] if tokens[0] == "TST" else tokens
+            if any(process_tokens.count(token) > 2 for token in set(process_tokens)):
+                continue
+            candidates.append(
+                CitationCandidate(
+                    start=match.start(),
+                    end=match.end(),
+                    text=match.group(0),
+                    rule="compound_procedural_chain",
                     family="processo_ou_recurso_numerado",
                 )
             )

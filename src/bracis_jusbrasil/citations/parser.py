@@ -92,6 +92,13 @@ _CNJ_CONTEXT_PREFIX = re.compile(
     r"\s*[-:]\s*(?P<classe>[A-Za-zÀ-ÿ][A-Za-z0-9À-ÿ.-]*)\s*[-:]?\s*$",
     re.IGNORECASE,
 )
+_COMPOUND_PROCEDURAL_CHAIN = re.compile(
+    r"(?<![A-Za-z0-9À-ÿ]-)(?<!\w)"
+    r"(?P<chain>(?:TST-(?:ED|E|RR)(?:-(?:ED|E|RR)){0,3}|"
+    r"(?:ED|E|RR)(?:-(?:ED|E|RR)){1,4}))"
+    r"-(?P<number>\d{1,7}-\d{2}[.]\d{4}[.]\d[.]\d{2}[.]\d{4})(?!\w)",
+    re.IGNORECASE,
+)
 
 
 @dataclass(frozen=True)
@@ -191,6 +198,29 @@ def _process_data(text: str) -> tuple[dict[str, str], dict[str, str]]:
             data["uf"] = uf
             provenance["uf"] = "explicit"
     return data, provenance
+
+
+def _compound_procedural_chain_data(
+    text: str,
+) -> tuple[dict[str, str], dict[str, str], str | None]:
+    match = _COMPOUND_PROCEDURAL_CHAIN.fullmatch(text)
+    if match is None:
+        return {}, {}, None
+    tokens = match.group("chain").upper().split("-")
+    process_tokens = tokens[1:] if tokens[0] == "TST" else tokens
+    if any(process_tokens.count(token) > 2 for token in set(process_tokens)):
+        return {}, {}, None
+    number = match.group("number")
+    return (
+        {
+            "classe_raw": process_tokens[-1],
+            "numero_raw": number,
+            "numero_normalizado": _digits(number),
+            "numero_family": "case_number",
+        },
+        {"numero": "compound_procedural_chain", "classe": "explicit"},
+        "TST" if tokens[0] == "TST" else None,
+    )
 
 
 def _cnj_data(text: str) -> tuple[dict[str, str], dict[str, str]]:
@@ -314,7 +344,14 @@ class CitationParser:
                         contextual_source,
                     )
         elif candidate.family == "processo_ou_recurso_numerado":
-            data, provenance = _process_data(candidate.text)
+            if candidate.rule == "compound_procedural_chain":
+                data, provenance, compound_tribunal = _compound_procedural_chain_data(candidate.text)
+                if compound_tribunal is None:
+                    tribunal_raw, tribunal, tribunal_source = None, None, "unknown"
+                else:
+                    tribunal_raw, tribunal, tribunal_source = "TST", "TST", "explicit"
+            else:
+                data, provenance = _process_data(candidate.text)
         elif candidate.family == "sumula_numerada":
             data, provenance = _sumula_data(candidate.text)
         elif candidate.family == "jurisprudencia_tribunal_contextual":

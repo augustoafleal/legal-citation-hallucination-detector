@@ -18,7 +18,7 @@ flowchart LR
     D --> E[(tribunal, numero_normalizado) -> Case]
     B --> F[notebooks/]
     D --> G[scripts/]
-    H[Texto original] --> I[CitationDetector V6]
+    H[Texto original] --> I[CitationDetector V7]
     I --> J[CitationCandidate[]]
     J --> K[CitationParser V1]
     K --> L[ParsedCitation[]]
@@ -49,7 +49,7 @@ dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicata
 exatas: `doc_0227` e `doc_0461`.
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` contém o `CitationDetector` V6: um detector determinístico que
+`citations/` contém o `CitationDetector` V7: um detector determinístico que
 recebe texto original e retorna candidatos com offsets, texto, regra e família
 superficial. A V5 preserva a V4 e promove quatro extensões estruturais
 confirmadas pela revisão humana dos sete residuais:
@@ -68,6 +68,16 @@ e não faz OCR. O marcador é composto por classes/modificadores processuais
 controlados; cadeias administrativas intermediárias, como `REsp OAB/SP ...`,
 não pertencem à gramática e são rejeitadas sem blacklist.
 
+A V7 acrescenta somente a regra `compound_procedural_chain`: cadeias
+procedurais formadas por `ED`, `E` e `RR`, com prefixo opcional `TST`,
+separadas exclusivamente por hífen ASCII e seguidas imediatamente por número
+CNJ/TST completo. A cadeia contém de dois a cinco tokens lexicais, permite no
+máximo duas ocorrências do mesmo token processual e aceita de um a sete dígitos
+no primeiro segmento numérico. Números parciais, tokens fora desse conjunto e
+variantes com whitespace ao redor do hífen são rejeitados. O Parser valida a
+mesma estrutura antes de extrair classe terminal, número literal e tribunal
+explícito; a regra não consulta banco nem completa dígitos.
+
 As extensões são exclusivamente textuais, determinísticas e guardadas; não
 consultam IDs, documentos, gold, banco ou `CaseIndex`, e não fazem reparo fuzzy.
 A V4 preserva a V3 e promoveu somente três extensões estruturais:
@@ -84,7 +94,7 @@ Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552), V4 obteve
 (86 matches exatos). O detector não consulta o banco ou
 `CaseIndex` e não classifica uma citação.
 
-O pipeline de produção é `Texto -> CitationDetector V6 -> CitationParser V1 ->
+O pipeline de produção é `Texto -> CitationDetector V7 -> CitationParser V1 ->
 CitationResolver V3 -> StructuralCNJArbitrator`. Após a promoção de H1/H2/H3, novas expansões marginais do
 Detector não devem ser adicionadas sem nova evidência independente de
 generalização e segurança.

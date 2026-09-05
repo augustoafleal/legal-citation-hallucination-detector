@@ -175,6 +175,7 @@ pyrightconfig.json
 .agents/
 material_desafio_jusbrasil_bracis_old/
 material_desafio_jusbrasil_bracis_old2/
+material_desafio_jusbrasil_bracis_old3/
 artifacts/
 # Artefatos temporários de exploração
 .jupyter_cache/
