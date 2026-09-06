@@ -163,6 +163,29 @@ _COURT_CONTEXT_PATTERN = re.compile(
     r"\b(?:STF|STJ|TSE|TST|STM)\b[^\n]{0,100}\b(?:20\d{2}|Relator|Relatora)\b",
     re.IGNORECASE,
 )
+_CONCRETE_INCOMPLETE_COURT = re.compile(
+    r"\b(?:STF|STJ|TSE|TST|STM|Supremo Tribunal Federal|Superior Tribunal de Justiça|"
+    r"Tribunal Superior Eleitoral|Tribunal Superior do Trabalho|Superior Tribunal Militar)\b",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_DECISION = re.compile(
+    r"\b(?:Agravo\s+em\s+Recurso\s+Especial|Agravo\s+em\s+REsp|"
+    r"Recurso\s+em\s+Habeas\s+Corpus|RHC|Reclamação|Rcl|acórdão|julgado|precedente)\b",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_YEAR = re.compile(
+    r"\b(?:de|em)\s+(?:19\d{2}|20\d{2})\b|"
+    r"\b(?:julgado|proferido|profcrido)\s+(?:em\s+)?(?:19\d{2}|20\d{2})\b",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_RELATOR = re.compile(
+    r"\b(?:Rel\.?(?:\s*(?:Min\.?|Ministro|Ministra))?|"
+    r"(?:pela|sob|da)\s+relatoria\s+d(?:e|a|c))\s+",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_NAME = re.compile(
+    r"[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*(?:[ \t\r\n]+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*){1,5}"
+)
 _RULES = (
     ("cnj", _CNJ_PATTERN, "jurisprudencia"),
     ("processo_ou_recurso", _PROCESS_PATTERN, "jurisprudencia"),
@@ -243,6 +266,7 @@ class CitationDetector:
         candidates.extend(self._detect_dotted_classes(text))
         candidates.extend(self._detect_v5_standalone_modifiers(text))
         candidates.extend(self._detect_v5_compound_titles(text))
+        candidates.extend(self._detect_concrete_incomplete_jurisprudence(text))
         candidates = [
             self._expand_process_ocr_tail(candidate, text) for candidate in candidates
         ]
@@ -261,12 +285,60 @@ class CitationDetector:
                 if self._span_iou(candidate, existing) < 0.5
             ]
             candidates.append(candidate)
+        candidates = self._apply_concrete_incomplete_priority(candidates)
 
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _crosses_sentence_or_paragraph(value: str) -> bool:
+        """A local H2 clause never crosses prose punctuation or a paragraph."""
+        return "\n\n" in value or bool(re.search(r"(?<!Rel)(?<!Min)[.!?]", value))
+
+    def _detect_concrete_incomplete_jurisprudence(self, text: str) -> list[CitationCandidate]:
+        """Detect a bounded decision + court + year + relator chain without lookup."""
+        found: list[CitationCandidate] = []
+        for decision in _CONCRETE_INCOMPLETE_DECISION.finditer(text):
+            court = _CONCRETE_INCOMPLETE_COURT.search(
+                text, decision.end(), min(len(text), decision.end() + 45)
+            )
+            if court is None or not re.fullmatch(
+                r"\s*(?:do|da)?\s*", text[decision.end():court.start()], re.IGNORECASE
+            ):
+                continue
+            window = text[court.end():min(len(text), court.end() + 72)]
+            year = _CONCRETE_INCOMPLETE_YEAR.search(window)
+            if year is None or self._crosses_sentence_or_paragraph(window[:year.start()]):
+                continue
+            relator = _CONCRETE_INCOMPLETE_RELATOR.search(window, year.end())
+            if relator is None or self._crosses_sentence_or_paragraph(window[year.end():relator.start()]):
+                continue
+            name = _CONCRETE_INCOMPLETE_NAME.match(window, relator.end())
+            if name is None:
+                continue
+            end = court.end() + name.end()
+            found.append(
+                CitationCandidate(
+                    decision.start(), end, text[decision.start():end],
+                    "decision_tribunal_relator_year", "jurisprudencia_tribunal_contextual",
+                )
+            )
+        return list({(item.start, item.end, item.text): item for item in found}.values())
+
+    @classmethod
+    def _apply_concrete_incomplete_priority(
+        cls, candidates: list[CitationCandidate]
+    ) -> list[CitationCandidate]:
+        """Keep H2 over only dangerous contextual overlap; retain every other family."""
+        h2_candidates = [item for item in candidates if item.rule == "decision_tribunal_relator_year"]
+        return [
+            item for item in candidates
+            if item.rule != "tribunal_contextual"
+            or not any(cls._span_iou(item, h2_item) >= .5 for h2_item in h2_candidates)
+        ]
 
     @staticmethod
     def _detect_degraded_compact_cnj(text: str) -> list[CitationCandidate]:

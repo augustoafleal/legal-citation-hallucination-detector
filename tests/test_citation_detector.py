@@ -5,7 +5,7 @@ import unittest
 
 import pandas as pd
 
-from bracis_jusbrasil.citations import CitationDetector
+from bracis_jusbrasil.citations import CitationCandidate, CitationDetector
 
 
 DATASET_DIR = Path("material_desafio_jusbrasil_bracis")
@@ -18,6 +18,7 @@ RULE_TYPES = {
     "lei_com_diploma": "lei",
     "dispositivo_legal": "lei",
     "tribunal_contextual": "jurisprudencia",
+    "decision_tribunal_relator_year": "jurisprudencia",
 }
 
 
@@ -106,6 +107,64 @@ class CitationDetectorTests(unittest.TestCase):
         for text in examples:
             with self.subTest(text=text):
                 self.assertEqual(self.detector.detect(text), ())
+
+    def test_v8_h2_detects_only_complete_bounded_structures(self) -> None:
+        examples = (
+            "julgado do STF proferido em 2024 pela relatoria de Maria Silva Pereira",
+            "acórdão do STJ em 2023, Rel. Min. João Silva",
+            "Reclamação do STF de 2025, Rel. Min. Maria Silva",
+            "RHC do STJ em 2022, Rel. Ministro José Pereira",
+            "Agravo em REsp do STJ proferido em 2021, Rel. Ministra Ana Souza",
+            "julgado do STF profcrido em 2024 pela relatoria dc Maria Silva Pereira",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidate = next(item for item in self.detector.detect(text) if item.rule == "decision_tribunal_relator_year")
+                self.assertEqual(candidate.family, "jurisprudencia_tribunal_contextual")
+                self.assertEqual(candidate.text, text)
+
+    def test_v8_h2_rejects_missing_or_nonlocal_signals(self) -> None:
+        examples = (
+            "julgado do STF proferido em 2024",
+            "julgado do STF pela relatoria de Maria Silva Pereira",
+            "julgado proferido em 2024 pela relatoria de Maria Silva Pereira",
+            "O STF em 2024, pela relatoria de Maria Silva Pereira, decidiu a matéria.",
+            "julgado do STF 2024 pela relatoria de Maria Silva Pereira",
+            "julgado do STF em 2024. Pela relatoria de Maria Silva Pereira, decidiu-se.",
+            "julgado do STF em 2024.\n\nPela relatoria de Maria Silva Pereira, decidiu-se.",
+            "A jurisprudência pacífica desta Corte orienta o caso.",
+            "Aplica-se a orientação jurisprudencial da Corte Superior.",
+            "Há entendimento sumulado sobre a matéria.",
+            "Precedente do STJ em 2024, Relator indicado.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "decision_tribunal_relator_year" for item in self.detector.detect(text)))
+
+    def test_v8_h2_priority_preserves_low_overlap_and_suppresses_dangerous_context(self) -> None:
+        text = "Conforme julgado do STF proferido em 2024 pela relatoria de Maria Silva Pereira."
+        candidates = self.detector.detect(text)
+        h2_candidate = next(item for item in candidates if item.rule == "decision_tribunal_relator_year")
+        contextual = next(item for item in candidates if item.rule == "tribunal_contextual")
+        self.assertLess(span_iou(h2_candidate.start, h2_candidate.end, contextual.start, contextual.end), .5)
+        self.assertIn(contextual, CitationDetector._apply_concrete_incomplete_priority(list(candidates)))
+
+        dangerous = CitationCandidate(
+            h2_candidate.start + 1, h2_candidate.end - 1,
+            text[h2_candidate.start + 1:h2_candidate.end - 1],
+            "tribunal_contextual", "jurisprudencia_tribunal_contextual",
+        )
+        retained = CitationDetector._apply_concrete_incomplete_priority([h2_candidate, dangerous])
+        self.assertEqual(retained, [h2_candidate])
+
+    def test_v8_h2_priority_never_suppresses_other_families(self) -> None:
+        text = (
+            "Autos 1234567-89.2020.1.23.4567; REsp nº 1.597.443; "
+            "art. 5 da Constituição Federal; julgado do STF proferido em 2024 "
+            "pela relatoria de Maria Silva Pereira."
+        )
+        rules = {item.rule for item in self.detector.detect(text)}
+        self.assertTrue({"cnj", "processo_ou_recurso", "lei_com_diploma", "decision_tribunal_relator_year"} <= rules)
 
     def test_general_jurisprudence_does_not_match_isolated_terms(self) -> None:
         text = "A jurisprudência relevante e a orientação adotada foram discutidas."
@@ -443,18 +502,18 @@ class CitationDetectorV7Tests(unittest.TestCase):
         self.assertEqual(len(compound_matches), 6)
         self.assertEqual(set(compound["family"]), {"processo_ou_recurso_numerado"})
 
-    def test_v7_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 206)
+    def test_v8_candidate_count_offsets_and_exact_matches(self) -> None:
+        self.assertEqual(len(self.predictions), 233)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 129)
-        self.assertEqual(int(self.matches["exact"].sum()), 82)
+        self.assertEqual(len(self.matches), 156)
+        self.assertEqual(int(self.matches["exact"].sum()), 109)
 
-    def test_v7_metrics_by_level_and_type(self) -> None:
+    def test_v8_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (129, 77, 66)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (76, 37, 25)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (53, 40, 41)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (113, 50, 52)),
+            "global": (self.gold, self.predictions, (156, 77, 39)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (89, 37, 12)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (67, 40, 27)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (140, 50, 25)),
             "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 14)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
@@ -462,12 +521,13 @@ class CitationDetectorV7Tests(unittest.TestCase):
                 self.assertEqual(metrics(gold, predictions, self.matches), expected_metrics)
 
     def test_non_process_candidates_are_preserved_without_general_references(self) -> None:
-        self.assertEqual(len(self.predictions), 206)
+        self.assertEqual(len(self.predictions), 233)
         self.assertEqual(
             self.predictions.groupby("rule").size().to_dict(),
             {
                 "cnj": 46,
                 "compound_procedural_chain": 6,
+                "decision_tribunal_relator_year": 27,
                 "degraded_compact_cnj": 3,
                 "dispositivo_legal": 28,
                 "lei_com_diploma": 15,
@@ -476,8 +536,8 @@ class CitationDetectorV7Tests(unittest.TestCase):
                 "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (129, 77, 66))
-        self.assertEqual(int(self.matches["exact"].sum()), 82)
+        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (156, 77, 39))
+        self.assertEqual(int(self.matches["exact"].sum()), 109)
         self.assertFalse(self.predictions["rule"].eq("jurisprudencia_geral").any())
         self.assertFalse(self.predictions["family"].eq("jurisprudencia_referencia_geral").any())
 

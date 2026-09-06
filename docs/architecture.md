@@ -78,6 +78,16 @@ variantes com whitespace ao redor do hífen são rejeitados. O Parser valida a
 mesma estrutura antes de extrair classe terminal, número literal e tribunal
 explícito; a regra não consulta banco nem completa dígitos.
 
+A V8 acrescenta `decision_tribunal_relator_year` para jurisprudência concreta
+insuficiente: exige, na mesma cláusula local, anchor decisório/classe, tribunal
+explícito, ano contextual e relatoria explícita. O span começa no anchor e
+termina no nome literal do relator. A regra usa a família contextual já
+suportada pelo Parser e, portanto, segue para `insufficient` no Resolver e
+`incompleta` na classificação sem exceção específica. Quando seu span tem IoU
+de pelo menos 0,5 somente com `tribunal_contextual`, a V8 preserva H2 e suprime
+o contextual curto; abaixo desse limiar mantém ambos. Nunca interfere com CNJ,
+processos numerados, súmulas ou lei. Não consulta Gold, banco, IDs ou nomes.
+
 As extensões são exclusivamente textuais, determinísticas e guardadas; não
 consultam IDs, documentos, gold, banco ou `CaseIndex`, e não fazem reparo fuzzy.
 A V4 preserva a V3 e promoveu somente três extensões estruturais:
