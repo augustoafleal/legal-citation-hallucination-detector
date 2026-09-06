@@ -18,7 +18,6 @@ RULE_TYPES = {
     "lei_com_diploma": "lei",
     "dispositivo_legal": "lei",
     "tribunal_contextual": "jurisprudencia",
-    "jurisprudencia_geral": "jurisprudencia",
 }
 
 
@@ -96,25 +95,17 @@ class CitationDetectorTests(unittest.TestCase):
                 candidate = next(item for item in self.detector.detect(text) if item.rule == rule)
                 self.assertEqual(candidate.family, family)
 
-    def test_general_jurisprudence_branches_keep_offsets_and_family(self) -> None:
+    def test_vague_general_jurisprudence_references_are_not_candidates(self) -> None:
         examples = (
-            ("A jurisprudência pacífica desta Corte orienta o caso.", "jurisprudência pacífica desta Corte"),
-            ("Aplica-se a orientação jurisprudencial consolidada.", "orientação jurisprudencial consolidada"),
-            ("Há entendimento sumulado sobre a matéria.", "entendimento sumulado sobre a matéria"),
-            ("Confira os precedentes desta Casa em 2024.", "precedentes desta Casa em 2024"),
-            ("Incide o verbete sumular aplicável.", "verbete sumular aplicável"),
+            "A jurisprudência pacífica desta Corte orienta o caso.",
+            "Aplica-se a orientação jurisprudencial da Corte Superior.",
+            "Há entendimento sumulado sobre a matéria.",
+            "Incide o verbete sumular aplicável à espécie.",
+            "Confira os precedentes desta Casa em situações análogas.",
         )
-        for text, expected_text in examples:
-            with self.subTest(expected_text=expected_text):
-                candidates = self.detector.detect(text)
-                self.assertEqual(len(candidates), 1)
-                candidate = candidates[0]
-                self.assertEqual(candidate.rule, "jurisprudencia_geral")
-                self.assertEqual(candidate.family, "jurisprudencia_referencia_geral")
-                self.assertEqual(candidate.text, expected_text)
-                self.assertEqual(candidate.start, text.index(expected_text))
-                self.assertEqual(candidate.end, candidate.start + len(expected_text))
-                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector.detect(text), ())
 
     def test_general_jurisprudence_does_not_match_isolated_terms(self) -> None:
         text = "A jurisprudência relevante e a orientação adotada foram discutidas."
@@ -159,7 +150,6 @@ class CitationDetectorTests(unittest.TestCase):
                 ("art. 75 da Constituição Federal", "lei_com_diploma", "lei_dispositivo_com_diploma"),
                 ("art. 75", "dispositivo_legal", "lei_dispositivo_sem_diploma"),
                 ("Súmula 331", "sumula_numerada", "sumula_numerada"),
-                ("jurisprudência pacífica", "jurisprudencia_geral", "jurisprudencia_referencia_geral"),
             },
         )
         self.assertFalse(any(item.rule == "processo_ou_recurso" for item in candidates))
@@ -454,32 +444,27 @@ class CitationDetectorV7Tests(unittest.TestCase):
         self.assertEqual(set(compound["family"]), {"processo_ou_recurso_numerado"})
 
     def test_v7_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 218)
+        self.assertEqual(len(self.predictions), 206)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 141)
-        self.assertEqual(int(self.matches["exact"].sum()), 88)
+        self.assertEqual(len(self.matches), 129)
+        self.assertEqual(int(self.matches["exact"].sum()), 82)
 
     def test_v7_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (141, 77, 84)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (84, 37, 32)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (57, 40, 52)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (125, 50, 61)),
-            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 23)),
+            "global": (self.gold, self.predictions, (129, 77, 66)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (76, 37, 25)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (53, 40, 41)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (113, 50, 52)),
+            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 14)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
             with self.subTest(group=name):
                 self.assertEqual(metrics(gold, predictions, self.matches), expected_metrics)
 
-    def test_non_process_candidates_and_validated_candidates_are_preserved(self) -> None:
-        v1_predictions = self.predictions.loc[~self.predictions["rule"].eq("jurisprudencia_geral")].copy()
-        v1_matches = greedy_match(self.gold, v1_predictions)
-        new_predictions = self.predictions.loc[self.predictions["rule"].eq("jurisprudencia_geral")]
-        new_matches = self.matches.loc[self.matches["pred_idx"].isin(new_predictions["pred_idx"])]
-
-        self.assertEqual(len(v1_predictions), 206)
+    def test_non_process_candidates_are_preserved_without_general_references(self) -> None:
+        self.assertEqual(len(self.predictions), 206)
         self.assertEqual(
-            v1_predictions.groupby("rule").size().to_dict(),
+            self.predictions.groupby("rule").size().to_dict(),
             {
                 "cnj": 46,
                 "compound_procedural_chain": 6,
@@ -491,13 +476,10 @@ class CitationDetectorV7Tests(unittest.TestCase):
                 "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (129, 77, 96))
-        self.assertEqual(int(v1_matches["exact"].sum()), 82)
-        self.assertEqual(len(new_predictions), 12)
-        self.assertEqual(len(new_matches), 12)
-        self.assertTrue(set(v1_matches["gold_idx"]).issubset(set(self.matches["gold_idx"])))
-        self.assertEqual(set(new_predictions["pred_idx"]), set(new_matches["pred_idx"]))
-        self.assertTrue(new_predictions["family"].eq("jurisprudencia_referencia_geral").all())
+        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (129, 77, 66))
+        self.assertEqual(int(self.matches["exact"].sum()), 82)
+        self.assertFalse(self.predictions["rule"].eq("jurisprudencia_geral").any())
+        self.assertFalse(self.predictions["family"].eq("jurisprudencia_referencia_geral").any())
 
 
 if __name__ == "__main__":

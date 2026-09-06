@@ -85,9 +85,12 @@ H1 expande localmente cadeias processuais adjacentes com guards; H2 reconhece
 `Rec. Esp.` e `H.C.` somente quando associados a uma estrutura processual válida;
 H3 estende localmente uma continuação numérica sob ruído OCR estrutural. H3 não
 é fuzzy matching. As hipóteses H4/H5 originais foram reavaliadas com os sete
-residuais e promovidas apenas nas formas guardadas acima. A V2 preserva a V1 e adiciona a detecção conservadora de
-referências jurisprudenciais gerais (`jurisprudencia_geral`): V1 obteve
-105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN (F1 0,543).
+residuais e promovidas apenas nas formas guardadas acima. Historicamente, a V2
+adicionou referências jurisprudenciais gerais (`jurisprudencia_geral`): V1
+obteve 105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN
+(F1 0,543). Sob o Gold V2, referências vagas a jurisprudência ou orientação
+sem fonte concreta ficaram fora do escopo de citação e essa emissão foi retirada
+do Detector.
 Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552), V4 obteve
 127 TP / 84 FP / 98 FN (F1 0,583), V5 obteve 137 TP / 82 FP / 88 FN
 (F1 0,617; 83 matches exatos) e V6 obteve 140 TP / 82 FP / 85 FN

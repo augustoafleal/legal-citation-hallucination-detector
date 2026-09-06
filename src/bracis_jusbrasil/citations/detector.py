@@ -163,11 +163,6 @@ _COURT_CONTEXT_PATTERN = re.compile(
     r"\b(?:STF|STJ|TSE|TST|STM)\b[^\n]{0,100}\b(?:20\d{2}|Relator|Relatora)\b",
     re.IGNORECASE,
 )
-_GENERAL_JURISPRUDENCE_PATTERN = re.compile(
-    r"\b(?:jurisprudência\s+(?:pacífica|consolidada)(?:\s+(?:desta|dos)\s+(?:Corte|tribunais superiores))?|orientação jurisprudencial(?:\s+consolidada)?|entendimento sumulado(?:\s+sobre\s+a\s+matéria)?|precedentes desta Casa(?:\s+em\s+20\d{2})?|verbete sumular aplicável)\b",
-    re.IGNORECASE,
-)
-
 _RULES = (
     ("cnj", _CNJ_PATTERN, "jurisprudencia"),
     ("processo_ou_recurso", _PROCESS_PATTERN, "jurisprudencia"),
@@ -175,7 +170,6 @@ _RULES = (
     ("lei_com_diploma", _LAW_WITH_DIPLOMA_PATTERN, "lei"),
     ("dispositivo_legal", _ARTICLE_DETECT_PATTERN, "lei"),
     ("tribunal_contextual", _COURT_CONTEXT_PATTERN, "jurisprudencia"),
-    ("jurisprudencia_geral", _GENERAL_JURISPRUDENCE_PATTERN, "jurisprudencia"),
 )
 
 
