@@ -173,7 +173,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         self.assertEqual(counts, {
             ("real", "resolved"): 62, ("real", "no_match"): 3, ("real", "ambiguous"): 2, ("real", "insufficient"): 29,
             ("inventada", "no_match"): 40, ("inventada", "insufficient"): 24,
-            ("incompleta", "insufficient"): 65,
+            ("incompleta", "insufficient"): 35,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
         self.assertEqual(sum(row["result"].status == "resolved" for row in resolved_rows if row["gold"] != "real"), 0)
@@ -183,7 +183,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 167)
+        self.assertEqual(classified, 137)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []

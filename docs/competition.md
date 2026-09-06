@@ -15,7 +15,7 @@ Esta página consolida, em um único lugar, as informações da competição que
 | --- | --- |
 | `txt/` | 26 documentos de entrada em UTF-8. |
 | `desafio1_bracis.db` | Base canônica SQLite, com 1.016 registros. |
-| `goldenset.csv` | Gabarito aberto da amostra de desenvolvimento, com 225 citações. |
+| `goldenset.csv` | Gabarito aberto revisado da amostra de desenvolvimento, com 195 citações. |
 | `json_to_submission.py` | Conversor do contrato JSON para o CSV de submissão. |
 | `kaggle_metric.py` | Implementação local da métrica oficial do leaderboard. |
 | `sample_submission.csv` | Modelo de arquivo de submissão, com uma linha por documento. |
@@ -34,7 +34,7 @@ Seu sistema recebe documentos judiciais em texto (.txt) e deve, para cada docume
 
     real — a citação resolve a um único registro da base canônica do desafio: tem identificadores suficientes e a busca confirma sua existência. Exige entregar o id_canonico correto — acertar o rótulo sem o link não conta.
     inventada — identificadores suficientes para buscar, mas nenhum registro correspondente existe na cobertura congelada.
-    incompleta — informação insuficiente para formular a consulta ("conforme jurisprudência pacífica do tribunal"), ou suficiente para buscar mas insuficiente para identificar um único registro.
+    incompleta — existe uma fonte ou decisão concreta com contexto de identificação, mas os dados não permitem confirmar ou refutar um registro único. Referências difusas, como “jurisprudência pacífica desta Corte”, não são mais citações do gabarito.
 
 A distinção entre inventada e incompleta importa em produção: a primeira é alucinação ativa (o LLM inventou um número de acórdão); a segunda é evasiva. Sistemas reais tratam cada caso de forma diferente — incompletas vão para revisão humana; inventadas devem ser bloqueadas.
 
@@ -159,7 +159,7 @@ Encontre citações de jurisprudência e lei em documentos e classifique cada um
 | --- | --- |
 | `txt/` | Os 26 documentos de entrada (`.txt`, UTF-8). |
 | `desafio1_bracis.db` | A base canônica SQLite (93 MB, 1.016 registros). |
-| `goldenset.csv` | O gabarito da amostra de desenvolvimento (225 citações). |
+| `goldenset.csv` | O gabarito revisado da amostra de desenvolvimento (195 citações). |
 | `json_to_submission.py` | Conversor: JSONs do contrato → `submission.csv`. |
 | `kaggle_metric.py` | O script de avaliação — o mesmo que roda neste leaderboard. |
 | `sample_submission.csv` | Modelo de submissão com todas as linhas de `documento_id`. |
@@ -189,9 +189,9 @@ A nomenclatura dos arquivos já entrega o nível: gen_n1_001 … gen_n1_013 são
 | --- | --- | --- |
 | Peso na nota | 1× | 2× |
 | Documentos | 13 | 13 |
-| Citações | 116 | 109 |
+| Citações | 101 | 94 |
 | Tamanho médio | 3.372 chars | 3.276 chars |
-| Classes | real 52 · inventada 32 · incompleta 32 | real 44 · inventada 32 · incompleta 33 |
+| Classes | real 52 · inventada 32 · incompleta 17 | real 44 · inventada 32 · incompleta 18 |
 | O que testa | Reconhecer a citação e resolver o doc_id na base canônica. | Normalização robusta antes de verificar: casar variantes de superfície ao mesmo identificador. |
 #### A mesma classe, escrita de dois jeitos
 
@@ -239,10 +239,10 @@ Há ainda uma tabela virtual documentos_fts (FTS5, external content) indexando o
 
 ### Revisão da cobertura
 
-Na revisão oficial de 28/08/2026, os acórdãos `doc_0227` e `doc_0461` foram removidos por serem duplicatas exatas e `gen_n2_010.txt` foi corrigido. A cobertura resultante tem 1.016 registros: 998 acórdãos, 5 súmulas e 13 dispositivos. A cópia local anterior tinha o gabarito em XLSX; a distribuição atual usa `goldenset.csv` com os mesmos 225 registros e, no contrato de saída, `id_canonico` é um único doc_id para cada citação real.
+Na revisão oficial de 28/08/2026, os acórdãos `doc_0227` e `doc_0461` foram removidos por serem duplicatas exatas e `gen_n2_010.txt` foi corrigido. A cobertura resultante tem 1.016 registros: 998 acórdãos, 5 súmulas e 13 dispositivos. Em atualização posterior, a organização substituiu o `goldenset.csv`: removeu 30 referências vagas da classe `incompleta`, sem alterar a base, os textos, as 96 citações reais ou as 64 inventadas. No contrato de saída, `id_canonico` é um único doc_id para cada citação real.
 ### O gabarito
 
-O goldenset.csv tem uma linha por citação esperada — 225 no total, nos 26 documentos.
+O goldenset.csv tem uma linha por citação esperada — 195 no total, nos 26 documentos.
 
 É o gabarito da amostra de desenvolvimento. O gabarito do conjunto final tem o mesmo formato, permanece com a organização e é usado exclusivamente na avaliação oficial.
 | Coluna | Descrição |

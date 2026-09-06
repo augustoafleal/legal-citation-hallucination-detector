@@ -62,9 +62,13 @@ preservados por feito. Essa baseline alimenta o `CaseIndex` V1 em
 `src/bracis_jusbrasil.cases`: súmulas, dispositivos, citações `.txt` e FTS
 continuam fora do índice.
 
-Os números acima registram a investigação sobre a versão anterior do dataset.
+Os números acima registram a investigação sobre uma versão anterior do dataset.
 Em 28/08/2026, a baseline oficial foi atualizada: `doc_0227` e `doc_0461`
-foram removidos por serem duplicatas exatas.
+foram removidos por serem duplicatas exatas. Uma atualização posterior removeu
+30 referências genéricas da classe `incompleta` do `goldenset.csv`; por isso,
+as estatísticas históricas de 225 citações descritas neste documento não são
+baseline do material atual de 195 citações. Consulte `report.md` na raiz antes
+de reexecutar ou comparar esses notebooks.
 
 ## 06_citation_surface_analysis.ipynb
 
@@ -124,8 +128,9 @@ organizadores. O notebook não altera produção nem implementa essa decisão.
 
 A regra foi posteriormente promovida, sem alterações, ao `CitationDetector`
 V2. Os notebooks 07 e 07.1 continuam sendo a evidência histórica da seleção e
-do teste de robustez; a implementação de produção preserva somente
-`jurisprudencia_geral`, com baseline de 117 TP, 89 FP e 108 FN.
+do teste de robustez, incluindo a baseline de 117 TP, 89 FP e 108 FN. Sob o
+Gold V2, a regra foi retirada da produção: referências jurisprudenciais vagas,
+sem fonte concreta, deixaram de estar no escopo de citação.
 
 ## 08_citation_parsing_analysis.ipynb
 

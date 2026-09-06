@@ -111,7 +111,7 @@ Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas
 
 ## Gabarito de desenvolvimento
 
-`goldenset.csv` contém uma linha por citação esperada da amostra de desenvolvimento. São 225 linhas distribuídas pelos 26 documentos, de 7 a 10 citações por peça (média de 8,65).
+`goldenset.csv` contém uma linha por citação esperada da amostra de desenvolvimento. A revisão mais recente possui 195 linhas distribuídas pelos 26 documentos (média de 7,5 por peça).
 
 | Campo | Descrição |
 | --- | --- |
@@ -125,24 +125,24 @@ Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas
 
 | Recorte | `real` | `inventada` | `incompleta` | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Nível 1 | 52 | 32 | 32 | 116 |
-| Nível 2 | 44 | 32 | 33 | 109 |
-| Total | 96 | 64 | 65 | 225 |
+| Nível 1 | 52 | 32 | 17 | 101 |
+| Nível 2 | 44 | 32 | 18 | 94 |
+| Total | 96 | 64 | 35 | 195 |
 
-Existem 186 citações de jurisprudência e 39 de lei. As 96 linhas classificadas como `real` possuem `id_canonico`; as demais o deixam vazio, como estabelece o enunciado.
+Existem 165 citações de jurisprudência e 30 de lei. As 96 linhas classificadas como `real` possuem `id_canonico`; as demais o deixam vazio, como estabelece o enunciado.
 
 !!! note "Observação de consistência"
 
-    Comparando `texto[inicio:fim]` com o `trecho` do gabarito anterior em XLSX, ao interpretar `\\n` como quebra de linha, as 225 linhas coincidem com os textos atuais. A distribuição atual transporta os mesmos valores em CSV. O arquivo `gen_n2_010.txt` foi corrigido na revisão oficial de 28/08/2026.
+    Comparando `texto[inicio:fim]` com o `trecho`, ao interpretar `\\n` como quebra de linha, as 195 linhas coincidem com os textos atuais. A atualização mais recente removeu 30 referências genéricas da classe `incompleta`; não alterou textos, offsets remanescentes, classificações remanescentes ou IDs canônicos. Veja `report.md` na raiz do repositório.
 
-## Revisão do dataset — 28/08/2026
+## Revisões do dataset
 
 A revisão oficial removeu os acórdãos duplicados `doc_0227` e `doc_0461` do
 SQLite e corrigiu `gen_n2_010.txt`. A cópia local anterior tinha o gabarito em
 `goldenset.xlsx`; a distribuição atual usa `goldenset.csv` com os mesmos valores.
 A base tem 1.016 registros, incluindo 998 acórdãos, 13 dispositivos e 5
 súmulas. No contrato de saída, `id_canonico` é um único valor para cada citação
-real.
+real. Posteriormente, a organização revisou o `goldenset.csv`: 30 referências vagas da classe `incompleta` foram removidas. A cópia anterior está preservada em `material_desafio_jusbrasil_bracis_old3/`; os detalhes e os checksums estão em `report.md`.
 
 ## Conversão da submissão
 

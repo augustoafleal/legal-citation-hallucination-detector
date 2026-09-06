@@ -1,11 +1,9 @@
 nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
-1,gen_n1_001,g1,469,498,normas\nde regência da matéria,lei,incompleta,
 1,gen_n1_001,g2,589,652,julgado do STF proferido em 2024 pela relatoria de Dias Toffoli,jurisprudencia,incompleta,
 1,gen_n1_001,g3,797,820,Reclamação nº 66.516/RO,jurisprudencia,inventada,
 1,gen_n1_001,g4,951,985,AgInt 7557430-50.2018.7.00.0000/DF,jurisprudencia,inventada,
 1,gen_n1_001,g5,1398,1479,julgado do STM proferido em 2023\npela relatoria de CARLOS AUGUSTO AMARAL OLIVEIRA,jurisprudencia,incompleta,
 1,gen_n1_001,g6,1928,1963,APL nº\n7000449-40.2023.7.00.0000/RS,jurisprudencia,real,5665364632
-1,gen_n1_001,g7,2463,2508,dispositivo constitucional invocado na origem,lei,incompleta,
 1,gen_n1_001,g8,2901,2914,Rcl 88.178/RS,jurisprudencia,inventada,
 1,gen_n1_001,g9,3058,3114,"precedente do STM de 2023, da relatoria de Marco Antonio",jurisprudencia,incompleta,
 1,gen_n1_001,g10,3252,3287,RSE nº 7000592-58.2025.7.00.0000/DF,jurisprudencia,real,6689204911
@@ -16,13 +14,10 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 1,gen_n1_002,g5,1613,1643,AgInt no AREsp nº 1.996.496/RJ,jurisprudencia,real,1922829498
 1,gen_n1_002,g6,2133,2153,Súmula Vinculante 10,jurisprudencia,real,1289712966
 1,gen_n1_002,g7,2308,2350,Agravo em Recurso Especial nº 1.708.000/SP,jurisprudencia,real,2678821961
-1,gen_n1_002,g8,2889,2934,dispositivo constitucional\ninvocado na origem,lei,incompleta,
 1,gen_n1_002,g9,3364,3396,art. 1.134 da Lei nº\n13.105/2015,lei,inventada,
 1,gen_n1_003,g1,577,593,AREsp 1576933/SP,jurisprudencia,real,2108020112
-1,gen_n1_003,g2,1041,1076,jurisprudência pacífica desta Corte,jurisprudencia,incompleta,
 1,gen_n1_003,g3,1193,1235,art. 158 do Código de Defesa do Consumidor,lei,inventada,
 1,gen_n1_003,g4,1677,1695,REsp nº 2020005/RJ,jurisprudencia,real,2939285691
-1,gen_n1_003,g5,2106,2143,entendimento sumulado sobre a matéria,jurisprudencia,incompleta,
 1,gen_n1_003,g6,2308,2380,"Agravo em Recurso Especial do STJ,\nde 2023, Rel. Min. Assusete Magalhães",jurisprudencia,incompleta,
 1,gen_n1_003,g7,2480,2522,art. 185 do Código de Defesa do Consumidor,lei,inventada,
 1,gen_n1_003,g8,3034,3060,AgRg no AREsp 1.327.863/PR,jurisprudencia,real,3445761877
@@ -34,14 +29,11 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 1,gen_n1_004,g5,2005,2040,RSE nº 7000768-37.2025.7.00.0000/RS,jurisprudencia,real,6688597116
 1,gen_n1_004,g6,2508,2540,art.\n290 do Código Penal Militar,lei,real,10590194
 1,gen_n1_004,g7,2639,2671,RSE 7000082-11.2026.7.00.0000/RS,jurisprudencia,real,6689057510
-1,gen_n1_005,g1,534,569,jurisprudência\npacífica desta Corte,jurisprudencia,incompleta,
-1,gen_n1_005,g2,689,733,precedentes desta Casa em situações análogas,jurisprudencia,incompleta,
 1,gen_n1_005,g3,848,874,AgInt no REsp 1.599.910/PR,jurisprudencia,real,2684964055
 1,gen_n1_005,g4,1030,1071,AgInt no Recurso\nEspecial nº 1.620.021/PR,jurisprudencia,real,1659996497
 1,gen_n1_005,g5,1532,1558,AgInt no REsp 1.664.893/PR,jurisprudencia,real,2684902370
 1,gen_n1_005,g6,2039,2104,julgado do STF proferido em 2025 pela relatoria de ANDRÉ MENDONÇA,jurisprudencia,incompleta,
 1,gen_n1_005,g7,2668,2681,Rcl 88.860/PE,jurisprudencia,inventada,
-1,gen_n1_005,g8,3146,3179,legislação de regência da matéria,lei,incompleta,
 1,gen_n1_006,g1,505,536,AgR-REspe 378-82.2016.6.05.0151,jurisprudencia,real,469077298
 1,gen_n1_006,g2,657,709,Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000,jurisprudencia,real,375394498
 1,gen_n1_006,g3,1163,1194,REspe 0600530-94.2020.6.26.0171,jurisprudencia,real,1891499398
@@ -61,17 +53,13 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 1,gen_n1_007,g8,2892,2909,REsp 1.883.715/SP,jurisprudencia,real,1915411069
 1,gen_n1_007,g9,3028,3051,Reclamação nº 11.125/SP,jurisprudencia,inventada,
 1,gen_n1_008,g1,558,603,art. 477 da Consolidação das Leis do Trabalho,lei,real,10710324
-1,gen_n1_008,g2,702,746,orientação jurisprudencial da Corte Superior,jurisprudencia,incompleta,
 1,gen_n1_008,g3,888,933,processo nº TST-E-RR-173000-49.2008.5.15.0024,jurisprudencia,real,653841135
 1,gen_n1_008,g4,1341,1378,TST-ED-E-ED-RR-3400-05.2011.5.21.0009,jurisprudencia,real,861411570
 1,gen_n1_008,g5,1831,1844,Rcl 77.140/SP,jurisprudencia,inventada,
 1,gen_n1_008,g6,2332,2347,art. 818 da CLT,lei,real,10647746
-1,gen_n1_008,g7,2427,2462,verbete sumular aplicável à espécie,jurisprudencia,incompleta,
-1,gen_n1_008,g8,2952,2996,orientação jurisprudencial da Corte Superior,jurisprudencia,incompleta,
 1,gen_n1_008,g9,3099,3116,Súmula 331 do TST,jurisprudencia,real,1431369957
 1,gen_n1_008,g10,3238,3251,Rcl 88.696/RJ,jurisprudencia,inventada,
 1,gen_n1_009,g1,616,686,Embargos de Declaração no Recurso em Mandado de Segurança\nnº 67.101/RJ,jurisprudencia,real,1480058767
-1,gen_n1_009,g2,910,955,dispositivo constitucional invocado na origem,lei,incompleta,
 1,gen_n1_009,g3,1386,1403,REsp 1.501.000/RJ,jurisprudencia,real,3584971504
 1,gen_n1_009,g4,1921,1934,RHC 346037/PR,jurisprudencia,inventada,
 1,gen_n1_009,g5,2449,2533,Embargos de Declaração no Agravo Interno no Agravo em Recurso Especial nº 1904603/TO,jurisprudencia,real,3360644937
@@ -82,7 +70,6 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 1,gen_n1_009,g10,3603,3635,EDcl no AgInt no REsp 1889127/SE,jurisprudencia,real,2563032738
 1,gen_n1_010,g1,477,494,REsp 6.989.916/RS,jurisprudencia,inventada,
 1,gen_n1_010,g2,933,949,RHC nº\n88.033/RS,jurisprudencia,real,2566417138
-1,gen_n1_010,g3,1124,1159,jurisprudência\npacífica desta Corte,jurisprudencia,incompleta,
 1,gen_n1_010,g4,1612,1629,Súmula 443 do STJ,jurisprudencia,real,1289711022
 1,gen_n1_010,g5,2140,2172,Recurso Especial nº 1.657.496/RS,jurisprudencia,real,2684945476
 1,gen_n1_010,g6,2556,2588,Recurso Especial nº 1.718.894/SP,jurisprudencia,real,3444970751
@@ -103,13 +90,11 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 1,gen_n1_012,g4,1412,1428,Rcl nº 66.884/RJ,jurisprudencia,inventada,
 1,gen_n1_012,g5,1891,1914,Reclamação nº 22.357/PE,jurisprudencia,inventada,
 1,gen_n1_012,g6,2043,2085,processo nº TST-RR-79500-16.2009.5.15.0016,jurisprudencia,real,867273442
-1,gen_n1_012,g7,2519,2558,lei que disciplina a prescrição no caso,lei,incompleta,
 1,gen_n1_012,g8,2970,2986,Rcl nº\n68.244/SP,jurisprudencia,real,2785081280
 1,gen_n1_012,g9,3135,3170,Terceiro AG.REG na Rcl nº 62.425/SP,jurisprudencia,real,2428195275
 1,gen_n1_012,g10,3317,3330,Rcl 44.960/PE,jurisprudencia,inventada,
 1,gen_n1_013,g1,548,602,reiterados\nprecedentes do Superior Tribunal de Justiça,jurisprudencia,incompleta,
 1,gen_n1_013,g2,1041,1064,Reclamação nº 22.225/SP,jurisprudencia,inventada,
-1,gen_n1_013,g3,1484,1532,precedente firmado em sede de recurso repetitivo,jurisprudencia,incompleta,
 1,gen_n1_013,g4,1629,1676,"art. 1º, I, 'g', da Lei Complementar nº 64/1990",lei,real,11304039
 1,gen_n1_013,g5,2109,2183,julgado\ndo TSE proferido em 2016 pela relatoria de HENRIQUE NEVES DA SILVA,jurisprudencia,incompleta,
 1,gen_n1_013,g6,2319,2336,Súmula 168 do TSE,jurisprudencia,inventada,
@@ -135,19 +120,14 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_003,g3,1289,1314,RR-1835-06.2010.5.15.0042,jurisprudencia,real,392669042
 2,gen_n2_003,g4,1726,1745,RE. nº 3.647.129-RS,jurisprudencia,inventada,
 2,gen_n2_003,g5,1847,1863,Rcl n° 66698/ BA,jurisprudencia,inventada,
-2,gen_n2_003,g6,2009,2060,jurisprudência\nconsolidada dos tribunais superiores,jurisprudencia,incompleta,
 2,gen_n2_003,g7,2559,2578,artigo 1.143 da CLT,lei,inventada,
 2,gen_n2_003,g8,2988,3027,TST-ED-E-ED-ARR-1099-66.2011.5.02.\n0251,jurisprudencia,real,861411566
-2,gen_n2_004,g1,507,545,entendirnento sumulado sobre a matéria,jurisprudencia,incompleta,
 2,gen_n2_004,g2,1014,1045,artigo 172 da Lei nº 9.504/1997,lei,inventada,
 2,gen_n2_004,g3,1463,1478,Súm. 166 do TSE,jurisprudencia,inventada,
-2,gen_n2_004,g4,1899,1947,precedente firmado\nem sede de recurso repetitivo,jurisprudencia,incompleta,
 2,gen_n2_004,g5,2055,2092,REspe. n° 0600216-46.2020-\n.6.14.0022,jurisprudencia,real,1887816799
 2,gen_n2_004,g6,2244,2286,EDs no AGR-RESPE n° 533-80. 2012.6.13.0029,jurisprudencia,real,369460073
 2,gen_n2_004,g7,2390,2418,art 189 da Lei nº 9.504/1997,lei,inventada,
-2,gen_n2_004,g8,2871,2900,dispositivo legal de regência,lei,incompleta,
 2,gen_n2_005,g1,574,601,Reclamação n° 33.-\n474 (MA),jurisprudencia,inventada,
-2,gen_n2_005,g2,979,1011,recente acórdão da Segunda Turma,jurisprudencia,incompleta,
 2,gen_n2_005,g3,1122,1175,"Reclamação do STF, de 2026, Rel. Min. CRISTIANO ZANIN",jurisprudencia,incompleta,
 2,gen_n2_005,g4,1617,1669,"Reclamação do STF, de 2020, Rel. Min. Celso De Mello",jurisprudencia,incompleta,
 2,gen_n2_005,g5,1765,1793,art 60 da Lei nº 13.467/2017,lei,inventada,
@@ -162,7 +142,6 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_006,g5,1468,1496,AgR-AI 0603026-6920186090000,jurisprudencia,real,1888089426
 2,gen_n2_006,g6,1928,1980,"Reclamação do STF, de 2020, Rel. Min. Celso De Mello",jurisprudencia,incompleta,
 2,gen_n2_006,g7,2402,2430,Reclamação n.  44-\n.921 (PE),jurisprudencia,inventada,
-2,gen_n2_006,g8,2893,2947,reiterados\nprecedentes do Superior Tribunal de Justiça,jurisprudencia,incompleta,
 2,gen_n2_006,g9,3026,3097,acórdão do TSE julgado em 2016 sob relatoria de HENRIQUE NEVES DA SILVA,jurisprudencia,incompleta,
 2,gen_n2_007,g1,514,547,Ag. Int. No 7001184-1520197000000,jurisprudencia,real,2382656124
 2,gen_n2_007,g2,955,986,art 290 da Constituição\nFederal,lei,inventada,
@@ -172,10 +151,7 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_007,g6,1972,2005,APL\n 7000761-84 2021 7 00 0000/BA,jurisprudencia,real,2383009176
 2,gen_n2_007,g7,2100,2121,Súmula Vinculante 188,jurisprudencia,inventada,
 2,gen_n2_007,g8,2519,2553,RSE n.  7000171-3920237000000 (DF),jurisprudencia,real,2382852256
-2,gen_n2_007,g9,2896,2931,verbete sumular aplicável à espécie,jurisprudencia,incompleta,
-2,gen_n2_008,g1,648,687,lei que disciplina a prescrição no caso,lei,incompleta,
 2,gen_n2_008,g2,1206,1241,Recurso Especial n°  2.467-\n.648-RS,jurisprudencia,inventada,
-2,gen_n2_008,g3,1711,1755,orientação\njurisprudencial da Corte Superior,jurisprudencia,incompleta,
 2,gen_n2_008,g4,1898,1932,EDcl no AgInt no ARESP 1980827/ RS,jurisprudencia,real,3360644282
 2,gen_n2_008,g5,2384,2400,RCL nº 99.942-BA,jurisprudencia,inventada,
 2,gen_n2_008,g6,2931,2980,artigo correspondente\ndo Código de Processo Civil,lei,incompleta,
@@ -183,12 +159,10 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_009,g1,539,568,Rec. Esp. nº  1. 570.531 – CE,jurisprudencia,real,3347738001
 2,gen_n2_009,g2,725,762,EDcl no AgInt no ARESP  1 821 663/ SC,jurisprudencia,real,3375797414
 2,gen_n2_009,g3,883,915,art. 303 da Constituição\nFederal,lei,inventada,
-2,gen_n2_009,g4,1025,1076,jurisprudêneia consolidada dos tribunais superiores,jurisprudencia,incompleta,
 2,gen_n2_009,g5,1188,1208,A.REsp\n 555 700 (RS),jurisprudencia,inventada,
 2,gen_n2_009,g6,1614,1640,AgInt no RESP 21737l8 - SP,jurisprudencia,real,6490934118
 2,gen_n2_009,g7,1771,1786,AR\nn. 2785 (SP),jurisprudencia,real,2549252487
 2,gen_n2_009,g8,2227,2257,AgInt no RESP nº 1.666.812/ PR,jurisprudencia,real,524699160
-2,gen_n2_009,g9,2727,2775,precedente\nfirmado em sede de recurso repetitivo,jurisprudencia,incompleta,
 2,gen_n2_009,g10,3263,3283,REsp Nº 1.632.479-RJ,jurisprudencia,real,3347737758
 2,gen_n2_010,g1,579,604,Reclamação Nº 77.872 – SC,jurisprudencia,inventada,
 2,gen_n2_010,g2,1164,1194,AgInt no ARESP Nº 1.512.757-PR,jurisprudencia,real,2107883738
@@ -206,12 +180,9 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_011,g7,2313,2362,EDcl no AgInt no Recurso Especial Nº 170076O (SP),jurisprudencia,real,5900603362
 2,gen_n2_011,g8,2473,2517,AgInt nos EDcl no Rec. Esp. n°\n 2.050.950-RJ,jurisprudencia,real,2108195032
 2,gen_n2_011,g9,2934,2972,art. 1.105 do Código de Processo Civil,lei,inventada,
-2,gen_n2_011,g10,3430,3462,recentc acórdão\nda Segunda Turma,jurisprudencia,incompleta,
 2,gen_n2_012,g1,481,507,AgRg no RESP 1.528.4S5/ RJ,jurisprudencia,real,2674928810
-2,gen_n2_012,g2,629,668,lei que disciplina a prescrição no caso,lei,incompleta,
 2,gen_n2_012,g3,1082,1155,"Recurso em Habeas Corpus do STJ, de 2019, Rel. Min. Sebastião\nReis Júnlor",jurisprudencia,incompleta,
 2,gen_n2_012,g4,1282,1299,AgREsp 9188087/ES,jurisprudencia,inventada,
-2,gen_n2_012,g5,1438,1475,entendimento sumulado sobre a matéria,jurisprudencia,incompleta,
 2,gen_n2_012,g6,1603,1627,Reclamação nº 33560 - BA,jurisprudencia,inventada,
 2,gen_n2_012,g7,2089,2124,art 312 do Código\nde Processo Penal,lei,real,10652044
 2,gen_n2_012,g8,2540,2563,R.Esp. n°  1.45g.779-MA,jurisprudencia,real,2106305320
@@ -223,4 +194,3 @@ nivel,documento_id,citacao_id,inicio,fim,trecho,tipo,classificacao,id_canonico
 2,gen_n2_013,g4,1883,1913,AgInt No 7000553-0320217000000,jurisprudencia,real,1477658218
 2,gen_n2_013,g5,2055,2075,Recl. Nº 66 152 (PR),jurisprudencia,inventada,
 2,gen_n2_013,g6,2191,2226,APL n° 7000076-72.2024.7.00.0000-RJ,jurisprudencia,real,2733853490
-2,gen_n2_013,g7,2698,2733,verbete sumular aplicável à espécie,jurisprudencia,incompleta,
