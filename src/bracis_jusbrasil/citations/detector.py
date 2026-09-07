@@ -186,6 +186,16 @@ _CONCRETE_INCOMPLETE_RELATOR = re.compile(
 _CONCRETE_INCOMPLETE_NAME = re.compile(
     r"[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*(?:[ \t\r\n]+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*){1,5}"
 )
+_RCL_RELATOR_YEAR = re.compile(
+    r"\b(?:Rcl|Reclamaç[aã]o)[ \t\r\n]+(?:de|em)[ \t\r\n]+(?:19\d{2}|20\d{2})"
+    r"[ \t\r\n]*,?[ \t\r\n]*"
+    r"(?:Rel\.?(?:[ \t\r\n]+(?:Min\.?|Ministro|Ministra))?|"
+    r"(?:pela|sob|da)[ \t\r\n]+relatoria[ \t\r\n]+d(?:e|a|c))"
+    r"[ \t\r\n]+(?-i:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*"
+    r"(?:[ \t\r\n]+(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*|de|da|do|dos|das)){1,5})",
+    re.IGNORECASE,
+)
+_PARAGRAPH_BOUNDARY = re.compile(r"(?:\r\n|\n)[ \t]*(?:\r\n|\n)")
 _RULES = (
     ("cnj", _CNJ_PATTERN, "jurisprudencia"),
     ("processo_ou_recurso", _PROCESS_PATTERN, "jurisprudencia"),
@@ -267,6 +277,7 @@ class CitationDetector:
         candidates.extend(self._detect_v5_standalone_modifiers(text))
         candidates.extend(self._detect_v5_compound_titles(text))
         candidates.extend(self._detect_concrete_incomplete_jurisprudence(text))
+        candidates.extend(self._detect_rcl_relator_year_no_tribunal(text))
         candidates = [
             self._expand_process_ocr_tail(candidate, text) for candidate in candidates
         ]
@@ -327,6 +338,22 @@ class CitationDetector:
                 )
             )
         return list({(item.start, item.end, item.text): item for item in found}.values())
+
+    @staticmethod
+    def _detect_rcl_relator_year_no_tribunal(text: str) -> list[CitationCandidate]:
+        """Detecta Rcl concreta com ano e relator, sem inferir tribunal."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="rcl_relator_year_no_tribunal",
+                family="jurisprudencia_tribunal_contextual",
+            )
+            for match in _RCL_RELATOR_YEAR.finditer(text)
+            if match.end() - match.start() <= 180
+            and _PARAGRAPH_BOUNDARY.search(match.group(0)) is None
+        ]
 
     @classmethod
     def _apply_concrete_incomplete_priority(

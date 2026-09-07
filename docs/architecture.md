@@ -49,7 +49,7 @@ dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicata
 exatas: `doc_0227` e `doc_0461`.
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` contém o `CitationDetector` V7: um detector determinístico que
+`citations/` contém o `CitationDetector` V9: um detector determinístico que
 recebe texto original e retorna candidatos com offsets, texto, regra e família
 superficial. A V5 preserva a V4 e promove quatro extensões estruturais
 confirmadas pela revisão humana dos sete residuais:
@@ -88,6 +88,17 @@ de pelo menos 0,5 somente com `tribunal_contextual`, a V8 preserva H2 e suprime
 o contextual curto; abaixo desse limiar mantém ambos. Nunca interfere com CNJ,
 processos numerados, súmulas ou lei. Não consulta Gold, banco, IDs ou nomes.
 
+A V9 acrescenta `rcl_relator_year_no_tribunal` como extensão independente e
+estrita da mesma família contextual: aceita somente `Rcl` ou `Reclamação` com
+ano contextual (`de`/`em` seguido de ano) e relatoria explícita, terminando no
+nome literal do relator. Não infere tribunal, não consulta banco e não aceita
+APL, referências vagas ou anchors decisórios genéricos. O candidato reutiliza
+o Parser contextual; sem número e sem tribunal, segue naturalmente para
+`insufficient` no Resolver e `incompleta` na classificação. Não altera H2, a
+Policy B, CNJ, arbitragem ou qualquer outra família. A regra permite somente
+uma quebra de linha local e rejeita fronteira de parágrafo mesmo quando as duas
+quebras são separadas por espaços ou tabs.
+
 As extensões são exclusivamente textuais, determinísticas e guardadas; não
 consultam IDs, documentos, gold, banco ou `CaseIndex`, e não fazem reparo fuzzy.
 A V4 preserva a V3 e promoveu somente três extensões estruturais:
@@ -107,7 +118,7 @@ Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552), V4 obteve
 (86 matches exatos). O detector não consulta o banco ou
 `CaseIndex` e não classifica uma citação.
 
-O pipeline de produção é `Texto -> CitationDetector V7 -> CitationParser V1 ->
+O pipeline de produção é `Texto -> CitationDetector V9 -> CitationParser V1 ->
 CitationResolver V3 -> StructuralCNJArbitrator`. Após a promoção de H1/H2/H3, novas expansões marginais do
 Detector não devem ser adicionadas sem nova evidência independente de
 generalização e segurança.

@@ -19,6 +19,7 @@ RULE_TYPES = {
     "dispositivo_legal": "lei",
     "tribunal_contextual": "jurisprudencia",
     "decision_tribunal_relator_year": "jurisprudencia",
+    "rcl_relator_year_no_tribunal": "jurisprudencia",
 }
 
 
@@ -140,6 +141,53 @@ class CitationDetectorTests(unittest.TestCase):
         for text in examples:
             with self.subTest(text=text):
                 self.assertFalse(any(item.rule == "decision_tribunal_relator_year" for item in self.detector.detect(text)))
+
+    def test_v9_h4_rcl_accepts_only_local_class_year_relator_chains(self) -> None:
+        examples = (
+            "Conforme Rcl de 2024, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Na Reclamação em 2025, Rel. Ministra Ana Souza, o tema foi examinado.",
+            "Conforme Rcl de 2031, pela relatoria de Nome Novo de Teste, decidiu-se a questão.",
+            "Em Reclamação de 2022, sob relatoria de João Silva Pereira, decidiu-se a matéria.",
+            "Rcl de 2024, Rel.\nMin. Maria Silva Pereira.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.rule == "rcl_relator_year_no_tribunal"]
+                self.assertEqual(len(candidates), 1)
+                self.assertEqual(candidates[0].family, "jurisprudencia_tribunal_contextual")
+                self.assertEqual(candidates[0].text, text[candidates[0].start:candidates[0].end])
+                self.assertNotIn(candidates[0].text[-1], ".,;:")
+
+    def test_v9_h4_rcl_rejects_incomplete_broad_and_non_rcl_forms(self) -> None:
+        examples = (
+            "Conforme Rcl de 2024, decidiu-se a questão.",
+            "Conforme Rcl, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Conforme Rcl 2024, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Conforme Rcl de 2024. Rel. Min. Maria Silva Pereira decidiu outro tema.",
+            "Conforme Rcl de 2024.\n\nRel. Min. Maria Silva Pereira decidiu outro tema.",
+            "Rcl de 2024, Rel.\n\nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n \nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n\t\nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n   \nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\r\n \r\nMin. Maria Silva Pereira.",
+            "APL de 2023, Rel. Min. Maria Silva Pereira.",
+            "RHC de 2024, Rel. Min. Maria Silva Pereira.",
+            "Precedente do STF de 2024, da relatoria de Cármen Lúcia.",
+            "Jurisprudência pacífica desta Corte.",
+            "Orientação jurisprudencial da Corte Superior.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "rcl_relator_year_no_tribunal" for item in self.detector.detect(text)))
+
+    def test_v9_h4_rcl_preserves_h2_cnj_and_legacy_contextual_candidates(self) -> None:
+        text = (
+            "Rcl de 2024, Rel. Min. Maria Silva Pereira; "
+            "julgado do STF proferido em 2024 pela relatoria de Ana Souza Pereira; "
+            "Autos 1234567-89.2020.1.23.4567; Precedente do STJ em 2024, Relator indicado."
+        )
+        rules = {item.rule for item in self.detector.detect(text)}
+        self.assertTrue({"rcl_relator_year_no_tribunal", "decision_tribunal_relator_year", "cnj", "tribunal_contextual"} <= rules)
 
     def test_v8_h2_priority_preserves_low_overlap_and_suppresses_dangerous_context(self) -> None:
         text = "Conforme julgado do STF proferido em 2024 pela relatoria de Maria Silva Pereira."
@@ -478,7 +526,7 @@ class CitationDetectorTests(unittest.TestCase):
         self.assertEqual((candidate.start, candidate.end), (text.index(chain), text.index(chain) + len(chain)))
 
 
-class CitationDetectorV7Tests(unittest.TestCase):
+class CitationDetectorV9Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
@@ -502,18 +550,18 @@ class CitationDetectorV7Tests(unittest.TestCase):
         self.assertEqual(len(compound_matches), 6)
         self.assertEqual(set(compound["family"]), {"processo_ou_recurso_numerado"})
 
-    def test_v8_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 233)
+    def test_v9_candidate_count_offsets_and_exact_matches(self) -> None:
+        self.assertEqual(len(self.predictions), 237)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 156)
-        self.assertEqual(int(self.matches["exact"].sum()), 109)
+        self.assertEqual(len(self.matches), 160)
+        self.assertEqual(int(self.matches["exact"].sum()), 113)
 
-    def test_v8_metrics_by_level_and_type(self) -> None:
+    def test_v9_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (156, 77, 39)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (89, 37, 12)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (67, 40, 27)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (140, 50, 25)),
+            "global": (self.gold, self.predictions, (160, 77, 35)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (91, 37, 10)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (69, 40, 25)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (144, 50, 21)),
             "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 14)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
@@ -521,7 +569,7 @@ class CitationDetectorV7Tests(unittest.TestCase):
                 self.assertEqual(metrics(gold, predictions, self.matches), expected_metrics)
 
     def test_non_process_candidates_are_preserved_without_general_references(self) -> None:
-        self.assertEqual(len(self.predictions), 233)
+        self.assertEqual(len(self.predictions), 237)
         self.assertEqual(
             self.predictions.groupby("rule").size().to_dict(),
             {
@@ -532,12 +580,13 @@ class CitationDetectorV7Tests(unittest.TestCase):
                 "dispositivo_legal": 28,
                 "lei_com_diploma": 15,
                 "processo_ou_recurso": 74,
+                "rcl_relator_year_no_tribunal": 4,
                 "sumula_numerada": 10,
                 "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (156, 77, 39))
-        self.assertEqual(int(self.matches["exact"].sum()), 109)
+        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (160, 77, 35))
+        self.assertEqual(int(self.matches["exact"].sum()), 113)
         self.assertFalse(self.predictions["rule"].eq("jurisprudencia_geral").any())
         self.assertFalse(self.predictions["family"].eq("jurisprudencia_referencia_geral").any())
 
