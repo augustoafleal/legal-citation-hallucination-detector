@@ -166,3 +166,14 @@ itens suprimidos, sem alterar `CitationCandidate`.
 Por decisão de segurança, a implementação não usa fallback por menção no corpo,
 nem as políticas `longest-span`, `resolved-wins` ou seleção automática de um ID
 em grupos multi-ID.
+
+### Submissão e confiança
+
+O gerador de submissão serializa somente `ArbitrationResult` finais. Cada
+citação recebe a constante global `DEFAULT_SUBMISSION_CONFIDENCE = 0.85` no
+JSON contratual, após a arbitragem; spans, classe e ID canônico permanecem
+inalterados. O conversor oficial `json_to_submission.py` é preservado e emite
+esse número como `0.8500` no CSV. Pela métrica oficial, confidence entra apenas
+no bônus Brier por nível para previsões emparelhadas e não altera matching.
+O valor foi calibrado no Gold aberto, portanto o risco blind é MODERATE: não há
+ajuste por leaderboard nem confiança por classe, família, regra ou documento.
