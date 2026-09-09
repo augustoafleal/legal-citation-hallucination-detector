@@ -163,6 +163,18 @@ tribunal são compatíveis e a identidade resolvida é a mesma. O intervalo unid
 são preservados. A saída imutável `ArbitrationResult` registra as fontes e os
 itens suprimidos, sem alterar `CitationCandidate`.
 
+Na V10, antes dessa união estrutural, a arbitragem aplica um filtro apenas a
+CNJs da regra `cnj` já parseados e resolvidos como `no_match`. A H-CNJ-4 exige
+um marcador processual local combinado com layout de processo próprio,
+cabeçalho, partes ou histórico, sem linguagem de precedente ou verbo
+citacional. A guarda G4 preserva um bloco jurisprudencial local que combina
+duas classes processuais, metadado de publicação/relatoria/ementa, aspas e
+linguagem de fundamentação. CNJ resolvido, ambíguo, sobreposto a H2/H4 ou à
+estrutura protegida, bem como qualquer candidato não-CNJ, permanece intacto.
+O filtro não consulta Gold, labels humanos, artefatos, documentos, offsets,
+IDs canônicos ou listas de exemplos; parser, resolver, classificação, conversor
+oficial e a confidence global permanecem inalterados.
+
 Por decisão de segurança, a implementação não usa fallback por menção no corpo,
 nem as políticas `longest-span`, `resolved-wins` ou seleção automática de um ID
 em grupos multi-ID.

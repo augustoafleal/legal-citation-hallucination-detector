@@ -114,14 +114,24 @@ class SubmissionTests(unittest.TestCase):
             for row in self.csv.itertuples(index=False)
             for citation in self.metric._parse_submission_cell(row.citacoes, row.documento_id)
         ]
-        self.assertEqual(len(parsed), 236)
+        self.assertEqual(len(parsed), 221)
         self.assertTrue(all(citation["confianca"] == 0.85 for citation in parsed))
+        structural_csv = self.csv.copy()
+        structural_csv["citacoes"] = [
+            "|".join(
+                ",".join(citation.split(",")[:4] + ["-"])
+                for citation in row.citacoes.split("|")
+            ) if row.citacoes != "-" else "-"
+            for row in structural_csv.itertuples(index=False)
+        ]
+        structural_score = self.metric.score(solution(self.gold), structural_csv, "documento_id")
+        self.assertAlmostEqual(structural_score, 0.6761084258264708, places=12)
         score = self.metric.score(solution(self.gold), self.csv, "documento_id")
-        self.assertAlmostEqual(score, 0.7128684876670707, places=12)
+        self.assertAlmostEqual(score, 0.7353408991731166, places=12)
 
-    def test_v9_structural_checkpoints_are_preserved(self) -> None:
+    def test_v10_refined_structural_checkpoints_are_preserved(self) -> None:
         self.assertEqual(len(self.raw), 237)
-        self.assertEqual(sum(len(outputs) for outputs in self.outputs.values()), 236)
+        self.assertEqual(sum(len(outputs) for outputs in self.outputs.values()), 221)
         raw_predictions = [(document_id, candidate, result) for document_id, candidate, _, result in self.raw]
         output_predictions = [
             (document_id, output.candidate, output.resolution)
@@ -142,15 +152,32 @@ class SubmissionTests(unittest.TestCase):
             and str(prediction[2].id_canonico) == gold["id_canonico"]
             for gold, prediction in output_pairs
         ), 71)
+        self.assertEqual(len(output_predictions), 221)
+        self.assertEqual(len(output_pairs), 160)
+        self.assertEqual(len(output_predictions) - len(output_pairs), 61)
+        self.assertEqual(sum(
+            int(gold["inicio"]) == prediction[1].start and int(gold["fim"]) == prediction[1].end
+            for gold, prediction in output_pairs
+        ), 114)
         self.assertEqual(sum(
             gold["classificacao"] != "real" and prediction[2].status == "resolved"
             for gold, prediction in output_pairs
         ), 0)
+        self.assertEqual(sum(
+            gold["classificacao"] == "real" and prediction[2].status == "resolved"
+            and str(prediction[2].id_canonico) != gold["id_canonico"]
+            for gold, prediction in output_pairs
+        ), 0)
         rules = [candidate.rule for _, candidate, _, _ in self.raw]
         families = [candidate.family for _, candidate, _, _ in self.raw]
+        output_rules = [candidate.rule for _, candidate, _ in output_predictions]
+        output_families = [candidate.family for _, candidate, _ in output_predictions]
         self.assertEqual(rules.count("rcl_relator_year_no_tribunal"), 4)
         self.assertEqual(rules.count("decision_tribunal_relator_year"), 27)
         self.assertEqual(families.count("processo_cnj"), 46)
+        self.assertEqual(output_rules.count("rcl_relator_year_no_tribunal"), 4)
+        self.assertEqual(output_rules.count("decision_tribunal_relator_year"), 27)
+        self.assertEqual(output_families.count("processo_cnj"), 31)
 
 
 if __name__ == "__main__":

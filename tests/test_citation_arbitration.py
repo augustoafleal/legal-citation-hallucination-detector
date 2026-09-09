@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import inspect
 import unittest
 
 from bracis_jusbrasil.cases import build_case_index
@@ -14,6 +15,11 @@ from bracis_jusbrasil.citations import (
     structural_cnj_union_merge,
 )
 from bracis_jusbrasil.database import connect_database, get_database_path
+from bracis_jusbrasil.citations.arbitration import (
+    filter_non_precedential_cnj_references,
+    is_cnj_preserved_by_jurisprudential_guard,
+    is_non_precedential_cnj_reference,
+)
 
 
 class StructuralCNJArbitrationTests(unittest.TestCase):
@@ -77,6 +83,119 @@ class StructuralCNJArbitrationTests(unittest.TestCase):
         identity = {7: PrimaryIdentity(7, "STJ", self.identity[7].numero_raw, self.identity[7].numero_normalizado, "TST:RR")}
         output = structural_cnj_union_merge(self.text, [self.cnj, self.companion], self.parsed, self.resolution, primary_identities=identity)
         self.assertEqual(len(output), 2)
+
+
+class V10RefinedCNJFilterTests(unittest.TestCase):
+    number = "1111111-11.1111.1.11.1111"
+
+    def filter(self, text, status="no_match", candidates=None, resolutions=None):
+        start = text.index(self.number)
+        candidate = CitationCandidate(start, start + len(self.number), self.number, "cnj", "processo_cnj")
+        candidates = candidates or [candidate]
+        parser = CitationParser()
+        parsed = [parser.parse(item, context=text) for item in candidates]
+        candidate_ids = (1,) if status == "resolved" else (1, 2) if status == "ambiguous" else ()
+        resolutions = resolutions or [
+            ResolutionResult(status, 1 if status == "resolved" else None, candidate_ids, None, "test", None)
+        ]
+        return filter_non_precedential_cnj_references(text, candidates, parsed, resolutions), candidate
+
+    def assert_suppressed(self, text):
+        filtered, _ = self.filter(text)
+        self.assertEqual(filtered, ())
+
+    def assert_preserved(self, text, status="no_match"):
+        filtered, candidate = self.filter(text, status=status)
+        self.assertEqual(filtered, (candidate,))
+
+    def g4_text(self, publication="DJe"):
+        return (
+            f'Poder Judiciário Processo nº {self.number}. No mesmo sentido, a jurisprudência registra '
+            f'"Apelação e Recurso"; Relatora: exemplo, {publication}, EMENTA.'
+        )
+
+    def test_suppresses_header_own_process(self):
+        self.assert_suppressed(f"Poder Judiciário Processo nº {self.number}")
+
+    def test_suppresses_party_block(self):
+        self.assert_suppressed(f"Processo nº {self.number} Recorrente: exemplo")
+
+    def test_suppresses_procedural_history(self):
+        self.assert_suppressed(f"Autos nº {self.number} remetidos à origem")
+
+    def test_suppresses_non_precedential_process_marker(self):
+        self.assert_suppressed(f"Ação Penal nº {self.number} já sentenciada")
+
+    def test_g4_preserves_jurisprudential_sequence_with_dje(self):
+        text = self.g4_text()
+        candidate_start = text.index(self.number)
+        candidate = CitationCandidate(candidate_start, candidate_start + len(self.number), self.number, "cnj", "processo_cnj")
+        self.assertTrue(is_cnj_preserved_by_jurisprudential_guard(text, candidate))
+        self.assert_preserved(text)
+
+    def test_g4_preserves_relator_sequence(self):
+        self.assert_preserved(self.g4_text("Diário de Justiça"))
+
+    def test_g4_preserves_ementa_sequence(self):
+        self.assert_preserved(self.g4_text("EMENTA"))
+
+    def test_g4_preserves_general_quoted_precedent_block(self):
+        self.assert_preserved(self.g4_text())
+
+    def test_resolved_cnj_is_preserved(self):
+        self.assert_preserved(f"Poder Judiciário Processo nº {self.number}", status="resolved")
+
+    def test_ambiguous_cnj_is_preserved(self):
+        self.assert_preserved(f"Poder Judiciário Processo nº {self.number}", status="ambiguous")
+
+    def test_h2_and_h4_are_preserved(self):
+        text = f"Poder Judiciário Processo nº {self.number}"
+        start = text.index(self.number)
+        cnj = CitationCandidate(start, start + len(self.number), self.number, "cnj", "processo_cnj")
+        h2 = CitationCandidate(0, 16, text[:16], "decision_tribunal_relator_year", "jurisprudencia_tribunal_contextual")
+        h4 = CitationCandidate(17, 30, text[17:30], "rcl_relator_year_no_tribunal", "jurisprudencia_tribunal_contextual")
+        parser = CitationParser()
+        filtered = filter_non_precedential_cnj_references(
+            text,
+            [cnj, h2, h4],
+            [parser.parse(cnj, context=text), parser.parse(h2, context=text), parser.parse(h4, context=text)],
+            [ResolutionResult("no_match", None, (), None, "test", None)] * 3,
+        )
+        self.assertEqual(filtered, (cnj, h2, h4))
+
+    def test_non_cnj_is_preserved(self):
+        text = "jurisprudência sem número"
+        candidate = CitationCandidate(0, len(text), text, "tribunal_contextual", "jurisprudencia_tribunal_contextual")
+        parser = CitationParser()
+        filtered = filter_non_precedential_cnj_references(
+            text, [candidate], [parser.parse(candidate, context=text)],
+            [ResolutionResult("insufficient", None, (), None, "test", None)],
+        )
+        self.assertEqual(filtered, (candidate,))
+
+    def test_no_match_without_h4_context_is_preserved(self):
+        self.assert_preserved(self.number)
+
+    def test_absence_of_process_marker_is_preserved(self):
+        self.assert_preserved(f"Poder Judiciário {self.number}")
+
+    def test_filter_has_no_external_identity_input(self):
+        parameters = set(inspect.signature(is_non_precedential_cnj_reference).parameters)
+        self.assertFalse(parameters & {"documento_id", "offset", "lookup", "gold", "human_label"})
+
+    def test_protected_overlap_is_preserved(self):
+        text = f"Poder Judiciário Processo nº {self.number}"
+        start = text.index(self.number)
+        cnj = CitationCandidate(start, start + len(self.number), self.number, "cnj", "processo_cnj")
+        h2 = CitationCandidate(start + 1, start + 12, text[start + 1:start + 12], "decision_tribunal_relator_year", "jurisprudencia_tribunal_contextual")
+        parser = CitationParser()
+        filtered = filter_non_precedential_cnj_references(
+            text,
+            [cnj, h2],
+            [parser.parse(cnj, context=text), parser.parse(h2, context=text)],
+            [ResolutionResult("no_match", None, (), None, "test", None)] * 2,
+        )
+        self.assertEqual(filtered, (cnj, h2))
 
 
 class CitationResolverV3GuardTests(unittest.TestCase):

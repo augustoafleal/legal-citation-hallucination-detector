@@ -23,6 +23,56 @@ _ALLOWED_COMPANION_FAMILIES = frozenset(
 )
 _NUMBER_TOKEN = re.compile(r"(?<!\w)\d(?:[\d.\-/\s]*\d)(?!\w)")
 _CNJ_TRIBUNAL = {"5": "TST", "6": "TSE", "7": "STM"}
+_H4_HEADER_LAYOUT = re.compile(
+    r"\b(?:poder judici[aá]rio|supremo tribunal|tribunal superior|"
+    r"cabe[cç]alho|identifica[cç][aã]o)\b",
+    re.IGNORECASE,
+)
+_H4_PARTY_TERMS = re.compile(
+    r"\b(?:recorrente|recorrido|agravante|agravado|impetrante|paciente|"
+    r"autor|r[ée]u|reclamante|reclamada)\b",
+    re.IGNORECASE,
+)
+_H4_HISTORY_TERMS = re.compile(
+    r"\b(?:origem|autos? de origem|hist[oó]rico|andamento|tr[âa]mite|"
+    r"distribu[ií]d[oa]|remetid[oa]|instaura[cç][aã]o|j[aá] sentenciad[oa])\b",
+    re.IGNORECASE,
+)
+_H4_PROCESS_NEAR = re.compile(
+    r"\b(?:processos?|autos?|feitos?|inquéritos?|"
+    r"a(?:ç|c)[aã](?:o|oes|ões)?\s+pen(?:al|ais)|recursos?)\s*"
+    r"(?:n[ºo°.]?|número)?\s*",
+    re.IGNORECASE,
+)
+_H4_PRECEDENT_ARGUMENT = re.compile(
+    r"\b(?:precedente|jurisprud[êe]ncia|ratio decidendi|tese|conforme|"
+    r"confira-se|como\s+j[aá]\s+(?:se\s+)?(?:decidiu|reconheceu)|"
+    r"entendimento|orienta[cç][aã]o|firmou|aplica-se|invoca-se|corrobora)\b",
+    re.IGNORECASE,
+)
+_H4_CITATIONAL_VERB = re.compile(
+    r"\b(?:cita|citado|citada|invoca|invocado|conforme|confira-se|"
+    r"reconheceu|decidiu|firmou|aplicou|transcreve)\b",
+    re.IGNORECASE,
+)
+_G4_PROCESS_CLASS = re.compile(
+    r"\b(?:apela[cç][aã]o|apela[cç][õo]es|recursos?|agravos?|"
+    r"habeas\s+corpus|mandado\s+de\s+seguran[cç]a|reclama[cç][aã]o|"
+    r"embargos?)\b",
+    re.IGNORECASE,
+)
+_G4_PUBLICATION_OR_AUTHOR = re.compile(
+    r"\b(?:dje|di[aá]rio\s+de\s+justi[cç]a|relator(?:a)?|rel\.|ementa)\b",
+    re.IGNORECASE,
+)
+_G4_FOUNDATION = re.compile(
+    r"\b(?:no\s+mesmo\s+sentido|conforme|entendimento|"
+    r"orienta[cç][aã]o|jurisprud[êe]ncia|precedentes?)\b",
+    re.IGNORECASE,
+)
+_G4_QUOTE = re.compile(r'["“”]')
+_H4_WINDOW = 120
+_G4_WINDOW = 1600
 
 
 @dataclass(frozen=True)
@@ -142,6 +192,116 @@ def _eligible_companion(
     return True
 
 
+def is_cnj_preserved_by_jurisprudential_guard(
+    text: str, candidate: CitationCandidate
+) -> bool:
+    """Preserve a CNJ embedded in a bounded jurisprudential citation block."""
+    local = text[
+        max(0, candidate.start - _G4_WINDOW):min(len(text), candidate.end + _G4_WINDOW)
+    ]
+    return bool(
+        len(_G4_PROCESS_CLASS.findall(local)) >= 2
+        and _G4_PUBLICATION_OR_AUTHOR.search(local)
+        and _G4_QUOTE.search(local)
+        and _G4_FOUNDATION.search(local)
+    )
+
+
+def _h4_context(text: str, candidate: CitationCandidate, parsed: ParsedCitation) -> tuple[str, str] | None:
+    raw_number = parsed.data.get("numero_raw")
+    if not isinstance(raw_number, str):
+        return None
+    raw_position = candidate.text.find(raw_number)
+    if raw_position < 0:
+        return None
+    raw_start = candidate.start + raw_position
+    raw_end = raw_start + len(raw_number)
+    context_start = max(0, candidate.start - _H4_WINDOW)
+    context_end = min(len(text), candidate.end + _H4_WINDOW)
+    return text[context_start:raw_start], text[raw_end:context_end]
+
+
+def _overlaps(left: CitationCandidate, right: CitationCandidate) -> bool:
+    return max(left.start, right.start) < min(left.end, right.end)
+
+
+def _has_overlapping_candidate(
+    candidate: CitationCandidate, candidates: Sequence[CitationCandidate]
+) -> bool:
+    for other in candidates:
+        if other is candidate or not _overlaps(candidate, other):
+            continue
+        return True
+    return False
+
+
+def is_non_precedential_cnj_reference(
+    text: str,
+    candidate: CitationCandidate,
+    parsed: ParsedCitation,
+    resolution: ResolutionResult,
+    candidates: Sequence[CitationCandidate],
+) -> bool:
+    """Return whether the guarded H-CNJ-4 policy can safely suppress a CNJ."""
+    if candidate.rule != "cnj" or candidate.family != "processo_cnj":
+        return False
+    if resolution.status != "no_match":
+        return False
+    if is_cnj_preserved_by_jurisprudential_guard(text, candidate):
+        return False
+    if _has_overlapping_candidate(candidate, candidates):
+        return False
+    context = _h4_context(text, candidate, parsed)
+    if context is None:
+        return False
+    before, after = context
+    nearby = f"{before} {after}"
+    process_identifier = bool(_H4_PROCESS_NEAR.search(before[-100:]))
+    own_or_origin_layout = bool(
+        _H4_HEADER_LAYOUT.search(before)
+        or _H4_PARTY_TERMS.search(nearby)
+        or _H4_HISTORY_TERMS.search(nearby)
+    )
+    return bool(
+        process_identifier
+        and own_or_origin_layout
+        and not _H4_PRECEDENT_ARGUMENT.search(nearby)
+        and not _H4_CITATIONAL_VERB.search(nearby)
+    )
+
+
+def filter_non_precedential_cnj_references(
+    text: str,
+    candidates: Sequence[CitationCandidate],
+    parsed: Mapping[int, ParsedCitation] | Sequence[ParsedCitation],
+    resolutions: Mapping[int, ResolutionResult] | Sequence[ResolutionResult],
+) -> tuple[CitationCandidate, ...]:
+    """Apply the V10 CNJ-only filter after parsing/resolution and before merge."""
+    parser = CitationParser()
+    parsed_by_candidate = {
+        id(candidate): (_lookup(parsed, position) or parser.parse(candidate))
+        for position, candidate in enumerate(candidates)
+    }
+    resolutions_by_candidate = {
+        id(candidate): (
+            _lookup(resolutions, position)
+            or ResolutionResult("insufficient", None, (), None, "resolution_missing", None)
+        )
+        for position, candidate in enumerate(candidates)
+    }
+    return tuple(
+        candidate
+        for candidate in candidates
+        if not is_non_precedential_cnj_reference(
+            text,
+            candidate,
+            parsed_by_candidate[id(candidate)],
+            resolutions_by_candidate[id(candidate)],
+            candidates,
+        )
+    )
+
+
 def structural_cnj_union_merge(
     text: str,
     candidates: Sequence[CitationCandidate],
@@ -158,7 +318,8 @@ def structural_cnj_union_merge(
     """
     if not isinstance(text, str):
         raise TypeError("text deve ser uma string")
-    ordered = tuple(sorted(candidates, key=lambda item: (item.start, item.end, item.rule)))
+    filtered_candidates = filter_non_precedential_cnj_references(text, candidates, parsed, resolutions)
+    ordered = tuple(sorted(filtered_candidates, key=lambda item: (item.start, item.end, item.rule)))
     parser = CitationParser()
     parsed_by_position = {
         id(candidate): (_lookup(parsed, position) or parser.parse(candidate))
