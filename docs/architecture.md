@@ -151,8 +151,30 @@ faltou informação ou que a estratégia não é aprovada nesta V3. Para CNJ, a 
 consulta somente a identidade primária formal do acórdão. O tribunal explícito
 (ou o segmento estrutural do número) e a classe textual, quando presentes,
 funcionam como guards; conflito, ausência de identidade primária ou múltiplos
-IDs resultam em abstinência/ambiguidade, sem escolha arbitrária. Dispositivos
-legais e jurisprudência geral/contextual permanecem `insufficient`.
+IDs resultam em abstinência/ambiguidade, sem escolha arbitrária. Jurisprudência
+geral/contextual permanece `insufficient`.
+
+Na V11, dispositivos legais passam por uma frente independente e determinística.
+`LegalCanonicalCatalog` contém exatamente os 13 dispositivos do SQLite
+congelado e é vinculado ao SHA-256 desse banco e aos hashes das fontes oficiais
+auditadas. A única chave de resolução é `(artigo_normalizado,
+diploma_normalizado)`: não existe resolução por artigo isolado, texto do artigo,
+corpo do acórdão ou primeiro ID arbitrário. O runtime não consulta Gold nem rede.
+
+O detector legal captura um span limitado de artigo, complementos e diploma,
+aceita uma quebra de linha e bloqueia travessia de parágrafo. O parser produz
+`ParsedLegalIdentity`, preservando texto/offsets brutos e explicitando artigo,
+parágrafo, inciso, alínea, diploma, ambiguidade e OCR crítico. Aliases curtos
+`CF`, `CF/88`, `CC` e `CE` exigem ligação imediata a um artigo em contexto legal
+forte. Identidade desconhecida, ambígua, incompleta ou com OCR crítico abstém
+como `incompleta`.
+
+Uma chave única no catálogo resolve como `real` com ID. Uma chave completa sem
+match vira `inventada` apenas quando o namespace do diploma possui proveniência
+coberta; namespace desconhecido continua `incompleta`. A arbitragem legal roda
+depois da arbitragem CNJ V10 e remove somente um span legal curto contido em um
+span legal mais completo da mesma raiz de artigo, sem conflito de diploma. H2,
+H4, CNJ e toda a projeção jurisprudencial são preservados.
 
 `StructuralCNJArbitrator` é separado do resolver e recebe candidatos, parses e
 resultados já calculados. Ele só une um CNJ primário resolvido a exatamente um
@@ -189,3 +211,5 @@ esse número como `0.8500` no CSV. Pela métrica oficial, confidence entra apena
 no bônus Brier por nível para previsões emparelhadas e não altera matching.
 O valor foi calibrado no Gold aberto, portanto o risco blind é MODERATE: não há
 ajuste por leaderboard nem confiança por classe, família, regra ou documento.
+O ganho V11 até `0.9448408281586653` foi medido no Gold aberto e não constitui
+garantia blind; o risco externo permanece MODERATE.

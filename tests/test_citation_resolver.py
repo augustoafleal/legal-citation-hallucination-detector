@@ -121,9 +121,9 @@ class CitationResolverUnitTests(unittest.TestCase):
 
     def test_unsupported_families_are_insufficient(self) -> None:
         families = {
-            "lei_dispositivo_com_diploma": ("legal_identity_not_verifiable", "dispositivo"),
-            "lei_dispositivo_sem_diploma": ("legal_identity_not_verifiable", "dispositivo"),
-            "lei_referencia_geral": ("legal_identity_not_verifiable", "dispositivo"),
+            "lei_dispositivo_com_diploma": ("legal_identity_missing", "dispositivo"),
+            "lei_dispositivo_sem_diploma": ("legal_identity_missing", "dispositivo"),
+            "lei_referencia_geral": ("legal_identity_missing", "dispositivo"),
             "jurisprudencia_referencia_geral": ("family_not_supported_in_v1", None),
             "jurisprudencia_tribunal_contextual": ("family_not_supported_in_v1", None),
         }
@@ -168,11 +168,11 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         for row in resolved_rows:
             key = (row["gold"], row["result"].status)
             counts[key] = counts.get(key, 0) + 1
-        # Resolver V3: as promoções CNJ e de classe primária numerada adicionam
-        # somente identidades verificáveis sem alterar as famílias legais/contextuais.
+        # Resolver V11: CNJ/classe primária são preservados e a frente legal
+        # promove somente identidades artigo+diploma verificáveis.
         self.assertEqual(counts, {
-            ("real", "resolved"): 62, ("real", "no_match"): 3, ("real", "ambiguous"): 2, ("real", "insufficient"): 29,
-            ("inventada", "no_match"): 40, ("inventada", "insufficient"): 24,
+            ("real", "resolved"): 76, ("real", "no_match"): 3, ("real", "ambiguous"): 2, ("real", "insufficient"): 15,
+            ("inventada", "no_match"): 54, ("inventada", "insufficient"): 10,
             ("incompleta", "insufficient"): 35,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
@@ -183,7 +183,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 137)
+        self.assertEqual(classified, 165)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []

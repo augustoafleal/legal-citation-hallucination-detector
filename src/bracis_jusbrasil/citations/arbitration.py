@@ -1,4 +1,4 @@
-"""Arbitragem estrutural de sobreposições CNJ.
+"""Arbitragem estrutural de sobreposições CNJ e legais.
 
 O módulo recebe candidatos e resultados já produzidos.  Ele não consulta o
 corpus, não escolhe identidades e não altera objetos do detector: quando todos
@@ -399,3 +399,115 @@ class StructuralCNJArbitrator:
         return structural_cnj_union_merge(
             text, candidates, parsed, resolutions, primary_identities=self._primary_identities
         )
+
+
+def _legal_priority(output: ArbitrationResult) -> tuple[int, int]:
+    identity = output.parsed.legal
+    if identity is None:
+        return (0, output.candidate.end - output.candidate.start)
+    has_complement = any(
+        value is not None
+        for value in (
+            identity.paragraph_normalized,
+            identity.inciso_normalized,
+            identity.alinea_normalized,
+        )
+    )
+    if identity.has_complete_identity and has_complement:
+        rank = 5
+    elif identity.has_complete_identity:
+        rank = 4
+    elif identity.article_normalized and has_complement:
+        rank = 3
+    elif identity.article_normalized:
+        rank = 2
+    else:
+        rank = 1
+    return rank, output.candidate.end - output.candidate.start
+
+
+def _safe_legal_supersession(
+    survivor: ArbitrationResult, partial: ArbitrationResult
+) -> bool:
+    if not survivor.family.startswith("lei_") or not partial.family.startswith("lei_"):
+        return False
+    survivor_identity = survivor.parsed.legal
+    partial_identity = partial.parsed.legal
+    if survivor_identity is None or partial_identity is None:
+        return False
+    if not survivor_identity.article_normalized or not partial_identity.article_normalized:
+        return False
+    if survivor_identity.article_normalized != partial_identity.article_normalized:
+        return False
+    if (
+        survivor_identity.diploma_normalized
+        and partial_identity.diploma_normalized
+        and survivor_identity.diploma_normalized != partial_identity.diploma_normalized
+    ):
+        return False
+    contains = (
+        survivor.candidate.start <= partial.candidate.start
+        and survivor.candidate.end >= partial.candidate.end
+    )
+    return contains and _legal_priority(survivor) > _legal_priority(partial)
+
+
+def legal_maximal_span_arbitration(
+    outputs: Sequence[ArbitrationResult],
+) -> tuple[ArbitrationResult, ...]:
+    """Suprime apenas spans legais inferiores contidos na mesma identidade."""
+    ordered = tuple(sorted(outputs, key=lambda item: (item.candidate.start, item.candidate.end, item.candidate.rule)))
+    suppressed_ids: set[int] = set()
+    replacements: dict[int, ArbitrationResult] = {}
+    legal = [item for item in ordered if item.family.startswith("lei_")]
+    for survivor in sorted(legal, key=_legal_priority, reverse=True):
+        if id(survivor) in suppressed_ids:
+            continue
+        suppressed = [
+            item
+            for item in legal
+            if item is not survivor
+            and id(item) not in suppressed_ids
+            and _safe_legal_supersession(survivor, item)
+        ]
+        if not suppressed:
+            continue
+        suppressed_ids.update(id(item) for item in suppressed)
+        sources = tuple(
+            dict.fromkeys(
+                (*survivor.source_candidates, *(item.candidate for item in suppressed))
+            )
+        )
+        replacements[id(survivor)] = ArbitrationResult(
+            candidate=survivor.candidate,
+            parsed=survivor.parsed,
+            resolution=survivor.resolution,
+            source_candidates=sources,
+            suppressed=tuple((*survivor.suppressed, *(item.candidate for item in suppressed))),
+            reason="legal_maximal_span",
+        )
+    final = [
+        replacements.get(id(item), item)
+        for item in ordered
+        if id(item) not in suppressed_ids
+    ]
+    return tuple(sorted(final, key=lambda item: (item.candidate.start, item.candidate.end, item.candidate.rule)))
+
+
+def arbitrate_citations(
+    text: str,
+    candidates: Sequence[CitationCandidate],
+    parsed: Mapping[int, ParsedCitation] | Sequence[ParsedCitation],
+    resolutions: Mapping[int, ResolutionResult] | Sequence[ResolutionResult],
+    *,
+    primary_identities: Mapping[int, PrimaryIdentity | Mapping[str, object]] | None = None,
+) -> tuple[ArbitrationResult, ...]:
+    """Compõe a arbitragem CNJ V10 inalterada com a arbitragem legal V11."""
+    v10_outputs = structural_cnj_union_merge(
+        text,
+        candidates,
+        parsed,
+        resolutions,
+        primary_identities=primary_identities,
+    )
+    return legal_maximal_span_arbitration(v10_outputs)

@@ -26,7 +26,8 @@ _ARTICLE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _DIPLOMA_PATTERN = re.compile(
-    r"\b(?:Constituiç[aã]o|C[oó]digo|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+|CLT|CPC|CPP|CC|CDC|CPM)\b",
+    r"\b(?:Constituiç[aã]o|C[oó]digo|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+|"
+    r"CLT|CPC|CPP|CC|CDC|CPM|CF(?:/88)?|CE|LC\s*(?:n[ºo.]?\s*)?\d+\s*/\s*\d{4})\b",
     re.IGNORECASE,
 )
 
@@ -151,14 +152,47 @@ _V5_COMPOUND_PROCEDURE_TITLE = re.compile(
     + r")(?:\s*\))?)?(?=$|[^\w])",
     re.IGNORECASE,
 )
+_LEGAL_SPACE = r"[ \t\r\n\u00a0]+"
+_LEGAL_OPT_SPACE = r"[ \t\r\n\u00a0]*"
+_LEGAL_ARTICLE_TOKEN = r"\d+(?:[.]\d+)*(?:[ºo])?(?:-[A-Za-z])?"
+_LEGAL_ARTICLE = rf"\bart(?:igo)?[.]?{_LEGAL_SPACE}{_LEGAL_ARTICLE_TOKEN}"
+_LEGAL_COMPLEMENT = (
+    rf"(?:{_LEGAL_OPT_SPACE},{_LEGAL_OPT_SPACE}(?:"
+    rf"§{{1,2}}{_LEGAL_SPACE}(?:\d+(?:[ºo])?(?:-[A-Za-z])?|único)|"
+    rf"parágrafo{_LEGAL_SPACE}(?:\d+(?:[ºo])?(?:-[A-Za-z])?|único)|"
+    rf"(?:inciso{_LEGAL_SPACE})?[IVXLCDM]+|"
+    rf"alínea{_LEGAL_SPACE}['’\"]?[A-Za-z]['’\"]?|"
+    rf"item{_LEGAL_SPACE}\d+|['’\"]?[A-Za-z]['’\"]?))*"
+)
+_LEGAL_DIPLOMA = (
+    rf"(?:Constituiç[aã]o{_LEGAL_SPACE}(?:Federal|Fedcral|da{_LEGAL_SPACE}República"
+    rf"(?:{_LEGAL_SPACE}Federativa{_LEGAL_SPACE}do{_LEGAL_SPACE}Brasil)?)|"
+    rf"Código{_LEGAL_SPACE}(?:Civil|Eleitoral|Penal(?:{_LEGAL_SPACE}Militar)?|"
+    rf"de{_LEGAL_SPACE}Processo{_LEGAL_SPACE}(?:Civil|Penal)|"
+    rf"de{_LEGAL_SPACE}Defesa{_LEGAL_SPACE}do{_LEGAL_SPACE}Consumidor)|"
+    rf"Consolidação{_LEGAL_SPACE}das{_LEGAL_SPACE}Leis{_LEGAL_SPACE}do{_LEGAL_SPACE}Trabalho|"
+    rf"(?:CLT|CPC|CPP|CPM|CDC|CF(?:/88)?|CC|CE)|"
+    rf"Lei(?:{_LEGAL_SPACE}Complementar)?{_LEGAL_SPACE}(?:n(?:[ºo]|[.])?{_LEGAL_SPACE})?"
+    rf"\d+(?:[.]\d+)*{_LEGAL_OPT_SPACE}/{_LEGAL_OPT_SPACE}\d{{4}}|"
+    rf"LC{_LEGAL_SPACE}(?:n(?:[ºo]|[.])?{_LEGAL_SPACE})?\d+{_LEGAL_OPT_SPACE}/{_LEGAL_OPT_SPACE}\d{{4}})"
+)
+_LEGAL_CONNECTOR = rf"{_LEGAL_OPT_SPACE},?{_LEGAL_OPT_SPACE}(?:do|da|de){_LEGAL_SPACE}"
 _LAW_WITH_DIPLOMA_PATTERN = re.compile(
-    r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?(?:\s*,?\s*§\s*\d+(?:[ºo])?)?)(?:\s+do|\s+da)?\s+(?:Constituiç[aã]o(?: Federal)?|C[oó]digo [A-Za-zÀ-ÿ ]+|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+[./-]?[\d./-]*)",
+    _LEGAL_ARTICLE + _LEGAL_COMPLEMENT + _LEGAL_CONNECTOR + _LEGAL_DIPLOMA,
     re.IGNORECASE,
 )
-_ARTICLE_DETECT_PATTERN = re.compile(
-    r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?|§\s*\d+(?:[ºo])?)",
+_VAGUE_LAW_PATTERN = re.compile(
+    rf"\bartigo{_LEGAL_SPACE}correspondente{_LEGAL_CONNECTOR}{_LEGAL_DIPLOMA}",
     re.IGNORECASE,
 )
+_LEFT_DIPLOMA_PATTERN = re.compile(
+    rf"(?:nos{_LEGAL_SPACE}termos|conforme{_LEGAL_SPACE}o{_LEGAL_SPACE}disposto|previsto)"
+    rf"{_LEGAL_SPACE}(?:do|da|no|na){_LEGAL_SPACE}"
+    rf"(?P<span>{_LEGAL_DIPLOMA}{_LEGAL_OPT_SPACE},?{_LEGAL_OPT_SPACE}"
+    rf"(?:em{_LEGAL_SPACE}seu{_LEGAL_SPACE})?{_LEGAL_ARTICLE}{_LEGAL_COMPLEMENT})",
+    re.IGNORECASE,
+)
+_ARTICLE_DETECT_PATTERN = re.compile(_LEGAL_ARTICLE, re.IGNORECASE)
 _COURT_CONTEXT_PATTERN = re.compile(
     r"\b(?:STF|STJ|TSE|TST|STM)\b[^\n]{0,100}\b(?:20\d{2}|Relator|Relatora)\b",
     re.IGNORECASE,
@@ -202,6 +236,7 @@ _RULES = (
     ("sumula_numerada", _SUMULA_PATTERN, "jurisprudencia"),
     ("lei_com_diploma", _LAW_WITH_DIPLOMA_PATTERN, "lei"),
     ("dispositivo_legal", _ARTICLE_DETECT_PATTERN, "lei"),
+    ("referencia_legal_vaga", _VAGUE_LAW_PATTERN, "lei"),
     ("tribunal_contextual", _COURT_CONTEXT_PATTERN, "jurisprudencia"),
 )
 
@@ -243,7 +278,7 @@ def _family_for(text: str, citation_type: str) -> str:
 
 
 class CitationDetector:
-    """Encontra candidatos V6 sem consultar corpus ou índice de casos."""
+    """Encontra candidatos V11 sem consultar Gold, corpus ou índice de casos."""
 
     def detect(self, text: str) -> tuple[CitationCandidate, ...]:
         """Retorna candidatos ordenados, deduplicados por intervalo exato."""
@@ -260,7 +295,9 @@ class CitationDetector:
             )
             for rule, pattern, citation_type in _RULES
             for match in pattern.finditer(text)
+            if citation_type != "lei" or self._legal_span_is_bounded(match.group(0))
         ]
+        candidates.extend(self._detect_left_diploma_forms(text))
 
         # Recupera somente a UF horizontal imediatamente ligada a um processo.
         candidates = [
@@ -303,6 +340,35 @@ class CitationDetector:
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _legal_span_is_bounded(value: str) -> bool:
+        """Uma identidade legal V11 não atravessa parágrafo nem janela longa."""
+        return (
+            len(value) <= 240
+            and value.count("\n") <= 1
+            and _PARAGRAPH_BOUNDARY.search(value) is None
+        )
+
+    @classmethod
+    def _detect_left_diploma_forms(cls, text: str) -> list[CitationCandidate]:
+        """Aceita diploma à esquerda só após um conector jurídico fechado."""
+        found = []
+        for match in _LEFT_DIPLOMA_PATTERN.finditer(text):
+            start, end = match.span("span")
+            raw = text[start:end]
+            if not cls._legal_span_is_bounded(raw):
+                continue
+            found.append(
+                CitationCandidate(
+                    start=start,
+                    end=end,
+                    text=raw,
+                    rule="lei_com_diploma_esquerda",
+                    family="lei_dispositivo_com_diploma",
+                )
+            )
+        return found
 
     @staticmethod
     def _crosses_sentence_or_paragraph(value: str) -> bool:

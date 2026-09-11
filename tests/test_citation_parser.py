@@ -226,7 +226,7 @@ class CitationParserUnitTests(unittest.TestCase):
         general_law = self.parser.parse(candidate("Constituição Federal", "lei_referencia_geral"))
         contextual = self.parser.parse(candidate("STJ, 2024, Rel. Min. Maria Silva", "jurisprudencia_tribunal_contextual"))
         self.assertEqual(without_diploma.data, {"artigo": "5"})
-        self.assertEqual(general_law.data["diploma_normalizado"], "CONSTITUIÇÃO FEDERAL")
+        self.assertEqual(general_law.data["diploma_normalizado"], "CF")
         self.assertEqual(contextual.data["ano"], "2024")
         self.assertIn("relator_raw", contextual.data)
 

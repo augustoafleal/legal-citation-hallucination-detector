@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from bracis_jusbrasil.cases import build_case_index
-from bracis_jusbrasil.citations import CitationDetector, CitationParser, CitationResolver, structural_cnj_union_merge
+from bracis_jusbrasil.citations import CitationDetector, CitationParser, CitationResolver, arbitrate_citations
 from bracis_jusbrasil.database import connect_database, get_challenge_data_dir, get_database_path
 from bracis_jusbrasil.submission import build_submission_record
 
@@ -32,7 +32,7 @@ def run_pipeline():
             resolutions = tuple(resolver.resolve(item) for item in parsed)
             raw.extend((document_id, candidate, parsed_item, result)
                        for candidate, parsed_item, result in zip(candidates, parsed, resolutions))
-            final_outputs[document_id] = structural_cnj_union_merge(
+            final_outputs[document_id] = arbitrate_citations(
                 text, candidates, parsed, resolutions, primary_identities=resolver.primary_identities
             )
     return texts, raw, final_outputs

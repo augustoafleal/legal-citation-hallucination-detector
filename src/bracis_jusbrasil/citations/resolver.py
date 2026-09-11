@@ -12,6 +12,7 @@ from typing import Literal, Mapping
 from ..cases import CaseIndex
 from ..cases.parser import parse_case_identity
 from ..normalization import normalize_tribunal
+from .legal_catalog import DEFAULT_LEGAL_CATALOG, LegalCanonicalCatalog
 from .parser import ParsedCitation
 
 
@@ -66,10 +67,17 @@ class PrimaryIdentity:
 
 
 class CitationResolver:
-    """Resolver V3 conservador para processos, CNJ primário e súmulas."""
+    """Resolver conservador V11 para jurisprudência, súmulas e dispositivos."""
 
-    def __init__(self, *, case_index: CaseIndex, connection: sqlite3.Connection) -> None:
+    def __init__(
+        self,
+        *,
+        case_index: CaseIndex,
+        connection: sqlite3.Connection,
+        legal_catalog: LegalCanonicalCatalog = DEFAULT_LEGAL_CATALOG,
+    ) -> None:
         self._case_index = case_index
+        self._legal_catalog = legal_catalog
         self._primary_identities = MappingProxyType(self._build_primary_identities(connection))
         sumula_ids, sumula_ids_by_number = self._build_sumula_mappings(connection)
         self._sumula_ids = MappingProxyType(sumula_ids)
@@ -79,6 +87,11 @@ class CitationResolver:
     def primary_identities(self) -> Mapping[int, PrimaryIdentity]:
         """Metadados somente-leitura para a arbitragem estrutural."""
         return self._primary_identities
+
+    @property
+    def legal_catalog(self) -> LegalCanonicalCatalog:
+        """Catálogo fechado usado apenas pela estratégia artigo+diploma."""
+        return self._legal_catalog
 
     @staticmethod
     def _class_signature(value: str | None, tribunal: str | None = None) -> str | None:
@@ -179,7 +192,61 @@ class CitationResolver:
             return self._resolve_cnj(parsed_citation)
         if parsed_citation.family == "sumula_numerada":
             return self._resolve_sumula(parsed_citation)
+        if parsed_citation.tipo == "lei" or parsed_citation.family.startswith("lei_"):
+            return self._resolve_legal(parsed_citation)
         return self._unsupported_family(parsed_citation)
+
+    def _resolve_legal(self, parsed: ParsedCitation) -> ResolutionResult:
+        identity = parsed.legal
+        if identity is None:
+            return ResolutionResult(
+                "insufficient", None, (), "legal_identity_abstention",
+                "legal_identity_missing", "dispositivo",
+            )
+        if identity.has_critical_ocr:
+            return ResolutionResult(
+                "insufficient", None, (), "legal_identity_abstention",
+                "legal_identity_critical_ocr", "dispositivo",
+            )
+        if identity.has_ambiguous_identity:
+            return ResolutionResult(
+                "insufficient", None, (), "legal_identity_abstention",
+                "legal_identity_ambiguous", "dispositivo",
+            )
+        if (
+            not identity.has_complete_identity
+            or not identity.article_normalized
+            or not identity.diploma_normalized
+        ):
+            return ResolutionResult(
+                "insufficient", None, (), "legal_identity_abstention",
+                "legal_identity_incomplete", "dispositivo",
+            )
+
+        candidate_ids = self._legal_catalog.lookup(
+            identity.article_normalized, identity.diploma_normalized
+        )
+        if len(candidate_ids) == 1:
+            return ResolutionResult(
+                "resolved", candidate_ids[0], candidate_ids,
+                "legal_article_diploma_catalog", "legal_article_diploma_unique",
+                "dispositivo",
+            )
+        if len(candidate_ids) > 1:
+            return ResolutionResult(
+                "ambiguous", None, candidate_ids,
+                "legal_article_diploma_catalog", "legal_catalog_key_ambiguous",
+                "dispositivo",
+            )
+        if self._legal_catalog.is_covered_namespace(identity.diploma_normalized):
+            return ResolutionResult(
+                "no_match", None, (), "legal_article_diploma_covered_no_match",
+                "legal_article_diploma_not_found", "dispositivo",
+            )
+        return ResolutionResult(
+            "insufficient", None, (), "legal_identity_abstention",
+            "legal_diploma_namespace_uncovered", "dispositivo",
+        )
 
     def _resolve_numbered_case(self, parsed: ParsedCitation) -> ResolutionResult:
         number = parsed.data.get("numero_normalizado")
@@ -307,8 +374,6 @@ class CitationResolver:
 
     @staticmethod
     def _unsupported_family(parsed: ParsedCitation) -> ResolutionResult:
-        if parsed.family.startswith("lei_"):
-            return ResolutionResult("insufficient", None, (), None, "legal_identity_not_verifiable", "dispositivo")
         # Mantém o reason histórico para consumidores que persistem essa
         # enumeração; a estratégia CNJ acima é a única promoção da V3.
         return ResolutionResult("insufficient", None, (), None, "family_not_supported_in_v1", None)
