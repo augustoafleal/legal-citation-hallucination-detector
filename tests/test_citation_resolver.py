@@ -73,6 +73,43 @@ class CitationResolverUnitTests(unittest.TestCase):
             self.assertIsNone(value.id_canonico)
             self.assertEqual(len(value.candidate_ids), 2)
 
+    def test_numbered_case_primary_class_guard_resolves_one_compatible_id(self) -> None:
+        parsed_citation = parsed(
+            "processo_ou_recurso_numerado",
+            {"numero_normalizado": "1597443", "classe_raw": "AgInt no REsp"},
+        )
+        result = self.resolver.resolve(parsed_citation)
+        self.assertEqual(
+            (result.status, result.id_canonico, result.candidate_ids, result.strategy, result.reason),
+            ("resolved", 2684973273, (2684973273,), "case_number_primary_class", "case_number_primary_class_unique"),
+        )
+
+    def test_numbered_case_primary_class_guard_abstains_without_unique_match(self) -> None:
+        number = "1597443"
+        cases = {
+            "without_class": parsed("processo_ou_recurso_numerado", {"numero_normalizado": number}),
+            "class_conflict": parsed(
+                "processo_ou_recurso_numerado",
+                {"numero_normalizado": number, "classe_raw": "HC"},
+            ),
+        }
+        for label, parsed_citation in cases.items():
+            with self.subTest(label=label):
+                result = self.resolver.resolve(parsed_citation)
+                self.assertEqual(result.status, "ambiguous")
+                self.assertIsNone(result.id_canonico)
+                self.assertEqual(result.candidate_ids, (2684973273, 2679428592))
+
+    def test_numbered_case_primary_class_guard_abstains_when_class_matches_multiple_ids(self) -> None:
+        result = self.resolver.resolve(
+            parsed(
+                "processo_ou_recurso_numerado",
+                {"numero_normalizado": "1605278", "classe_raw": "AgInt"},
+            )
+        )
+        self.assertEqual((result.status, result.id_canonico), ("ambiguous", None))
+        self.assertEqual(result.candidate_ids, (2848942660, 2939369305))
+
     def test_sumula_number_only_does_not_require_tribunal(self) -> None:
         resolved = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "83"}, tribunal="STJ", tribunal_source="explicit"))
         no_tribunal = self.resolver.resolve(parsed("sumula_numerada", {"sumula_numero": "83"}))
@@ -84,9 +121,9 @@ class CitationResolverUnitTests(unittest.TestCase):
 
     def test_unsupported_families_are_insufficient(self) -> None:
         families = {
-            "lei_dispositivo_com_diploma": ("legal_identity_not_verifiable", "dispositivo"),
-            "lei_dispositivo_sem_diploma": ("legal_identity_not_verifiable", "dispositivo"),
-            "lei_referencia_geral": ("legal_identity_not_verifiable", "dispositivo"),
+            "lei_dispositivo_com_diploma": ("legal_identity_missing", "dispositivo"),
+            "lei_dispositivo_sem_diploma": ("legal_identity_missing", "dispositivo"),
+            "lei_referencia_geral": ("legal_identity_missing", "dispositivo"),
             "jurisprudencia_referencia_geral": ("family_not_supported_in_v1", None),
             "jurisprudencia_tribunal_contextual": ("family_not_supported_in_v1", None),
         }
@@ -113,7 +150,7 @@ class CitationResolverUnitTests(unittest.TestCase):
 class CitationResolverOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         with connect_database(get_database_path(), read_only=True) as connection:
             cls.resolver = CitationResolver(case_index=build_case_index(connection), connection=connection)
@@ -131,12 +168,12 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         for row in resolved_rows:
             key = (row["gold"], row["result"].status)
             counts[key] = counts.get(key, 0) + 1
-        # Resolver V3: a promoção CNJ adiciona as identidades primárias
-        # verificáveis sem alterar as famílias legais/contextuais.
+        # Resolver V11: CNJ/classe primária são preservados e a frente legal
+        # promove somente identidades artigo+diploma verificáveis.
         self.assertEqual(counts, {
-            ("real", "resolved"): 61, ("real", "no_match"): 3, ("real", "ambiguous"): 3, ("real", "insufficient"): 29,
-            ("inventada", "no_match"): 40, ("inventada", "insufficient"): 24,
-            ("incompleta", "insufficient"): 65,
+            ("real", "resolved"): 76, ("real", "no_match"): 3, ("real", "ambiguous"): 2, ("real", "insufficient"): 15,
+            ("inventada", "no_match"): 54, ("inventada", "insufficient"): 10,
+            ("incompleta", "insufficient"): 35,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
         self.assertEqual(sum(row["result"].status == "resolved" for row in resolved_rows if row["gold"] != "real"), 0)
@@ -146,7 +183,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 166)
+        self.assertEqual(classified, 165)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []

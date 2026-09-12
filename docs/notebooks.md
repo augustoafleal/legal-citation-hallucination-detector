@@ -62,15 +62,19 @@ preservados por feito. Essa baseline alimenta o `CaseIndex` V1 em
 `src/bracis_jusbrasil.cases`: súmulas, dispositivos, citações `.txt` e FTS
 continuam fora do índice.
 
-Os números acima registram a investigação sobre a versão anterior do dataset.
+Os números acima registram a investigação sobre uma versão anterior do dataset.
 Em 28/08/2026, a baseline oficial foi atualizada: `doc_0227` e `doc_0461`
-foram removidos por serem duplicatas exatas.
+foram removidos por serem duplicatas exatas. Uma atualização posterior removeu
+30 referências genéricas da classe `incompleta` do `goldenset.csv`; por isso,
+as estatísticas históricas de 225 citações descritas neste documento não são
+baseline do material atual de 195 citações. Consulte `report.md` na raiz antes
+de reexecutar ou comparar esses notebooks.
 
 ## 06_citation_surface_analysis.ipynb
 
 O sexto notebook é uma etapa exploratória sobre a superfície das citações da
 revisão corrente do desafio. Ele lê somente os 26 arquivos `txt` e as 225 linhas
-do `goldenset.xlsx`, valida os 225 spans contra os offsets do texto e separa
+do `goldenset.csv`, valida os 225 spans contra os offsets do texto e separa
 explicitamente detecção, parsing e resolução; somente as duas primeiras são
 estudadas. A taxonomia textual cobre processos CNJ, processos ou recursos
 numerados, súmulas, referências jurisprudenciais contextuais ou gerais e três
@@ -124,8 +128,9 @@ organizadores. O notebook não altera produção nem implementa essa decisão.
 
 A regra foi posteriormente promovida, sem alterações, ao `CitationDetector`
 V2. Os notebooks 07 e 07.1 continuam sendo a evidência histórica da seleção e
-do teste de robustez; a implementação de produção preserva somente
-`jurisprudencia_geral`, com baseline de 117 TP, 89 FP e 108 FN.
+do teste de robustez, incluindo a baseline de 117 TP, 89 FP e 108 FN. Sob o
+Gold V2, a regra foi retirada da produção: referências jurisprudenciais vagas,
+sem fonte concreta, deixaram de estar no escopo de citação.
 
 ## 08_citation_parsing_analysis.ipynb
 
@@ -297,3 +302,15 @@ metadata legal estruturada, o pool semântico/contextual, LOODO e uma lista
 reduzida para revisão humana. O notebook permanece evidência histórica anterior
 à promoção; CNJ, estratégias legais e resolução semântica continuam fora de
 produção.
+
+### Atualização posterior: CitationDetector V5
+
+Após a revisão humana dos sete residuais do Detector, os padrões foram
+promovidos com guards estruturais ao componente de produção. A V5 recupera
+prefixos formais de CNJ, `RHC`/`RMS`/`AR` com marcador e quebra de linha local,
+modificadores processuais seguidos diretamente de identificador não-CNJ e o
+título composto de agravo interno/suspensão. No corpus congelado, o resultado
+passou de 127 TP / 84 FP / 98 FN na V4 para 137 TP / 82 FP / 88 FN na V5,
+sem `wrong_unique_real`, `false_real_inventada` ou `false_real_incompleta` no
+pipeline completo. A decisão está registrada em
+`artifacts/detector_residual_human_review.json`.

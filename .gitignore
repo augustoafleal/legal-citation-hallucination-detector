@@ -174,9 +174,14 @@ poetry.toml
 pyrightconfig.json
 .agents/
 material_desafio_jusbrasil_bracis_old/
+material_desafio_jusbrasil_bracis_old2/
+material_desafio_jusbrasil_bracis_old3/
 artifacts/
+submissions/*.csv
+scripts/analysis/
 # Artefatos temporários de exploração
 .jupyter_cache/
 *.tmp
+*.bak
 
 # End of https://www.toptal.com/developers/gitignore/api/python

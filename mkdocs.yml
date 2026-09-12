@@ -24,6 +24,7 @@ theme:
 
 nav:
   - O desafio: index.md
+  - Competição: competition.md
   - Arquitetura: architecture.md
   - Notebooks: notebooks.md
   - Scripts: scripts.md

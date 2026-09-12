@@ -21,8 +21,8 @@ RELATOR_PATTERN = re.compile(r"\b(?:Rel\.?|Relator(?:a)?)\s*(?:Min\.?|Ministra|M
 UNSUPPORTED_COMPOUND = re.compile(r"\bED(?:-[A-Z]+){2,}-RR-\d", re.IGNORECASE)
 
 
-def candidate(text: str, family: str) -> CitationCandidate:
-    return CitationCandidate(start=0, end=len(text), text=text, rule="test", family=family)
+def candidate(text: str, family: str, rule: str = "test") -> CitationCandidate:
+    return CitationCandidate(start=0, end=len(text), text=text, rule=rule, family=family)
 
 
 def oracle_family(text: str, citation_type: str) -> str:
@@ -145,9 +145,56 @@ class CitationParserUnitTests(unittest.TestCase):
         self.assertEqual(parsed.data, {"classe_raw": "Rcl"})
         self.assertNotIn("numero", parsed.provenance)
 
-    def test_unsupported_compound_class_remains_unparsed(self) -> None:
+    def test_compound_chain_requires_explicit_detector_provenance(self) -> None:
         parsed = self.parser.parse(candidate("ED-E-ED-RR-65-63.2010.5.01.0075", "processo_ou_recurso_numerado"))
         self.assertEqual(parsed.data, {"classe_raw": "RR"})
+
+    def test_v7_parses_approved_compound_chain(self) -> None:
+        parsed = self.parser.parse(candidate(
+            "ED-E-ED-RR-65-63.2010.5.01.0075",
+            "processo_ou_recurso_numerado",
+            "compound_procedural_chain",
+        ))
+        self.assertEqual(parsed.tribunal, None)
+        self.assertEqual(parsed.data["classe_raw"], "RR")
+        self.assertEqual(parsed.data["numero_raw"], "65-63.2010.5.01.0075")
+        self.assertEqual(parsed.data["numero_normalizado"], "656320105010075")
+        self.assertEqual(parsed.data["numero_family"], "case_number")
+        self.assertEqual(parsed.provenance["numero"], "compound_procedural_chain")
+
+    def test_v7_preserves_explicit_tst_and_one_to_seven_digit_numbers(self) -> None:
+        for digits in range(1, 8):
+            with self.subTest(digits=digits):
+                number = f"{'1' * digits}-23.2020.5.01.0001"
+                parsed = self.parser.parse(candidate(
+                    f"TST-E-RR-{number}",
+                    "processo_ou_recurso_numerado",
+                    "compound_procedural_chain",
+                ))
+                self.assertEqual(parsed.tribunal, "TST")
+                self.assertEqual(parsed.data["numero_raw"], number)
+                self.assertEqual(parsed.data["numero_normalizado"], "".join(char for char in number if char.isdigit()))
+        invalid = self.parser.parse(candidate(
+            "TST-E-RR-12345678-23.2020.5.01.0001",
+            "processo_ou_recurso_numerado",
+            "compound_procedural_chain",
+        ))
+        self.assertEqual(invalid.data, {})
+        self.assertIsNone(invalid.tribunal)
+
+    def test_v7_rejects_manual_partial_and_arbitrary_candidates(self) -> None:
+        for text in (
+            "TST-E-RR-173000-49.2008",
+            "ED-XYZ-RR-173000-49.2008.5.15.0024",
+        ):
+            with self.subTest(text=text):
+                parsed = self.parser.parse(candidate(
+                    text,
+                    "processo_ou_recurso_numerado",
+                    "compound_procedural_chain",
+                ))
+                self.assertEqual(parsed.data, {})
+                self.assertNotIn("numero", parsed.provenance)
 
     def test_contextual_ocr_repair_preserves_raw_text(self) -> None:
         text = "AgInt no RESP 21737l8 - SP"
@@ -179,7 +226,7 @@ class CitationParserUnitTests(unittest.TestCase):
         general_law = self.parser.parse(candidate("Constituição Federal", "lei_referencia_geral"))
         contextual = self.parser.parse(candidate("STJ, 2024, Rel. Min. Maria Silva", "jurisprudencia_tribunal_contextual"))
         self.assertEqual(without_diploma.data, {"artigo": "5"})
-        self.assertEqual(general_law.data["diploma_normalizado"], "CONSTITUIÇÃO FEDERAL")
+        self.assertEqual(general_law.data["diploma_normalizado"], "CF")
         self.assertEqual(contextual.data["ano"], "2024")
         self.assertIn("relator_raw", contextual.data)
 
@@ -193,7 +240,7 @@ class CitationParserUnitTests(unittest.TestCase):
 class CitationParserOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         parser = CitationParser()
         cls.rows = []
@@ -209,11 +256,11 @@ class CitationParserOracleIntegrationTests(unittest.TestCase):
             counts[row["family"]] = counts.get(row["family"], 0) + 1
         self.assertEqual(counts, {
             "processo_ou_recurso_numerado": 85,
-            "jurisprudencia_referencia_geral": 46,
+            "jurisprudencia_referencia_geral": 25,
             "lei_dispositivo_com_diploma": 27,
             "processo_cnj": 25,
             "jurisprudencia_tribunal_contextual": 20,
-            "lei_referencia_geral": 11,
+            "lei_referencia_geral": 2,
             "sumula_numerada": 10,
             "lei_dispositivo_sem_diploma": 1,
         })

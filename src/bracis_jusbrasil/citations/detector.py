@@ -14,7 +14,7 @@ _TRIBUNAL_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _PROCESS_CLASS_PATTERN = re.compile(
-    r"\b(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|Agravo|Recurso Especial|Recurso Extraordinário|Habeas Corpus|Reclamação)\b",
+    r"\b(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|RHC|RMS|AR|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|Agravo|Recurso Especial|Recurso Extraordinário|Habeas Corpus|Reclamação)\b",
     re.IGNORECASE,
 )
 _SUMULA_PATTERN = re.compile(
@@ -26,7 +26,8 @@ _ARTICLE_PATTERN = re.compile(
     re.IGNORECASE,
 )
 _DIPLOMA_PATTERN = re.compile(
-    r"\b(?:Constituiç[aã]o|C[oó]digo|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+|CLT|CPC|CPP|CC|CDC|CPM)\b",
+    r"\b(?:Constituiç[aã]o|C[oó]digo|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+|"
+    r"CLT|CPC|CPP|CC|CDC|CPM|CF(?:/88)?|CE|LC\s*(?:n[ºo.]?\s*)?\d+\s*/\s*\d{4})\b",
     re.IGNORECASE,
 )
 
@@ -38,13 +39,61 @@ _UF_CODES = (
     "AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR "
     "SC SP SE TO"
 ).split()
+_V5_PROCESS_PATTERN = re.compile(
+    r"\b(?:RHC|RMS|AR)\s*(?:n[ºo.]?\s*)?[ \t\u00a0]*(?:\n[ \t\u00a0]*)?"
+    r"\d[\d.\-/ \t\u00a0]*\d"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
+    re.IGNORECASE,
+)
 _PROCESS_UF_TAIL = re.compile(
     r"^[ \t\u00a0]*(?:[-/][ \t\u00a0]*|\([ \t\u00a0]*|[ \t\u00a0]+)(?:"
     + "|".join(_UF_CODES)
     + r")(?:[ \t\u00a0]*\))?\b"
 )
 
-# V4 keeps the experimental mechanisms deliberately narrow.  These patterns
+# V6 is deliberately narrower than the experimental R2 marker scan.  It
+# recognizes a noncanonical CNJ only when a contiguous, positive procedural
+# marker precedes it; arbitrary uppercase token chains are not procedural.
+_DEGRADED_CNJ_BODY = re.compile(
+    r"(?<!\w)\d[\d .\-\t\n]{18,80}\d(?=\s*(?:[./(),;:!?]|[A-Za-zÀ-ÿ]|$))"
+)
+_CANONICAL_CNJ_BODY = re.compile(r"^\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}$")
+_DEGRADED_MARKER_SPACE = r"[ \t\u00a0]"
+_DEGRADED_MARKER_SPACES = _DEGRADED_MARKER_SPACE + "+"
+_DEGRADED_MODIFIER = r"(?:AgInt|AgRg|AgR|EDcl|ED)"
+_DEGRADED_MODIFIER_CHAIN = (
+    rf"(?:(?:{_DEGRADED_MODIFIER})(?:{_DEGRADED_MARKER_SPACES}"
+    rf"(?:no|nos|na|nas|em){_DEGRADED_MARKER_SPACES}|"
+    rf"{_DEGRADED_MARKER_SPACE}*-{_DEGRADED_MARKER_SPACE}*))*"
+)
+_DEGRADED_DIRECT_PRIMARY = (
+    r"(?:AREsp|REsp|AgInt|AgRg|EDcl|HC|RHC|RMS|AR|Rcl|ADI|ADPF|RE|AI|MS|RR|AIRR|AP|RO|"
+    r"Agravo(?:[ \t\u00a0]+Regimental)?|Recurso[ \t\u00a0]+Especial(?:[ \t\u00a0]+Eleitoral)?|"
+    r"Recurso[ \t\u00a0]+Extraordin[aá]rio|Habeas[ \t\u00a0]+Corpus|Reclamaç[aã]o)"
+)
+_DEGRADED_STRUCTURAL_ALIAS = r"(?:REspe[.]?|Ag[.][ \t\u00a0]*Int[.])"
+_DEGRADED_MARKER = re.compile(
+    rf"(?P<marker>(?<!\w){_DEGRADED_MODIFIER_CHAIN}"
+    rf"(?:{_DEGRADED_DIRECT_PRIMARY}|{_DEGRADED_STRUCTURAL_ALIAS})"
+    rf"{_DEGRADED_MARKER_SPACE}*(?:(?:n(?:[º°.o]|o)?){_DEGRADED_MARKER_SPACE}*)?)$",
+    re.IGNORECASE,
+)
+_DEGRADED_UF_TAIL = re.compile(
+    r"\s*(?:/|\()\s*(?:" + "|".join(_UF_CODES) + r")\s*\)?(?![A-Za-zÀ-ÿ])",
+    re.IGNORECASE,
+)
+
+_COMPOUND_PROCEDURAL_CHAIN = re.compile(
+    r"(?<![A-Za-z0-9À-ÿ]-)(?<!\w)"
+    r"(?P<chain>(?:TST-(?:ED|E|RR)(?:-(?:ED|E|RR)){0,3}|"
+    r"(?:ED|E|RR)(?:-(?:ED|E|RR)){1,4}))"
+    r"-(?P<number>\d{1,7}-\d{2}[.]\d{4}[.]\d[.]\d{2}[.]\d{4})(?!\w)",
+    re.IGNORECASE,
+)
+
+# V5 keeps the experimental mechanisms deliberately narrow.  These patterns
 # are structural extensions of an already numbered process candidate; they
 # are not general legal-language or OCR normalizers.
 _H1_PREFIX_CHAIN = re.compile(
@@ -75,31 +124,120 @@ _H3_OCR_NUMERIC_TAIL = re.compile(
     + r")(?:[ \t\u00a0]*\))?)?)\b",
     re.IGNORECASE,
 )
+_V5_CNJ_PROCEDURAL_PREFIX = re.compile(
+    r"(?P<prefix>(?<!\w)(?:"
+    r"Recurso[ \t\u00a0]+Especial[ \t\u00a0]+Eleitoral|"
+    r"Agravo[ \t\u00a0]+Regimental[ \t\u00a0]+no[ \t\u00a0]+"
+    r"Agravo[ \t\u00a0]+de[ \t\u00a0]+Instrumento"
+    r")[ \t\u00a0]+n(?:[º°.]|o)?[ \t\u00a0]*)$",
+    re.IGNORECASE,
+)
+_V5_STANDALONE_MODIFIER = re.compile(
+    r"\b(?:AgInt|AgRg|EDcl|ED)\s+n(?:[º°.]|o)?[ \t\u00a0]+"
+    r"(?P<number>\d[\d.\-/ \t\u00a0]*\d)"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
+    re.IGNORECASE,
+)
+_V5_COMPOUND_PROCEDURE_TITLE = re.compile(
+    r"\bAgravo[ \t\u00a0\r\n]+Interno[ \t\u00a0\r\n]+n(?:a|o)[ \t\u00a0\r\n]+"
+    r"Suspens[aã]o[ \t\u00a0\r\n]+de[ \t\u00a0\r\n]+"
+    r"(?:Liminar(?:[ \t\u00a0\r\n]+e[ \t\u00a0\r\n]+de[ \t\u00a0\r\n]+Senten[cç]a|)|"
+    r"Seguran[cç]a)[ \t\u00a0\r\n]*"
+    r"n(?:[º°.]|o)?[ \t\u00a0\r\n]*(?:\n[ \t\u00a0]*)?"
+    r"\d[\d.\-/ \t\u00a0]*\d"
+    r"(?:[ \t\u00a0]*(?:[-/]\s*|\(\s*|[ \t\u00a0]+)(?:"
+    + "|".join(_UF_CODES)
+    + r")(?:\s*\))?)?(?=$|[^\w])",
+    re.IGNORECASE,
+)
+_LEGAL_SPACE = r"[ \t\r\n\u00a0]+"
+_LEGAL_OPT_SPACE = r"[ \t\r\n\u00a0]*"
+_LEGAL_ARTICLE_TOKEN = r"\d+(?:[.]\d+)*(?:[ºo])?(?:-[A-Za-z])?"
+_LEGAL_ARTICLE = rf"\bart(?:igo)?[.]?{_LEGAL_SPACE}{_LEGAL_ARTICLE_TOKEN}"
+_LEGAL_COMPLEMENT = (
+    rf"(?:{_LEGAL_OPT_SPACE},{_LEGAL_OPT_SPACE}(?:"
+    rf"§{{1,2}}{_LEGAL_SPACE}(?:\d+(?:[ºo])?(?:-[A-Za-z])?|único)|"
+    rf"parágrafo{_LEGAL_SPACE}(?:\d+(?:[ºo])?(?:-[A-Za-z])?|único)|"
+    rf"(?:inciso{_LEGAL_SPACE})?[IVXLCDM]+|"
+    rf"alínea{_LEGAL_SPACE}['’\"]?[A-Za-z]['’\"]?|"
+    rf"item{_LEGAL_SPACE}\d+|['’\"]?[A-Za-z]['’\"]?))*"
+)
+_LEGAL_DIPLOMA = (
+    rf"(?:Constituiç[aã]o{_LEGAL_SPACE}(?:Federal|Fedcral|da{_LEGAL_SPACE}República"
+    rf"(?:{_LEGAL_SPACE}Federativa{_LEGAL_SPACE}do{_LEGAL_SPACE}Brasil)?)|"
+    rf"Código{_LEGAL_SPACE}(?:Civil|Eleitoral|Penal(?:{_LEGAL_SPACE}Militar)?|"
+    rf"de{_LEGAL_SPACE}Processo{_LEGAL_SPACE}(?:Civil|Penal)|"
+    rf"de{_LEGAL_SPACE}Defesa{_LEGAL_SPACE}do{_LEGAL_SPACE}Consumidor)|"
+    rf"Consolidação{_LEGAL_SPACE}das{_LEGAL_SPACE}Leis{_LEGAL_SPACE}do{_LEGAL_SPACE}Trabalho|"
+    rf"(?:CLT|CPC|CPP|CPM|CDC|CF(?:/88)?|CC|CE)|"
+    rf"Lei(?:{_LEGAL_SPACE}Complementar)?{_LEGAL_SPACE}(?:n(?:[ºo]|[.])?{_LEGAL_SPACE})?"
+    rf"\d+(?:[.]\d+)*{_LEGAL_OPT_SPACE}/{_LEGAL_OPT_SPACE}\d{{4}}|"
+    rf"LC{_LEGAL_SPACE}(?:n(?:[ºo]|[.])?{_LEGAL_SPACE})?\d+{_LEGAL_OPT_SPACE}/{_LEGAL_OPT_SPACE}\d{{4}})"
+)
+_LEGAL_CONNECTOR = rf"{_LEGAL_OPT_SPACE},?{_LEGAL_OPT_SPACE}(?:do|da|de){_LEGAL_SPACE}"
 _LAW_WITH_DIPLOMA_PATTERN = re.compile(
-    r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?(?:\s*,?\s*§\s*\d+(?:[ºo])?)?)(?:\s+do|\s+da)?\s+(?:Constituiç[aã]o(?: Federal)?|C[oó]digo [A-Za-zÀ-ÿ ]+|Lei(?: Complementar)?\s*(?:n[ºo.]?\s*)?\d+[./-]?[\d./-]*)",
+    _LEGAL_ARTICLE + _LEGAL_COMPLEMENT + _LEGAL_CONNECTOR + _LEGAL_DIPLOMA,
     re.IGNORECASE,
 )
-_ARTICLE_DETECT_PATTERN = re.compile(
-    r"\b(?:art(?:igo)?[.]?\s*\d+(?:[ºo])?|§\s*\d+(?:[ºo])?)",
+_VAGUE_LAW_PATTERN = re.compile(
+    rf"\bartigo{_LEGAL_SPACE}correspondente{_LEGAL_CONNECTOR}{_LEGAL_DIPLOMA}",
     re.IGNORECASE,
 )
+_LEFT_DIPLOMA_PATTERN = re.compile(
+    rf"(?:nos{_LEGAL_SPACE}termos|conforme{_LEGAL_SPACE}o{_LEGAL_SPACE}disposto|previsto)"
+    rf"{_LEGAL_SPACE}(?:do|da|no|na){_LEGAL_SPACE}"
+    rf"(?P<span>{_LEGAL_DIPLOMA}{_LEGAL_OPT_SPACE},?{_LEGAL_OPT_SPACE}"
+    rf"(?:em{_LEGAL_SPACE}seu{_LEGAL_SPACE})?{_LEGAL_ARTICLE}{_LEGAL_COMPLEMENT})",
+    re.IGNORECASE,
+)
+_ARTICLE_DETECT_PATTERN = re.compile(_LEGAL_ARTICLE, re.IGNORECASE)
 _COURT_CONTEXT_PATTERN = re.compile(
     r"\b(?:STF|STJ|TSE|TST|STM)\b[^\n]{0,100}\b(?:20\d{2}|Relator|Relatora)\b",
     re.IGNORECASE,
 )
-_GENERAL_JURISPRUDENCE_PATTERN = re.compile(
-    r"\b(?:jurisprudência\s+(?:pacífica|consolidada)(?:\s+(?:desta|dos)\s+(?:Corte|tribunais superiores))?|orientação jurisprudencial(?:\s+consolidada)?|entendimento sumulado(?:\s+sobre\s+a\s+matéria)?|precedentes desta Casa(?:\s+em\s+20\d{2})?|verbete sumular aplicável)\b",
+_CONCRETE_INCOMPLETE_COURT = re.compile(
+    r"\b(?:STF|STJ|TSE|TST|STM|Supremo Tribunal Federal|Superior Tribunal de Justiça|"
+    r"Tribunal Superior Eleitoral|Tribunal Superior do Trabalho|Superior Tribunal Militar)\b",
     re.IGNORECASE,
 )
-
+_CONCRETE_INCOMPLETE_DECISION = re.compile(
+    r"\b(?:Agravo\s+em\s+Recurso\s+Especial|Agravo\s+em\s+REsp|"
+    r"Recurso\s+em\s+Habeas\s+Corpus|RHC|Reclamação|Rcl|acórdão|julgado|precedente)\b",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_YEAR = re.compile(
+    r"\b(?:de|em)\s+(?:19\d{2}|20\d{2})\b|"
+    r"\b(?:julgado|proferido|profcrido)\s+(?:em\s+)?(?:19\d{2}|20\d{2})\b",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_RELATOR = re.compile(
+    r"\b(?:Rel\.?(?:\s*(?:Min\.?|Ministro|Ministra))?|"
+    r"(?:pela|sob|da)\s+relatoria\s+d(?:e|a|c))\s+",
+    re.IGNORECASE,
+)
+_CONCRETE_INCOMPLETE_NAME = re.compile(
+    r"[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*(?:[ \t\r\n]+[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*){1,5}"
+)
+_RCL_RELATOR_YEAR = re.compile(
+    r"\b(?:Rcl|Reclamaç[aã]o)[ \t\r\n]+(?:de|em)[ \t\r\n]+(?:19\d{2}|20\d{2})"
+    r"[ \t\r\n]*,?[ \t\r\n]*"
+    r"(?:Rel\.?(?:[ \t\r\n]+(?:Min\.?|Ministro|Ministra))?|"
+    r"(?:pela|sob|da)[ \t\r\n]+relatoria[ \t\r\n]+d(?:e|a|c))"
+    r"[ \t\r\n]+(?-i:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*"
+    r"(?:[ \t\r\n]+(?:[A-ZÀ-Ý][A-Za-zÀ-ÿ'’-]*|de|da|do|dos|das)){1,5})",
+    re.IGNORECASE,
+)
+_PARAGRAPH_BOUNDARY = re.compile(r"(?:\r\n|\n)[ \t]*(?:\r\n|\n)")
 _RULES = (
     ("cnj", _CNJ_PATTERN, "jurisprudencia"),
     ("processo_ou_recurso", _PROCESS_PATTERN, "jurisprudencia"),
     ("sumula_numerada", _SUMULA_PATTERN, "jurisprudencia"),
     ("lei_com_diploma", _LAW_WITH_DIPLOMA_PATTERN, "lei"),
     ("dispositivo_legal", _ARTICLE_DETECT_PATTERN, "lei"),
+    ("referencia_legal_vaga", _VAGUE_LAW_PATTERN, "lei"),
     ("tribunal_contextual", _COURT_CONTEXT_PATTERN, "jurisprudencia"),
-    ("jurisprudencia_geral", _GENERAL_JURISPRUDENCE_PATTERN, "jurisprudencia"),
 )
 
 
@@ -140,7 +278,7 @@ def _family_for(text: str, citation_type: str) -> str:
 
 
 class CitationDetector:
-    """Encontra candidatos V3 sem consultar corpus ou índice de casos."""
+    """Encontra candidatos V11 sem consultar Gold, corpus ou índice de casos."""
 
     def detect(self, text: str) -> tuple[CitationCandidate, ...]:
         """Retorna candidatos ordenados, deduplicados por intervalo exato."""
@@ -157,25 +295,237 @@ class CitationDetector:
             )
             for rule, pattern, citation_type in _RULES
             for match in pattern.finditer(text)
+            if citation_type != "lei" or self._legal_span_is_bounded(match.group(0))
         ]
+        candidates.extend(self._detect_left_diploma_forms(text))
 
         # Recupera somente a UF horizontal imediatamente ligada a um processo.
         candidates = [
             self._expand_process_uf(candidate, text) for candidate in candidates
         ]
+        candidates.extend(self._detect_v5_process_forms(text))
+        candidates = [
+            self._expand_cnj_prefix(candidate, text) for candidate in candidates
+        ]
         candidates = [
             self._expand_process_prefix(candidate, text) for candidate in candidates
         ]
         candidates.extend(self._detect_dotted_classes(text))
+        candidates.extend(self._detect_v5_standalone_modifiers(text))
+        candidates.extend(self._detect_v5_compound_titles(text))
+        candidates.extend(self._detect_concrete_incomplete_jurisprudence(text))
+        candidates.extend(self._detect_rcl_relator_year_no_tribunal(text))
         candidates = [
             self._expand_process_ocr_tail(candidate, text) for candidate in candidates
         ]
+        candidates.extend(
+            candidate
+            for candidate in self._detect_degraded_compact_cnj(text)
+            if not any(
+                self._span_iou(candidate, existing) >= 0.5
+                for existing in candidates
+            )
+        )
+        for candidate in self._detect_compound_procedural_chain(text):
+            candidates = [
+                existing
+                for existing in candidates
+                if self._span_iou(candidate, existing) < 0.5
+            ]
+            candidates.append(candidate)
+        candidates = self._apply_concrete_incomplete_priority(candidates)
 
         unique_by_span: dict[tuple[int, int], CitationCandidate] = {}
         for candidate in sorted(candidates, key=lambda item: (item.start, item.end, item.rule)):
             unique_by_span.setdefault((candidate.start, candidate.end), candidate)
 
         return tuple(unique_by_span.values())
+
+    @staticmethod
+    def _legal_span_is_bounded(value: str) -> bool:
+        """Uma identidade legal V11 não atravessa parágrafo nem janela longa."""
+        return (
+            len(value) <= 240
+            and value.count("\n") <= 1
+            and _PARAGRAPH_BOUNDARY.search(value) is None
+        )
+
+    @classmethod
+    def _detect_left_diploma_forms(cls, text: str) -> list[CitationCandidate]:
+        """Aceita diploma à esquerda só após um conector jurídico fechado."""
+        found = []
+        for match in _LEFT_DIPLOMA_PATTERN.finditer(text):
+            start, end = match.span("span")
+            raw = text[start:end]
+            if not cls._legal_span_is_bounded(raw):
+                continue
+            found.append(
+                CitationCandidate(
+                    start=start,
+                    end=end,
+                    text=raw,
+                    rule="lei_com_diploma_esquerda",
+                    family="lei_dispositivo_com_diploma",
+                )
+            )
+        return found
+
+    @staticmethod
+    def _crosses_sentence_or_paragraph(value: str) -> bool:
+        """A local H2 clause never crosses prose punctuation or a paragraph."""
+        return "\n\n" in value or bool(re.search(r"(?<!Rel)(?<!Min)[.!?]", value))
+
+    def _detect_concrete_incomplete_jurisprudence(self, text: str) -> list[CitationCandidate]:
+        """Detect a bounded decision + court + year + relator chain without lookup."""
+        found: list[CitationCandidate] = []
+        for decision in _CONCRETE_INCOMPLETE_DECISION.finditer(text):
+            court = _CONCRETE_INCOMPLETE_COURT.search(
+                text, decision.end(), min(len(text), decision.end() + 45)
+            )
+            if court is None or not re.fullmatch(
+                r"\s*(?:do|da)?\s*", text[decision.end():court.start()], re.IGNORECASE
+            ):
+                continue
+            window = text[court.end():min(len(text), court.end() + 72)]
+            year = _CONCRETE_INCOMPLETE_YEAR.search(window)
+            if year is None or self._crosses_sentence_or_paragraph(window[:year.start()]):
+                continue
+            relator = _CONCRETE_INCOMPLETE_RELATOR.search(window, year.end())
+            if relator is None or self._crosses_sentence_or_paragraph(window[year.end():relator.start()]):
+                continue
+            name = _CONCRETE_INCOMPLETE_NAME.match(window, relator.end())
+            if name is None:
+                continue
+            end = court.end() + name.end()
+            found.append(
+                CitationCandidate(
+                    decision.start(), end, text[decision.start():end],
+                    "decision_tribunal_relator_year", "jurisprudencia_tribunal_contextual",
+                )
+            )
+        return list({(item.start, item.end, item.text): item for item in found}.values())
+
+    @staticmethod
+    def _detect_rcl_relator_year_no_tribunal(text: str) -> list[CitationCandidate]:
+        """Detecta Rcl concreta com ano e relator, sem inferir tribunal."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="rcl_relator_year_no_tribunal",
+                family="jurisprudencia_tribunal_contextual",
+            )
+            for match in _RCL_RELATOR_YEAR.finditer(text)
+            if match.end() - match.start() <= 180
+            and _PARAGRAPH_BOUNDARY.search(match.group(0)) is None
+        ]
+
+    @classmethod
+    def _apply_concrete_incomplete_priority(
+        cls, candidates: list[CitationCandidate]
+    ) -> list[CitationCandidate]:
+        """Keep H2 over only dangerous contextual overlap; retain every other family."""
+        h2_candidates = [item for item in candidates if item.rule == "decision_tribunal_relator_year"]
+        return [
+            item for item in candidates
+            if item.rule != "tribunal_contextual"
+            or not any(cls._span_iou(item, h2_item) >= .5 for h2_item in h2_candidates)
+        ]
+
+    @staticmethod
+    def _detect_degraded_compact_cnj(text: str) -> list[CitationCandidate]:
+        """Detecta somente o CNJ degradado com marcador M1 controlado."""
+        candidates = []
+        for number in _DEGRADED_CNJ_BODY.finditer(text):
+            raw_identity = number.group(0)
+            observed_digits = "".join(char for char in raw_identity if char.isdigit())
+            if len(observed_digits) != 20:
+                continue
+            if _CANONICAL_CNJ_BODY.fullmatch(re.sub(r"\s+", "", raw_identity)):
+                continue
+
+            window_start = max(0, number.start() - 96)
+            marker = _DEGRADED_MARKER.search(text[window_start : number.start()])
+            if marker is None:
+                continue
+            start = window_start + marker.start("marker")
+            local = text[start : number.end()]
+            if local.count("\n") > 1 or "\n\n" in local or re.search(r"[!?;]", local):
+                continue
+
+            end = number.end()
+            uf = _DEGRADED_UF_TAIL.match(text[end:])
+            if uf is not None:
+                end += uf.end()
+            candidates.append(
+                CitationCandidate(
+                    start=start,
+                    end=end,
+                    text=text[start:end],
+                    rule="degraded_compact_cnj",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _detect_compound_procedural_chain(text: str) -> list[CitationCandidate]:
+        """Detecta a cadeia processual V7 com número CNJ/TST completo."""
+        candidates = []
+        for match in _COMPOUND_PROCEDURAL_CHAIN.finditer(text):
+            tokens = match.group("chain").upper().split("-")
+            process_tokens = tokens[1:] if tokens[0] == "TST" else tokens
+            if any(process_tokens.count(token) > 2 for token in set(process_tokens)):
+                continue
+            candidates.append(
+                CitationCandidate(
+                    start=match.start(),
+                    end=match.end(),
+                    text=match.group(0),
+                    rule="compound_procedural_chain",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _span_iou(left: CitationCandidate, right: CitationCandidate) -> float:
+        intersection = max(0, min(left.end, right.end) - max(left.start, right.start))
+        union = max(left.end, right.end) - min(left.start, right.start)
+        return intersection / union if union else 0.0
+
+    @staticmethod
+    def _detect_v5_process_forms(text: str) -> list[CitationCandidate]:
+        """Detecta RHC, RMS e AR com marcador/número local e UF opcional."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="processo_ou_recurso",
+                family="processo_ou_recurso_numerado",
+            )
+            for match in _V5_PROCESS_PATTERN.finditer(text)
+        ]
+
+    @staticmethod
+    def _expand_cnj_prefix(candidate: CitationCandidate, text: str) -> CitationCandidate:
+        """Expande um CNJ por um título processual formal imediatamente anterior."""
+        if candidate.rule != "cnj" or candidate.family != "processo_cnj":
+            return candidate
+        window_start = max(0, candidate.start - 120)
+        match = _V5_CNJ_PROCEDURAL_PREFIX.search(text[window_start : candidate.start])
+        if match is None:
+            return candidate
+        start = window_start + match.start("prefix")
+        return CitationCandidate(
+            start=start,
+            end=candidate.end,
+            text=text[start : candidate.end],
+            rule=candidate.rule,
+            family=candidate.family,
+        )
 
     @staticmethod
     def _expand_process_uf(candidate: CitationCandidate, text: str) -> CitationCandidate:
@@ -229,6 +579,39 @@ class CitationDetector:
                 family="processo_ou_recurso_numerado",
             )
             for match in _H2_DOTTED_CLASS.finditer(text)
+        ]
+
+    @staticmethod
+    def _detect_v5_standalone_modifiers(text: str) -> list[CitationCandidate]:
+        """Detecta modificador processual seguido diretamente de identificador."""
+        candidates = []
+        for match in _V5_STANDALONE_MODIFIER.finditer(text):
+            number = match.group("number")
+            if _CNJ_PATTERN.fullmatch(number):
+                continue
+            candidates.append(
+                CitationCandidate(
+                    start=match.start(),
+                    end=match.end(),
+                    text=match.group(0),
+                    rule="processo_ou_recurso",
+                    family="processo_ou_recurso_numerado",
+                )
+            )
+        return candidates
+
+    @staticmethod
+    def _detect_v5_compound_titles(text: str) -> list[CitationCandidate]:
+        """Detecta títulos compostos de agravo com marcador numérico local."""
+        return [
+            CitationCandidate(
+                start=match.start(),
+                end=match.end(),
+                text=match.group(0),
+                rule="processo_ou_recurso",
+                family="processo_ou_recurso_numerado",
+            )
+            for match in _V5_COMPOUND_PROCEDURE_TITLE.finditer(text)
         ]
 
     @staticmethod

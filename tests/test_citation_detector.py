@@ -5,18 +5,22 @@ import unittest
 
 import pandas as pd
 
-from bracis_jusbrasil.citations import CitationDetector
+from bracis_jusbrasil.citations import CitationCandidate, CitationDetector
 
 
 DATASET_DIR = Path("material_desafio_jusbrasil_bracis")
 RULE_TYPES = {
     "cnj": "jurisprudencia",
     "processo_ou_recurso": "jurisprudencia",
+    "degraded_compact_cnj": "jurisprudencia",
+    "compound_procedural_chain": "jurisprudencia",
     "sumula_numerada": "jurisprudencia",
     "lei_com_diploma": "lei",
     "dispositivo_legal": "lei",
+    "referencia_legal_vaga": "lei",
     "tribunal_contextual": "jurisprudencia",
-    "jurisprudencia_geral": "jurisprudencia",
+    "decision_tribunal_relator_year": "jurisprudencia",
+    "rcl_relator_year_no_tribunal": "jurisprudencia",
 }
 
 
@@ -94,25 +98,147 @@ class CitationDetectorTests(unittest.TestCase):
                 candidate = next(item for item in self.detector.detect(text) if item.rule == rule)
                 self.assertEqual(candidate.family, family)
 
-    def test_general_jurisprudence_branches_keep_offsets_and_family(self) -> None:
+    def test_v11_legal_detector_captures_complete_bounded_grammar(self) -> None:
         examples = (
-            ("A jurisprudência pacífica desta Corte orienta o caso.", "jurisprudência pacífica desta Corte"),
-            ("Aplica-se a orientação jurisprudencial consolidada.", "orientação jurisprudencial consolidada"),
-            ("Há entendimento sumulado sobre a matéria.", "entendimento sumulado sobre a matéria"),
-            ("Confira os precedentes desta Casa em 2024.", "precedentes desta Casa em 2024"),
-            ("Incide o verbete sumular aplicável.", "verbete sumular aplicável"),
+            "art. 1.134 da Lei nº 13.105/2015",
+            "artigo 1.143 da CLT",
+            "art. 1.105 do CPC",
+            "art. 896, § 1º-A, da CLT",
+            "art. 1º, I, g, da LC nº 64/1990",
+            "art. 5º, LV, da Constituição Federal",
+            "art 312 do Código\nde Processo Penal",
         )
-        for text, expected_text in examples:
-            with self.subTest(expected_text=expected_text):
-                candidates = self.detector.detect(text)
+        for text in examples:
+            with self.subTest(text=text):
+                complete = [item for item in self.detector.detect(text) if item.family == "lei_dispositivo_com_diploma"]
+                self.assertEqual(len(complete), 1)
+                self.assertEqual(complete[0].text, text)
+
+    def test_v11_legal_detector_rejects_unsafe_boundaries(self) -> None:
+        self.assertFalse(any(item.family == "lei_dispositivo_com_diploma" for item in self.detector.detect("art. 312\n\ndo Código de Processo Penal")))
+        self.assertFalse(any(item.family == "lei_dispositivo_com_diploma" for item in self.detector.detect("art. 312 do Código de De")))
+        self.assertEqual(self.detector.detect("Lei nº 13.105/2015"), ())
+        self.assertEqual(self.detector.detect("número 373 do CPC"), ())
+        narrative = "observância do art. 312 do CPP"
+        complete = next(item for item in self.detector.detect(narrative) if item.family == "lei_dispositivo_com_diploma")
+        self.assertEqual(complete.text, "art. 312 do CPP")
+
+    def test_vague_general_jurisprudence_references_are_not_candidates(self) -> None:
+        examples = (
+            "A jurisprudência pacífica desta Corte orienta o caso.",
+            "Aplica-se a orientação jurisprudencial da Corte Superior.",
+            "Há entendimento sumulado sobre a matéria.",
+            "Incide o verbete sumular aplicável à espécie.",
+            "Confira os precedentes desta Casa em situações análogas.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector.detect(text), ())
+
+    def test_v8_h2_detects_only_complete_bounded_structures(self) -> None:
+        examples = (
+            "julgado do STF proferido em 2024 pela relatoria de Maria Silva Pereira",
+            "acórdão do STJ em 2023, Rel. Min. João Silva",
+            "Reclamação do STF de 2025, Rel. Min. Maria Silva",
+            "RHC do STJ em 2022, Rel. Ministro José Pereira",
+            "Agravo em REsp do STJ proferido em 2021, Rel. Ministra Ana Souza",
+            "julgado do STF profcrido em 2024 pela relatoria dc Maria Silva Pereira",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidate = next(item for item in self.detector.detect(text) if item.rule == "decision_tribunal_relator_year")
+                self.assertEqual(candidate.family, "jurisprudencia_tribunal_contextual")
+                self.assertEqual(candidate.text, text)
+
+    def test_v8_h2_rejects_missing_or_nonlocal_signals(self) -> None:
+        examples = (
+            "julgado do STF proferido em 2024",
+            "julgado do STF pela relatoria de Maria Silva Pereira",
+            "julgado proferido em 2024 pela relatoria de Maria Silva Pereira",
+            "O STF em 2024, pela relatoria de Maria Silva Pereira, decidiu a matéria.",
+            "julgado do STF 2024 pela relatoria de Maria Silva Pereira",
+            "julgado do STF em 2024. Pela relatoria de Maria Silva Pereira, decidiu-se.",
+            "julgado do STF em 2024.\n\nPela relatoria de Maria Silva Pereira, decidiu-se.",
+            "A jurisprudência pacífica desta Corte orienta o caso.",
+            "Aplica-se a orientação jurisprudencial da Corte Superior.",
+            "Há entendimento sumulado sobre a matéria.",
+            "Precedente do STJ em 2024, Relator indicado.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "decision_tribunal_relator_year" for item in self.detector.detect(text)))
+
+    def test_v9_h4_rcl_accepts_only_local_class_year_relator_chains(self) -> None:
+        examples = (
+            "Conforme Rcl de 2024, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Na Reclamação em 2025, Rel. Ministra Ana Souza, o tema foi examinado.",
+            "Conforme Rcl de 2031, pela relatoria de Nome Novo de Teste, decidiu-se a questão.",
+            "Em Reclamação de 2022, sob relatoria de João Silva Pereira, decidiu-se a matéria.",
+            "Rcl de 2024, Rel.\nMin. Maria Silva Pereira.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.rule == "rcl_relator_year_no_tribunal"]
                 self.assertEqual(len(candidates), 1)
-                candidate = candidates[0]
-                self.assertEqual(candidate.rule, "jurisprudencia_geral")
-                self.assertEqual(candidate.family, "jurisprudencia_referencia_geral")
-                self.assertEqual(candidate.text, expected_text)
-                self.assertEqual(candidate.start, text.index(expected_text))
-                self.assertEqual(candidate.end, candidate.start + len(expected_text))
-                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+                self.assertEqual(candidates[0].family, "jurisprudencia_tribunal_contextual")
+                self.assertEqual(candidates[0].text, text[candidates[0].start:candidates[0].end])
+                self.assertNotIn(candidates[0].text[-1], ".,;:")
+
+    def test_v9_h4_rcl_rejects_incomplete_broad_and_non_rcl_forms(self) -> None:
+        examples = (
+            "Conforme Rcl de 2024, decidiu-se a questão.",
+            "Conforme Rcl, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Conforme Rcl 2024, Rel. Min. Maria Silva Pereira, decidiu-se a questão.",
+            "Conforme Rcl de 2024. Rel. Min. Maria Silva Pereira decidiu outro tema.",
+            "Conforme Rcl de 2024.\n\nRel. Min. Maria Silva Pereira decidiu outro tema.",
+            "Rcl de 2024, Rel.\n\nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n \nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n\t\nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\n   \nMin. Maria Silva Pereira.",
+            "Rcl de 2024, Rel.\r\n \r\nMin. Maria Silva Pereira.",
+            "APL de 2023, Rel. Min. Maria Silva Pereira.",
+            "RHC de 2024, Rel. Min. Maria Silva Pereira.",
+            "Precedente do STF de 2024, da relatoria de Cármen Lúcia.",
+            "Jurisprudência pacífica desta Corte.",
+            "Orientação jurisprudencial da Corte Superior.",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "rcl_relator_year_no_tribunal" for item in self.detector.detect(text)))
+
+    def test_v9_h4_rcl_preserves_h2_cnj_and_legacy_contextual_candidates(self) -> None:
+        text = (
+            "Rcl de 2024, Rel. Min. Maria Silva Pereira; "
+            "julgado do STF proferido em 2024 pela relatoria de Ana Souza Pereira; "
+            "Autos 1234567-89.2020.1.23.4567; Precedente do STJ em 2024, Relator indicado."
+        )
+        rules = {item.rule for item in self.detector.detect(text)}
+        self.assertTrue({"rcl_relator_year_no_tribunal", "decision_tribunal_relator_year", "cnj", "tribunal_contextual"} <= rules)
+
+    def test_v8_h2_priority_preserves_low_overlap_and_suppresses_dangerous_context(self) -> None:
+        text = "Conforme julgado do STF proferido em 2024 pela relatoria de Maria Silva Pereira."
+        candidates = self.detector.detect(text)
+        h2_candidate = next(item for item in candidates if item.rule == "decision_tribunal_relator_year")
+        contextual = next(item for item in candidates if item.rule == "tribunal_contextual")
+        self.assertLess(span_iou(h2_candidate.start, h2_candidate.end, contextual.start, contextual.end), .5)
+        self.assertIn(contextual, CitationDetector._apply_concrete_incomplete_priority(list(candidates)))
+
+        dangerous = CitationCandidate(
+            h2_candidate.start + 1, h2_candidate.end - 1,
+            text[h2_candidate.start + 1:h2_candidate.end - 1],
+            "tribunal_contextual", "jurisprudencia_tribunal_contextual",
+        )
+        retained = CitationDetector._apply_concrete_incomplete_priority([h2_candidate, dangerous])
+        self.assertEqual(retained, [h2_candidate])
+
+    def test_v8_h2_priority_never_suppresses_other_families(self) -> None:
+        text = (
+            "Autos 1234567-89.2020.1.23.4567; REsp nº 1.597.443; "
+            "art. 5 da Constituição Federal; julgado do STF proferido em 2024 "
+            "pela relatoria de Maria Silva Pereira."
+        )
+        rules = {item.rule for item in self.detector.detect(text)}
+        self.assertTrue({"cnj", "processo_ou_recurso", "lei_com_diploma", "decision_tribunal_relator_year"} <= rules)
 
     def test_general_jurisprudence_does_not_match_isolated_terms(self) -> None:
         text = "A jurisprudência relevante e a orientação adotada foram discutidas."
@@ -157,7 +283,6 @@ class CitationDetectorTests(unittest.TestCase):
                 ("art. 75 da Constituição Federal", "lei_com_diploma", "lei_dispositivo_com_diploma"),
                 ("art. 75", "dispositivo_legal", "lei_dispositivo_sem_diploma"),
                 ("Súmula 331", "sumula_numerada", "sumula_numerada"),
-                ("jurisprudência pacífica", "jurisprudencia_geral", "jurisprudencia_referencia_geral"),
             },
         )
         self.assertFalse(any(item.rule == "processo_ou_recurso" for item in candidates))
@@ -181,11 +306,10 @@ class CitationDetectorTests(unittest.TestCase):
                 self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
                 self.assertEqual(candidate.text, text[candidate.start:candidate.end])
 
-    def test_h1_rejects_narrative_delimiters_and_newline_compound_titles(self) -> None:
+    def test_h1_rejects_narrative_delimiters(self) -> None:
         examples = (
             ("A discussão sobre Agravo genérico antecede o REsp nº 123456.", False),
             ("Agravo em; REsp nº 123456.", False),
-            ("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA", True),
         )
         for text, no_candidate in examples:
             with self.subTest(text=text):
@@ -238,18 +362,200 @@ class CitationDetectorTests(unittest.TestCase):
                 self.assertNotIn("X5", candidate.text)
                 self.assertNotIn("O5", candidate.text)
 
-    def test_h4_cnj_and_h5_compound_title_remain_outside_v4(self) -> None:
-        self.assertEqual(self.detector.detect("AgInt No 7000553-0320217000000"), ())
+    def test_v5_promotes_human_reviewed_residual_structures(self) -> None:
+        examples = (
+            ("Recurso Especial Eleitoral nº 2137-73.2014.6.21.0000", "processo_cnj"),
+            ("Agravo Regimental no Agravo de Instrumento nº 0606252-11.2018.6.26.0000", "processo_cnj"),
+            ("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA", "processo_ou_recurso_numerado"),
+            ("RHC nº\n88.033/RS", "processo_ou_recurso_numerado"),
+            ("AR\nn. 2785 (SP)", "processo_ou_recurso_numerado"),
+            ("RMS Nº  67109-TO", "processo_ou_recurso_numerado"),
+            ("AgInt No 7000553-0320217000000", "processo_ou_recurso_numerado"),
+        )
+        for text, family in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.family == family]
+                self.assertEqual(len(candidates), 1)
+                self.assertEqual(candidates[0].text, text)
+                self.assertEqual(candidates[0].text, text[candidates[0].start:candidates[0].end])
+
+    def test_v5_formal_cnj_prefix_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: prefixo narrativo não atravessa sentença até o CNJ."""
+        text = (
+            "Recurso Especial Eleitoral nº foi mencionado. "
+            "Autos 1234567-89.2020.1.23.4567"
+        )
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        candidate = candidates[0]
+        self.assertEqual(candidate.text, "1234567-89.2020.1.23.4567")
+        self.assertEqual(candidate.family, "processo_cnj")
+        self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+
+    def test_v5_newline_boundary_regression(self) -> None:
+        """BOUNDARY_REGRESSION: RHC não atravessa narrativa após newline."""
+        text = "RHC\nfoi citado no relatório antes do nº 88.033/RS."
+        self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_modifier_direct_number_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: ordinal narrativo não é identificador processual."""
+        text = "AgInt No 12ª sessão da pauta."
+        self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_modifier_cnj_interaction_regression(self) -> None:
+        """PARSER_SCOPE_REGRESSION: CNJ formatado fica somente na família CNJ."""
+        text = "AgInt No 1234567-89.2020.1.23.4567"
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0].family, "processo_cnj")
+        self.assertEqual(candidates[0].text, "1234567-89.2020.1.23.4567")
+
+    def test_v5_compound_title_negative_guard(self) -> None:
+        """NEGATIVE_GUARD: cadeia parcial ou sem número não é título formal."""
+        examples = (
+            "O agravo interno debateu a suspensão de liminar e de sentença, sem número.",
+            "Agravo Interno na Suspensão Liminar nº 12",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector.detect(text), ())
+
+    def test_v5_header_distractor_regression(self) -> None:
+        """HEADER_DISTRACTOR: números administrativos não ativam extensões V5."""
+        text = (
+            "Processo nº 1234567-89.2020.1.23.4567; protocolo 2024; "
+            "OAB 12345; fls. 12; AgInt No 1º da pauta."
+        )
+        candidates = self.detector.detect(text)
+        self.assertEqual(len(candidates), 1)
+        self.assertEqual(candidates[0].family, "processo_cnj")
+        self.assertEqual(candidates[0].text, "1234567-89.2020.1.23.4567")
+
+    def test_v6_degraded_compact_cnj_positive_grammar_and_raw_span(self) -> None:
+        examples = (
+            "REsp 12345678901234567890",
+            "AgInt no REsp 12345678901234567890",
+            "ED no AgR-REsp 12345678901234567890",
+            "Ag. Int. No 12345678901234567890",
+            "REspe. n° 1234567-89.0123-\n.4.56.7890/BA",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                # The M1 grammar accepts all examples. Some already have a
+                # V5 process candidate and are suppressed only at detector
+                # integration, preserving the validated 219 -> 222 delta.
+                candidates = self.detector._detect_degraded_compact_cnj(text)
+                self.assertEqual(len(candidates), 1)
+                candidate = candidates[0]
+                self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
+                self.assertEqual(candidate.text, text[candidate.start:candidate.end])
+                self.assertEqual("".join(char for char in candidate.text if char.isdigit()), "12345678901234567890")
+
+    def test_v6_suppresses_only_overlapping_existing_v5_candidates(self) -> None:
+        text = "REsp 12345678901234567890"
+        candidates = self.detector.detect(text)
+        self.assertTrue(any(item.rule == "processo_ou_recurso" for item in candidates))
+        self.assertFalse(any(item.rule == "degraded_compact_cnj" for item in candidates))
+
+        unique = self.detector.detect("Ag. Int. No 12345678901234567890")
+        self.assertEqual([item.rule for item in unique], ["degraded_compact_cnj"])
+
+    def test_v6_degraded_compact_cnj_rejects_administrative_chains(self) -> None:
+        examples = (
+            "REsp OAB/SP 12345678901234567890",
+            "REsp OAB 12345678901234567890",
+            "AgInt OAB/SP 12345678901234567890",
+            "REsp CPF 12345678901234567890",
+            "REsp CNPJ 12345678901234567890",
+            "REsp protocolo 12345678901234567890",
+            "Processo nº 1234567-89.2020.1.02.3456\nprotocolo 12345\nOAB/SP 999999\nREsp OAB/SP 12345678901234567890",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "degraded_compact_cnj" for item in self.detector.detect(text)))
+
+    def test_v6_degraded_compact_cnj_enforces_closed_identity_boundaries(self) -> None:
+        examples = (
+            "REsp 1234567890123456789",
+            "REsp 123456789012345678901",
+            "REsp 1234567890g123456789",
+            "REsp 1234567-89.0123-\n\n4.56.7890",
+            "REsp 1234567-89.0123 texto 4.56.7890",
+            "REsp " + ("narrativa " * 12) + "12345678901234567890",
+            "REsp. 12345678901234567890",
+            "REsp! 12345678901234567890",
+            "APL 12345678901234567890",
+            "RSE 12345678901234567890",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertFalse(any(item.rule == "degraded_compact_cnj" for item in self.detector.detect(text)))
+
+    def test_v7_detects_only_approved_complete_compound_chains(self) -> None:
+        examples = (
+            "ED-E-ED-RR-65-63.2010.5.01.0075",
+            "TST-E-RR-173000-49.2008.5.15.0024",
+            "TST-ED-E-ED-RR-3400-05.2011.5.21.0009",
+            "E-ED-RR-41200-79.2011.5.21.0005",
+            "ED-E-ED-RR-160000-97.2010.5.21.0006",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                candidates = [item for item in self.detector.detect(text) if item.rule == "compound_procedural_chain"]
+                self.assertEqual(len(candidates), 1)
+                candidate = candidates[0]
+                self.assertEqual(candidate.text, text)
+                self.assertEqual((candidate.start, candidate.end), (0, len(text)))
+                self.assertEqual(candidate.family, "processo_ou_recurso_numerado")
+
+    def test_v7_rejects_partial_and_arbitrary_compound_chains(self) -> None:
+        examples = (
+            "TST-E-RR-173000-49.2008",
+            "TST-ED-E-ED-ARR-1099-66.2011.5.02.",
+            "ED-E-ED-RR-65-63.2010.5.01",
+            "ABC-E-RR-173000-49.2008.5.15.0024",
+            "ED-XYZ-RR-173000-49.2008.5.15.0024",
+            "ED-E-FOO-173000-49.2008.5.15.0024",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector._detect_compound_procedural_chain(text), [])
+                self.assertFalse(any(item.rule == "compound_procedural_chain" for item in self.detector.detect(text)))
+
+    def test_v7_enforces_boundaries_separator_and_repetition(self) -> None:
+        examples = (
+            "E-65-63.2010.5.01.0075",
+            "ED-TST-RR-65-63.2010.5.01.0075",
+            "ED - RR - 65-63.2010.5.01.0075",
+            "ED-ED-ED-RR-65-63.2010.5.01.0075",
+            "ED-E-ED-RR-E-RR-65-63.2010.5.01.0075",
+        )
+        for text in examples:
+            with self.subTest(text=text):
+                self.assertEqual(self.detector._detect_compound_procedural_chain(text), [])
+
+    def test_v7_accepts_one_to_seven_digit_prefixes_only(self) -> None:
+        for digits in range(1, 8):
+            with self.subTest(digits=digits):
+                text = f"ED-RR-{'1' * digits}-23.2020.5.01.0001"
+                self.assertEqual(len(self.detector._detect_compound_procedural_chain(text)), 1)
         self.assertEqual(
-            self.detector.detect("Agravo Interno na Suspensão\nde Liminar e de Sentença nº 2.883/MA"),
-            (),
+            self.detector._detect_compound_procedural_chain("ED-RR-12345678-23.2020.5.01.0001"),
+            [],
         )
 
+    def test_v7_span_excludes_narrative_and_trailing_punctuation(self) -> None:
+        chain = "ED-E-ED-RR-65-63.2010.5.01.0075"
+        text = f"Conforme {chain}, precedente aplicável."
+        candidate = self.detector._detect_compound_procedural_chain(text)[0]
+        self.assertEqual(candidate.text, chain)
+        self.assertEqual((candidate.start, candidate.end), (text.index(chain), text.index(chain) + len(chain)))
 
-class CitationDetectorV4Tests(unittest.TestCase):
+
+class CitationDetectorV9Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_excel(DATASET_DIR / "goldenset.xlsx", sheet_name="goldenset", engine="openpyxl").reset_index(names="gold_idx")
+        gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
         gold["nivel"] = "N" + gold["nivel"].astype(str).str.removeprefix("N")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in sorted((DATASET_DIR / "txt").glob("*.txt"))}
         detector = CitationDetector()
@@ -263,49 +569,53 @@ class CitationDetectorV4Tests(unittest.TestCase):
         cls.predictions["nivel"] = cls.predictions["documento_id"].map(gold.drop_duplicates("documento_id").set_index("documento_id")["nivel"])
         cls.matches = greedy_match(gold, cls.predictions)
 
-    def test_v4_candidate_count_offsets_and_exact_matches(self) -> None:
-        self.assertEqual(len(self.predictions), 211)
-        self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 127)
-        self.assertEqual(int(self.matches["exact"].sum()), 73)
+    def test_v7_compound_candidates_are_bounded_and_all_match_gold(self) -> None:
+        compound = self.predictions.loc[self.predictions["rule"].eq("compound_procedural_chain")]
+        compound_matches = self.matches.loc[self.matches["pred_idx"].isin(compound["pred_idx"])]
+        self.assertEqual(len(compound), 6)
+        self.assertEqual(len(compound_matches), 6)
+        self.assertEqual(set(compound["family"]), {"processo_ou_recurso_numerado"})
 
-    def test_v4_metrics_by_level_and_type(self) -> None:
+    def test_v11_candidate_count_offsets_and_exact_matches(self) -> None:
+        self.assertEqual(len(self.predictions), 252)
+        self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
+        self.assertEqual(len(self.matches), 174)
+        self.assertEqual(int(self.matches["exact"].sum()), 133)
+
+    def test_v9_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (127, 84, 98)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (76, 42, 40)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (51, 42, 58)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (111, 57, 75)),
-            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (16, 27, 23)),
+            "global": (self.gold, self.predictions, (174, 78, 21)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (99, 38, 2)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (75, 40, 19)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (144, 50, 21)),
+            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (30, 28, 0)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
             with self.subTest(group=name):
                 self.assertEqual(metrics(gold, predictions, self.matches), expected_metrics)
 
-    def test_non_process_candidates_and_validated_candidates_are_preserved(self) -> None:
-        v1_predictions = self.predictions.loc[~self.predictions["rule"].eq("jurisprudencia_geral")].copy()
-        v1_matches = greedy_match(self.gold, v1_predictions)
-        new_predictions = self.predictions.loc[self.predictions["rule"].eq("jurisprudencia_geral")]
-        new_matches = self.matches.loc[self.matches["pred_idx"].isin(new_predictions["pred_idx"])]
-
-        self.assertEqual(len(v1_predictions), 199)
+    def test_non_process_candidates_are_preserved_without_general_references(self) -> None:
+        self.assertEqual(len(self.predictions), 252)
         self.assertEqual(
-            v1_predictions.groupby("rule").size().to_dict(),
+            self.predictions.groupby("rule").size().to_dict(),
             {
-                "cnj": 51,
+                "cnj": 46,
+                "compound_procedural_chain": 6,
+                "decision_tribunal_relator_year": 27,
+                "degraded_compact_cnj": 3,
                 "dispositivo_legal": 28,
-                "lei_com_diploma": 15,
-                "processo_ou_recurso": 66,
+                "lei_com_diploma": 28,
+                "processo_ou_recurso": 74,
+                "rcl_relator_year_no_tribunal": 4,
+                "referencia_legal_vaga": 2,
                 "sumula_numerada": 10,
-                "tribunal_contextual": 29,
+                "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, v1_predictions, v1_matches), (115, 84, 110))
-        self.assertEqual(int(v1_matches["exact"].sum()), 67)
-        self.assertEqual(len(new_predictions), 12)
-        self.assertEqual(len(new_matches), 12)
-        self.assertTrue(set(v1_matches["gold_idx"]).issubset(set(self.matches["gold_idx"])))
-        self.assertEqual(set(new_predictions["pred_idx"]), set(new_matches["pred_idx"]))
-        self.assertTrue(new_predictions["family"].eq("jurisprudencia_referencia_geral").all())
+        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (174, 78, 21))
+        self.assertEqual(int(self.matches["exact"].sum()), 133)
+        self.assertFalse(self.predictions["rule"].eq("jurisprudencia_geral").any())
+        self.assertFalse(self.predictions["family"].eq("jurisprudencia_referencia_geral").any())
 
 
 if __name__ == "__main__":
