@@ -26,8 +26,8 @@ ser chamado de outro diretório. Os caminhos podem conter espaços.
 
 ## Requisitos locais
 
-- Python 3.11 ou superior;
-- SQLite compatível com a tabela `documentos`;
+- Python 3.11 ou superior.
+- SQLite compatível com a tabela `documentos`.
 - permissão de leitura para o SQLite e os TXT, e de escrita para o CSV.
 
 Para executar fora de Docker:
@@ -65,7 +65,7 @@ inicio,fim,classificacao,id_canonico,confianca
 ```
 
 `classificacao` pode ser `real`, `inventada` ou `incompleta`. Uma citação
-`real` inclui o identificador canônico; nas demais, o campo é `-`. A confiança
+`real` inclui o identificador canônico. Nas demais, o campo é `-`. A confiança
 emitida atualmente é `0.8500`.
 
 ## Conferência rápida

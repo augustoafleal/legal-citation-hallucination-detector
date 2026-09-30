@@ -104,7 +104,7 @@ permanece ordenada por posição no texto.
 `build_submission_record` aplica a confiança global `0.85` aos resultados finais.
 `write_submission_csv` ordena os documentos e escreve somente as colunas
 `documento_id,citacoes`. O CSV representa spans nos offsets Unicode do TXT
-original; `fim` é exclusivo.
+original. `fim` é exclusivo.
 
 ## Propriedades operacionais
 
