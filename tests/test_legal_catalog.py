@@ -1,54 +1,64 @@
 from __future__ import annotations
 
-from hashlib import sha256
-import inspect
+import sqlite3
 from pathlib import Path
 import unittest
 
-from bracis_jusbrasil.citations import (
-    CANONICAL_DATABASE_SHA256,
-    COVERED_DIPLOMA_NAMESPACES,
-    DEFAULT_LEGAL_CATALOG,
-    LEGAL_CATALOG_ENTRIES,
-    SOURCE_PROVENANCE_HASHES,
-)
-from bracis_jusbrasil.citations.legal_catalog import normalize_diploma_alias
+from bracis_jusbrasil.citations import CitationCandidate, CitationDetector, CitationParser, CitationResolver
+from bracis_jusbrasil.citations.legal_catalog import LegalCanonicalCatalog, normalize_diploma_alias
+from bracis_jusbrasil.cases import build_case_index
+from bracis_jusbrasil.database import connect_database, get_database_path
 
 
 class LegalCanonicalCatalogTests(unittest.TestCase):
-    def test_catalog_is_exactly_the_closed_13_entry_inventory(self) -> None:
-        self.assertEqual(len(LEGAL_CATALOG_ENTRIES), 13)
-        self.assertEqual(len(DEFAULT_LEGAL_CATALOG.entries), 13)
-        keys = {(entry.normalized_article, entry.normalized_diploma) for entry in LEGAL_CATALOG_ENTRIES}
-        ids = {entry.id_canonico for entry in LEGAL_CATALOG_ENTRIES}
-        self.assertEqual(len(keys), 13)
-        self.assertEqual(len(ids), 13)
-        self.assertTrue(all(all(key) for key in keys))
+    def synthetic_connection(self, rows: list[tuple[int, str]]) -> sqlite3.Connection:
+        connection = sqlite3.connect(":memory:")
+        connection.row_factory = sqlite3.Row
+        connection.execute(
+            "CREATE TABLE documentos (id INTEGER, documento_id TEXT, natureza TEXT, tribunal TEXT, ano TEXT, relator TEXT, texto TEXT)"
+        )
+        connection.executemany(
+            "INSERT INTO documentos VALUES (?, ?, 'dispositivo', NULL, NULL, NULL, ?)",
+            [(identifier, f"d-{identifier}", text) for identifier, text in rows],
+        )
+        return connection
 
-    def test_catalog_is_bound_to_frozen_sqlite_hash(self) -> None:
-        database = Path("material_desafio_jusbrasil_bracis/desafio1_bracis.db")
-        self.assertEqual(sha256(database.read_bytes()).hexdigest(), CANONICAL_DATABASE_SHA256)
+    def test_public_database_derives_the_13_observed_entries(self) -> None:
+        with connect_database(get_database_path(), read_only=True) as connection:
+            catalog = LegalCanonicalCatalog.from_database(connection)
+        self.assertEqual(len(catalog.entries), 13)
+        self.assertEqual(catalog.lookup("290", "CPM"), (10590194,))
+        self.assertEqual(catalog.lookup("290", "CF"), ())
+        self.assertEqual(catalog.lookup("290", ""), ())
+        self.assertIn("CPC", catalog.covered_namespaces)
 
-    def test_every_entry_has_auditable_source_metadata(self) -> None:
-        self.assertTrue(all(entry.source_provenance_hash for entry in LEGAL_CATALOG_ENTRIES))
-        self.assertTrue(all(len(value) == 64 for value in SOURCE_PROVENANCE_HASHES.values()))
-        self.assertTrue({entry.normalized_diploma for entry in LEGAL_CATALOG_ENTRIES} <= set(SOURCE_PROVENANCE_HASHES))
-        self.assertEqual(DEFAULT_LEGAL_CATALOG.covered_namespaces, COVERED_DIPLOMA_NAMESPACES)
+    def test_synthetic_database_uses_its_own_ids(self) -> None:
+        connection = self.synthetic_connection([(901, "Artigo 373 da Lei nº 13.105, de 16 de março de 2015")])
+        self.addCleanup(connection.close)
+        catalog = LegalCanonicalCatalog.from_database(connection)
+        self.assertEqual(catalog.lookup("373", "CPC"), (901,))
 
-    def test_lookup_requires_article_and_diploma(self) -> None:
-        self.assertEqual(set(inspect.signature(DEFAULT_LEGAL_CATALOG.lookup).parameters), {"normalized_article", "normalized_diploma"})
-        self.assertEqual(DEFAULT_LEGAL_CATALOG.lookup("290", "CPM"), (10590194,))
-        self.assertEqual(DEFAULT_LEGAL_CATALOG.lookup("290", "CF"), ())
-        self.assertEqual(DEFAULT_LEGAL_CATALOG.lookup("290", ""), ())
+    def test_duplicate_key_is_preserved_as_ambiguous(self) -> None:
+        connection = self.synthetic_connection([
+            (901, "Artigo 373 da Lei nº 13.105, de 16 de março de 2015"),
+            (902, "Artigo 373 da Lei nº 13.105, de 16 de março de 2015"),
+        ])
+        self.addCleanup(connection.close)
+        catalog = LegalCanonicalCatalog.from_database(connection)
+        self.assertEqual(catalog.lookup("373", "CPC"), (901, 902))
+        resolver = CitationResolver(case_index=build_case_index(connection), connection=connection, legal_catalog=catalog)
+        candidate = next(item for item in CitationDetector().detect("art. 373 do CPC") if item.family == "lei_dispositivo_com_diploma")
+        result = resolver.resolve(CitationParser().parse(candidate))
+        self.assertEqual((result.status, result.reason), ("ambiguous", "legal_catalog_key_ambiguous"))
+
+    def test_uncertain_header_is_not_covered_or_resolved(self) -> None:
+        connection = self.synthetic_connection([(901, "Artigo 10 de uma norma sem identidade")])
+        self.addCleanup(connection.close)
+        catalog = LegalCanonicalCatalog.from_database(connection)
+        self.assertEqual(catalog.entries, ())
+        self.assertFalse(catalog.is_covered_namespace("LEI:12345:2020"))
 
     def test_safe_and_guarded_alias_contract(self) -> None:
-        for entry in LEGAL_CATALOG_ENTRIES:
-            for alias in entry.accepted_aliases:
-                with self.subTest(alias=alias):
-                    self.assertEqual(
-                        normalize_diploma_alias(alias, strong_legal_context=True).normalized,
-                        entry.normalized_diploma,
-                    )
         self.assertEqual(normalize_diploma_alias("Lei n. 13.105/2015", strong_legal_context=True).normalized, "CPC")
         self.assertEqual(normalize_diploma_alias("Lei nº 4.737/1965", strong_legal_context=True).normalized, "CE")
         self.assertEqual(normalize_diploma_alias("CF/88", strong_legal_context=True).normalized, "CF")

@@ -176,7 +176,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         # promove somente identidades artigo+diploma verificáveis.
         self.assertEqual(counts, {
             ("real", "resolved"): 78, ("real", "no_match"): 3, ("real", "insufficient"): 15,
-            ("inventada", "no_match"): 54, ("inventada", "insufficient"): 10,
+            ("inventada", "no_match"): 51, ("inventada", "insufficient"): 13,
             ("incompleta", "insufficient"): 32,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
@@ -187,7 +187,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 164)
+        self.assertEqual(classified, 161)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []

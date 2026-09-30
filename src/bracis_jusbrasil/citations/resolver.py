@@ -12,7 +12,7 @@ from typing import Literal, Mapping
 from ..cases import CaseIndex
 from ..cases.parser import parse_case_identity
 from ..normalization import normalize_tribunal
-from .legal_catalog import DEFAULT_LEGAL_CATALOG, LegalCanonicalCatalog
+from .legal_catalog import LegalCanonicalCatalog
 from .parser import ParsedCitation
 
 
@@ -74,10 +74,10 @@ class CitationResolver:
         *,
         case_index: CaseIndex,
         connection: sqlite3.Connection,
-        legal_catalog: LegalCanonicalCatalog = DEFAULT_LEGAL_CATALOG,
+        legal_catalog: LegalCanonicalCatalog | None = None,
     ) -> None:
         self._case_index = case_index
-        self._legal_catalog = legal_catalog
+        self._legal_catalog = legal_catalog or LegalCanonicalCatalog.from_database(connection)
         self._primary_identities = MappingProxyType(self._build_primary_identities(connection))
         sumula_ids, sumula_ids_by_number = self._build_sumula_mappings(connection)
         self._sumula_ids = MappingProxyType(sumula_ids)
@@ -90,7 +90,7 @@ class CitationResolver:
 
     @property
     def legal_catalog(self) -> LegalCanonicalCatalog:
-        """Catálogo fechado usado apenas pela estratégia artigo+diploma."""
+        """Catálogo do SQLite recebido usado pela estratégia artigo+diploma."""
         return self._legal_catalog
 
     @staticmethod

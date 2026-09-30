@@ -11,6 +11,7 @@ import unittest
 import pandas as pd
 
 from bracis_jusbrasil.submission import DEFAULT_SUBMISSION_CONFIDENCE, build_submission_record
+from bracis_jusbrasil.submission_csv import write_submission_csv
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,7 +78,7 @@ class SubmissionTests(unittest.TestCase):
         cls.generator = load_module("generate_submission_test", ROOT / "scripts" / "generate_submission.py")
         cls.metric = load_module("submission_metric_test", DATA / "kaggle_metric.py")
         cls.gold = gold_rows()
-        cls.texts, cls.raw, cls.outputs = cls.generator.run_pipeline()
+        cls.texts, cls.raw, cls.outputs = cls.generator.run_pipeline(DATA / "desafio1_bracis.db", DATA / "txt")
         cls.temporary = TemporaryDirectory(prefix="submission-test-")
         cls.csv_path = Path(cls.temporary.name) / "submission.csv"
         cls.generator.write_submission(cls.csv_path, cls.texts, cls.outputs)
@@ -120,6 +121,18 @@ class SubmissionTests(unittest.TestCase):
     def test_empty_document_record_is_valid(self) -> None:
         self.assertEqual(build_submission_record("empty", ()), {"documento_id": "empty", "citacoes": []})
 
+    def test_internal_converter_uses_official_confidence_precision(self) -> None:
+        with TemporaryDirectory(prefix="csv-contract-") as temporary:
+            destination = Path(temporary) / "submission.csv"
+            write_submission_csv(destination, [{
+                "documento_id": "document",
+                "citacoes": [{
+                    "inicio": 1, "fim": 2, "classificacao": "real",
+                    "resolucao": {"id_canonico": 9}, "confianca": 0.85,
+                }],
+            }])
+            self.assertEqual(destination.read_text(encoding="utf-8"), "documento_id,citacoes\ndocument,\"1,2,real,9,0.8500\"\n")
+
     def test_csv_and_official_score(self) -> None:
         self.assertEqual(len(self.csv), 26)
         parsed = [
@@ -138,9 +151,12 @@ class SubmissionTests(unittest.TestCase):
             for row in structural_csv.itertuples(index=False)
         ]
         structural_score = self.metric.score(solution(self.gold), structural_csv, "documento_id")
-        self.assertLess(abs(structural_score - 0.8639926616637975), 1e-12)
+        # A Lei 9.504 namespace is no longer covered unless observed in the
+        # input DB, so conservative runtime behavior changes this public-only
+        # checkpoint without retaining public IDs as a fallback.
+        self.assertLess(abs(structural_score - 0.8312336481425335), 1e-12)
         score = self.metric.score(solution(self.gold), self.csv, "documento_id")
-        self.assertLess(abs(score - 0.9469602014515148), 1e-12)
+        self.assertLess(abs(score - 0.9096014462275214), 1e-12)
 
     def test_v11_legal_resolution_preserves_v10_nonlegal_checkpoints(self) -> None:
         self.assertEqual(len(self.raw), 252)
