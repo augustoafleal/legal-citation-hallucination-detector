@@ -32,10 +32,10 @@ class CaseIndexTests(unittest.TestCase):
         self.assertEqual(
             self.index.stats,
             {
-                "records_total": 998,
+                "records_total": 996,
                 "case_keys": 912,
-                "single_id_cases": 833,
-                "multi_id_cases": 79,
+                "single_id_cases": 835,
+                "multi_id_cases": 77,
                 "max_ids_per_case": 4,
             },
         )
@@ -156,6 +156,6 @@ class CaseIndexTests(unittest.TestCase):
     def test_build_is_read_only(self) -> None:
         with connect_database(get_database_path(), read_only=True) as connection:
             index = CaseIndex.from_database(connection)
-            self.assertEqual(index.stats["records_total"], 998)
+            self.assertEqual(index.stats["records_total"], 996)
             with self.assertRaises(sqlite3.OperationalError):
                 connection.execute("CREATE TABLE case_index_must_not_write (id INTEGER)")

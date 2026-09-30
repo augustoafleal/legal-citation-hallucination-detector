@@ -13,6 +13,10 @@ from bracis_jusbrasil.database import connect_database, get_database_path
 
 
 DATASET_DIR = Path("material_desafio_jusbrasil_bracis")
+GOLD_PATH = next(
+    path for path in (DATASET_DIR / "goldenset_offsets.csv", DATASET_DIR / "goldenset.csv")
+    if path.is_file()
+)
 CNJ_PATTERN = re.compile(r"\b\d{3,7}\s*-\s*\d{2}\s*[.]\s*\d{4}\s*[.]\s*\d\s*[.]\s*\d{2}\s*[.]\s*\d{4}\b")
 SUMULA_PATTERN = re.compile(r"\bS[ÚU]MULA(?:\s+VINCULANTE)?\s*(?:N[ºO.]?\s*)?\d+", re.IGNORECASE)
 ARTICLE_PATTERN = re.compile(r"\b(?:art(?:igo)?s?[.]?\s*)\d+", re.IGNORECASE)
@@ -150,7 +154,7 @@ class CitationResolverUnitTests(unittest.TestCase):
 class CitationResolverOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
+        gold = pd.read_csv(GOLD_PATH)
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         with connect_database(get_database_path(), read_only=True) as connection:
             cls.resolver = CitationResolver(case_index=build_case_index(connection), connection=connection)
@@ -171,9 +175,9 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
         # Resolver V11: CNJ/classe primária são preservados e a frente legal
         # promove somente identidades artigo+diploma verificáveis.
         self.assertEqual(counts, {
-            ("real", "resolved"): 76, ("real", "no_match"): 3, ("real", "ambiguous"): 2, ("real", "insufficient"): 15,
+            ("real", "resolved"): 78, ("real", "no_match"): 3, ("real", "insufficient"): 15,
             ("inventada", "no_match"): 54, ("inventada", "insufficient"): 10,
-            ("incompleta", "insufficient"): 35,
+            ("incompleta", "insufficient"): 32,
         })
         self.assertEqual(sum(row["result"].status == "resolved" and row["result"].id_canonico != row["gold_id"] for row in resolved_rows if row["gold"] == "real"), 0)
         self.assertEqual(sum(row["result"].status == "resolved" for row in resolved_rows if row["gold"] != "real"), 0)
@@ -183,7 +187,7 @@ class CitationResolverOracleIntegrationTests(unittest.TestCase):
             or (row["gold"] == "incompleta" and row["result"].status in {"ambiguous", "insufficient"})
             for row in resolved_rows
         )
-        self.assertEqual(classified, 165)
+        self.assertEqual(classified, 164)
 
     def test_oracle_resolution_is_deterministic(self) -> None:
         snapshots = []

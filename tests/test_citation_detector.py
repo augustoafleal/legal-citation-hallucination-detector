@@ -9,6 +9,10 @@ from bracis_jusbrasil.citations import CitationCandidate, CitationDetector
 
 
 DATASET_DIR = Path("material_desafio_jusbrasil_bracis")
+GOLD_PATH = next(
+    path for path in (DATASET_DIR / "goldenset_offsets.csv", DATASET_DIR / "goldenset.csv")
+    if path.is_file()
+)
 RULE_TYPES = {
     "cnj": "jurisprudencia",
     "processo_ou_recurso": "jurisprudencia",
@@ -555,7 +559,7 @@ class CitationDetectorTests(unittest.TestCase):
 class CitationDetectorV9Tests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_csv(DATASET_DIR / "goldenset.csv").reset_index(names="gold_idx")
+        gold = pd.read_csv(GOLD_PATH).reset_index(names="gold_idx")
         gold["nivel"] = "N" + gold["nivel"].astype(str).str.removeprefix("N")
         texts = {path.stem: path.read_text(encoding="utf-8") for path in sorted((DATASET_DIR / "txt").glob("*.txt"))}
         detector = CitationDetector()
@@ -579,16 +583,16 @@ class CitationDetectorV9Tests(unittest.TestCase):
     def test_v11_candidate_count_offsets_and_exact_matches(self) -> None:
         self.assertEqual(len(self.predictions), 252)
         self.assertTrue((self.predictions["text"] == self.predictions.apply(lambda row: (DATASET_DIR / "txt" / f"{row.documento_id}.txt").read_text(encoding="utf-8")[row.start:row.end], axis=1)).all())
-        self.assertEqual(len(self.matches), 174)
-        self.assertEqual(int(self.matches["exact"].sum()), 133)
+        self.assertEqual(len(self.matches), 172)
+        self.assertEqual(int(self.matches["exact"].sum()), 131)
 
     def test_v9_metrics_by_level_and_type(self) -> None:
         expected = {
-            "global": (self.gold, self.predictions, (174, 78, 21)),
-            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (99, 38, 2)),
-            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (75, 40, 19)),
-            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (144, 50, 21)),
-            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (30, 28, 0)),
+            "global": (self.gold, self.predictions, (172, 80, 20)),
+            "N1": (self.gold[self.gold["nivel"].eq("N1")], self.predictions[self.predictions["nivel"].eq("N1")], (98, 39, 1)),
+            "N2": (self.gold[self.gold["nivel"].eq("N2")], self.predictions[self.predictions["nivel"].eq("N2")], (74, 41, 19)),
+            "jurisprudencia": (self.gold[self.gold["tipo"].eq("jurisprudencia")], self.predictions[self.predictions["tipo"].eq("jurisprudencia")], (144, 50, 20)),
+            "lei": (self.gold[self.gold["tipo"].eq("lei")], self.predictions[self.predictions["tipo"].eq("lei")], (28, 30, 0)),
         }
         for name, (gold, predictions, expected_metrics) in expected.items():
             with self.subTest(group=name):
@@ -612,8 +616,8 @@ class CitationDetectorV9Tests(unittest.TestCase):
                 "tribunal_contextual": 24,
             },
         )
-        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (174, 78, 21))
-        self.assertEqual(int(self.matches["exact"].sum()), 133)
+        self.assertEqual(metrics(self.gold, self.predictions, self.matches), (172, 80, 20))
+        self.assertEqual(int(self.matches["exact"].sum()), 131)
         self.assertFalse(self.predictions["rule"].eq("jurisprudencia_geral").any())
         self.assertFalse(self.predictions["family"].eq("jurisprudencia_referencia_geral").any())
 

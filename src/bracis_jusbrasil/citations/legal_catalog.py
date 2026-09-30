@@ -14,7 +14,7 @@ from typing import Mapping
 import unicodedata
 
 
-CANONICAL_DATABASE_SHA256 = "d759681be82ee00f383b49a5c76c42dd475564e042272e00730252468dcb6e71"
+CANONICAL_DATABASE_SHA256 = "78f0708b0a21c11655dfdd882382fea75c62a75415d8d3b118888c0a340bef4c"
 
 SOURCE_PROVENANCE_HASHES: Mapping[str, str] = MappingProxyType(
     {

@@ -12,7 +12,7 @@ class DatabaseTests(unittest.TestCase):
         with connect_database(get_database_path()) as connection:
             row = connection.execute("SELECT COUNT(*) AS total FROM documentos").fetchone()
             self.assertIsInstance(row, sqlite3.Row)
-            self.assertEqual(row["total"], 1016)
+            self.assertEqual(row["total"], 1014)
             with self.assertRaises(sqlite3.OperationalError):
                 connection.execute("CREATE TABLE bootstrap_must_not_write (id INTEGER)")
 

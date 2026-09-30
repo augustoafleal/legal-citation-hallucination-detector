@@ -10,6 +10,10 @@ from bracis_jusbrasil.citations import CitationCandidate, CitationParser, Parsed
 
 
 DATASET_DIR = Path("material_desafio_jusbrasil_bracis")
+GOLD_PATH = next(
+    path for path in (DATASET_DIR / "goldenset_offsets.csv", DATASET_DIR / "goldenset.csv")
+    if path.is_file()
+)
 CNJ_PATTERN = re.compile(r"\b\d{3,7}\s*-\s*\d{2}\s*[.]\s*\d{4}\s*[.]\s*\d\s*[.]\s*\d{2}\s*[.]\s*\d{4}\b")
 SUMULA_PATTERN = re.compile(r"\bS[ÚU]MULA(?:\s+VINCULANTE)?\s*(?:N[ºO.]?\s*)?\d+", re.IGNORECASE)
 ARTICLE_PATTERN = re.compile(r"\b(?:art(?:igo)?s?[.]?\s*)\d+", re.IGNORECASE)
@@ -240,7 +244,7 @@ class CitationParserUnitTests(unittest.TestCase):
 class CitationParserOracleIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        gold = pd.read_csv(DATASET_DIR / "goldenset.csv")
+        gold = pd.read_csv(GOLD_PATH)
         texts = {path.stem: path.read_text(encoding="utf-8") for path in (DATASET_DIR / "txt").glob("*.txt")}
         parser = CitationParser()
         cls.rows = []
@@ -256,11 +260,10 @@ class CitationParserOracleIntegrationTests(unittest.TestCase):
             counts[row["family"]] = counts.get(row["family"], 0) + 1
         self.assertEqual(counts, {
             "processo_ou_recurso_numerado": 85,
-            "jurisprudencia_referencia_geral": 25,
+            "jurisprudencia_referencia_geral": 24,
             "lei_dispositivo_com_diploma": 27,
             "processo_cnj": 25,
             "jurisprudencia_tribunal_contextual": 20,
-            "lei_referencia_geral": 2,
             "sumula_numerada": 10,
             "lei_dispositivo_sem_diploma": 1,
         })
