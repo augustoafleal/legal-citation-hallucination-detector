@@ -1,17 +1,17 @@
-# BRACIS 2026 × Jusbrasil — Caça-Alucinações
+# BRACIS 2026 × Jusbrasil - Caça-Alucinações
 
 Solução determinística e offline para classificar citações jurídicas em textos.
 Ela recebe um banco SQLite e uma pasta de documentos TXT, produzindo o CSV de
-submissão. O banco é aberto em modo somente leitura; GPU, rede, APIs e modelos
+submissão. O banco é aberto em modo somente leitura. GPU, rede, APIs e modelos
 externos não são necessários.
 
-Repositório público: [legal-citation-hallucination-detector](https://github.com/augustoafleal/legal-citation-hallucination-detector).
+Documentação: [arquitetura e guia de execução](https://augustoafleal.github.io/legal-citation-hallucination-detector/architecture/).
 
 ## Requisitos
 
 - Python 3.11 ou superior para execução local
 - Docker opcional para execução isolada
-- CPU suficiente; não há requisito de GPU
+- CPU suficiente. Não há requisito de GPU
 
 ## Execução
 
@@ -52,7 +52,7 @@ bash run.sh /data/desafio.db /data/txt /data/submission.csv
 ## Formato de entrada
 
 `<caminho_db>` deve ser um arquivo SQLite compatível com a tabela `documentos`.
-`<pasta_txt>` deve conter arquivos `*.txt`; cada `path.stem` se torna o campo
+`<pasta_txt>` deve conter arquivos `*.txt`. Cada `path.stem` se torna o campo
 `documento_id`. Todos os TXT encontrados recebem uma linha na saída.
 
 ## Formato de saída
@@ -76,7 +76,7 @@ git rev-parse HEAD
 ## Problemas comuns
 
 - **Uso incorreto:** informe exatamente DB, pasta TXT e arquivo CSV.
-- **DB ou pasta ausente:** confira os caminhos informados; o comando encerra com
+- **DB ou pasta ausente:** confira os caminhos informados. O comando encerra com
   erro e não produz uma saída parcial.
 - **Permissão de escrita:** escolha um `arquivo_saida` cujo diretório possa ser
   criado ou escrito pelo usuário atual.
