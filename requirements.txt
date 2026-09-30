@@ -4,3 +4,4 @@ ipykernel
 pandas
 matplotlib
 openpyxl
+mkdocs-material

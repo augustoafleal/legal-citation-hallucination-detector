@@ -1,5 +1,7 @@
-site_name: Desafio Jusbrasil — BRACIS 2026
-site_description: Materiais e guia inicial do desafio Dados do Caça-Alucinações.
+site_name: Legal Citation Hallucination Detector
+site_description: Solução offline para o desafio Jusbrasil na BRACIS 2026.
+repo_url: https://github.com/augustoafleal/legal-citation-hallucination-detector
+repo_name: augustoafleal/legal-citation-hallucination-detector
 
 theme:
   name: material
