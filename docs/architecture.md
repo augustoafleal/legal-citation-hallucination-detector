@@ -39,14 +39,14 @@ flowchart LR
 
 ## Domínio `cases`
 
-O `CaseIndex` cobre somente os 998 acórdãos do SQLite. O parser estrutural
-por tribunal passa pela normalização e forma 912 feitos: 833 single-ID e 79
-multi-ID. Todos os IDs de um mesmo feito são preservados; nenhum é escolhido
-arbitrariamente. Súmulas e dispositivos ainda não fazem parte do índice.
+O `CaseIndex` cobre somente os 996 acórdãos do SQLite final. O parser estrutural
+por tribunal forma 912 feitos: 835 single-ID e 77 multi-ID. Todos os IDs de um
+mesmo feito são preservados; nenhum é escolhido arbitrariamente. Súmulas e
+dispositivos ainda não fazem parte do índice.
 
-A revisão oficial de 28/08/2026 contém 1.016 registros no total, incluindo 13
-dispositivos e 5 súmulas. Os acórdãos removidos nessa revisão eram duplicatas
-exatas: `doc_0227` e `doc_0461`.
+A atualização pública final contém 1.014 registros: 996 acórdãos, 5 súmulas e
+13 dispositivos. Ela removeu `doc_0657` e `doc_0662`, e atualizou textos de
+18 registros legais (13 dispositivos e 5 súmulas).
 
 O índice é uma chave de recuperação, não um resolver de citações. O domínio
 `citations/` contém o `CitationDetector` V9: um detector determinístico que
@@ -211,5 +211,7 @@ esse número como `0.8500` no CSV. Pela métrica oficial, confidence entra apena
 no bônus Brier por nível para previsões emparelhadas e não altera matching.
 O valor foi calibrado no Gold aberto, portanto o risco blind é MODERATE: não há
 ajuste por leaderboard nem confiança por classe, família, regra ou documento.
-O ganho V11 até `0.9448408281586653` foi medido no Gold aberto e não constitui
-garantia blind; o risco externo permanece MODERATE.
+No gold público final (`goldenset_offsets.csv`, 192 citações), a V11 obteve
+`0.9469602014515148`. O score informado é medido no gold público final e serve
+apenas como validação local; a avaliação final usa conjunto oculto. O risco
+blind permanece MODERATE.

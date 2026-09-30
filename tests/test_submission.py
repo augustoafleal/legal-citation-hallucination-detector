@@ -15,6 +15,10 @@ from bracis_jusbrasil.submission import DEFAULT_SUBMISSION_CONFIDENCE, build_sub
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "material_desafio_jusbrasil_bracis"
+GOLD_PATH = next(
+    path for path in (DATA / "goldenset_offsets.csv", DATA / "goldenset.csv")
+    if path.is_file()
+)
 
 
 def load_module(name: str, path: Path):
@@ -26,7 +30,7 @@ def load_module(name: str, path: Path):
 
 
 def gold_rows():
-    with (DATA / "goldenset.csv").open(encoding="utf-8", newline="") as stream:
+    with GOLD_PATH.open(encoding="utf-8-sig", newline="") as stream:
         return list(csv.DictReader(stream))
 
 
@@ -83,6 +87,15 @@ class SubmissionTests(unittest.TestCase):
     def tearDownClass(cls) -> None:
         cls.temporary.cleanup()
 
+    def test_final_public_gold_inventory(self) -> None:
+        self.assertEqual(len(self.gold), 192)
+        self.assertEqual({label: sum(row["classificacao"] == label for row in self.gold) for label in ("real", "inventada", "incompleta")},
+                         {"real": 96, "inventada": 64, "incompleta": 32})
+        self.assertEqual({kind: sum(row["tipo"] == kind for row in self.gold) for kind in ("jurisprudencia", "lei")},
+                         {"jurisprudencia": 164, "lei": 28})
+        self.assertEqual({level: sum(int(row["nivel"]) == level for row in self.gold) for level in (1, 2)},
+                         {1: 99, 2: 93})
+
     def test_default_confidence_contract(self) -> None:
         self.assertEqual(DEFAULT_SUBMISSION_CONFIDENCE, 0.85)
         self.assertIsInstance(DEFAULT_SUBMISSION_CONFIDENCE, float)
@@ -125,9 +138,9 @@ class SubmissionTests(unittest.TestCase):
             for row in structural_csv.itertuples(index=False)
         ]
         structural_score = self.metric.score(solution(self.gold), structural_csv, "documento_id")
-        self.assertAlmostEqual(structural_score, 0.8624436793206067, places=12)
+        self.assertLess(abs(structural_score - 0.8639926616637975), 1e-12)
         score = self.metric.score(solution(self.gold), self.csv, "documento_id")
-        self.assertAlmostEqual(score, 0.9448408281586653, places=12)
+        self.assertLess(abs(score - 0.9469602014515148), 1e-12)
 
     def test_v11_legal_resolution_preserves_v10_nonlegal_checkpoints(self) -> None:
         self.assertEqual(len(self.raw), 252)
@@ -140,25 +153,25 @@ class SubmissionTests(unittest.TestCase):
         ]
         raw_pairs = matched_pairs(self.metric, self.gold, raw_predictions)
         output_pairs = matched_pairs(self.metric, self.gold, output_predictions)
-        self.assertEqual(len(raw_pairs), 174)
-        self.assertEqual(len(raw_predictions) - len(raw_pairs), 78)
-        self.assertEqual(len(self.gold) - len(raw_pairs), 21)
+        self.assertEqual(len(raw_pairs), 172)
+        self.assertEqual(len(raw_predictions) - len(raw_pairs), 80)
+        self.assertEqual(len(self.gold) - len(raw_pairs), 20)
         self.assertEqual(sum(
             int(gold["inicio"]) == prediction[1].start and int(gold["fim"]) == prediction[1].end
             for gold, prediction in raw_pairs
-        ), 133)
+        ), 131)
         self.assertEqual(sum(
             gold["classificacao"] == "real" and prediction[2].status == "resolved"
             and str(prediction[2].id_canonico) == gold["id_canonico"]
             for gold, prediction in output_pairs
-        ), 85)
+        ), 87)
         self.assertEqual(len(output_predictions), 208)
-        self.assertEqual(len(output_pairs), 174)
-        self.assertEqual(len(output_predictions) - len(output_pairs), 34)
+        self.assertEqual(len(output_pairs), 172)
+        self.assertEqual(len(output_predictions) - len(output_pairs), 36)
         self.assertEqual(sum(
             int(gold["inicio"]) == prediction[1].start and int(gold["fim"]) == prediction[1].end
             for gold, prediction in output_pairs
-        ), 134)
+        ), 132)
         self.assertEqual(sum(
             gold["classificacao"] != "real" and prediction[2].status == "resolved"
             for gold, prediction in output_pairs

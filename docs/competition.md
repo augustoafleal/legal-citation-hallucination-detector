@@ -14,13 +14,13 @@ Esta página consolida, em um único lugar, as informações da competição que
 | Arquivo | Função |
 | --- | --- |
 | `txt/` | 26 documentos de entrada em UTF-8. |
-| `desafio1_bracis.db` | Base canônica SQLite, com 1.016 registros. |
-| `goldenset.csv` | Gabarito aberto revisado da amostra de desenvolvimento, com 195 citações. |
+| `desafio1_bracis.db` | Base canônica SQLite final, com 1.014 registros: 996 acórdãos, 5 súmulas e 13 dispositivos. |
+| `goldenset_offsets.csv` | Gabarito aberto final da amostra de desenvolvimento, com 192 citações e offsets validados. |
 | `json_to_submission.py` | Conversor do contrato JSON para o CSV de submissão. |
 | `kaggle_metric.py` | Implementação local da métrica oficial do leaderboard. |
 | `sample_submission.csv` | Modelo de arquivo de submissão, com uma linha por documento. |
 
-O diretório local atual contém 31 arquivos: esses cinco arquivos de nível superior e os 26 textos. O PDF instrucional de seis páginas que acompanhava a versão anterior está preservado no diretório histórico local `material_desafio_jusbrasil_bracis_old2/`, mas não faz parte do pacote atual.
+O diretório local atual contém 31 arquivos: cinco arquivos de nível superior e os 26 textos. O PDF instrucional de seis páginas que acompanhava a versão anterior está preservado no diretório histórico local `material_desafio_jusbrasil_bracis_old2/`, mas não faz parte do pacote atual.
 
 ## Visão geral
 
@@ -56,6 +56,8 @@ Dúvidas sobre o desafio, a especificação técnica ou a logística: desafio-br
 
 Na página do Kaggle, a competição aparece com as datas oficiais do cronograma abaixo. Os indicadores relativos de início e encerramento exibidos pela plataforma podem mudar conforme o momento da consulta.
 ## Avaliação
+
+O score informado pelo repositório para o gold público final é uma validação local; a avaliação final usa conjunto oculto.
 
 A avaliação tem duas fases:
 
@@ -158,8 +160,8 @@ Encontre citações de jurisprudência e lei em documentos e classifique cada um
 | Arquivo | O que é |
 | --- | --- |
 | `txt/` | Os 26 documentos de entrada (`.txt`, UTF-8). |
-| `desafio1_bracis.db` | A base canônica SQLite (93 MB, 1.016 registros). |
-| `goldenset.csv` | O gabarito revisado da amostra de desenvolvimento (195 citações). |
+| `desafio1_bracis.db` | A base canônica SQLite final (1.014 registros). |
+| `goldenset_offsets.csv` | O gabarito aberto final da amostra de desenvolvimento (192 citações). |
 | `json_to_submission.py` | Conversor: JSONs do contrato → `submission.csv`. |
 | `kaggle_metric.py` | O script de avaliação — o mesmo que roda neste leaderboard. |
 | `sample_submission.csv` | Modelo de submissão com todas as linhas de `documento_id`. |
@@ -189,9 +191,9 @@ A nomenclatura dos arquivos já entrega o nível: gen_n1_001 … gen_n1_013 são
 | --- | --- | --- |
 | Peso na nota | 1× | 2× |
 | Documentos | 13 | 13 |
-| Citações | 101 | 94 |
+| Citações | 99 | 93 |
 | Tamanho médio | 3.372 chars | 3.276 chars |
-| Classes | real 52 · inventada 32 · incompleta 17 | real 44 · inventada 32 · incompleta 18 |
+| Classes | real 52 · inventada 32 · incompleta 15 | real 44 · inventada 32 · incompleta 17 |
 | O que testa | Reconhecer a citação e resolver o doc_id na base canônica. | Normalização robusta antes de verificar: casar variantes de superfície ao mesmo identificador. |
 #### A mesma classe, escrita de dois jeitos
 
@@ -214,7 +216,7 @@ Os cabeçalhos trazem números que parecem citação e não são: número dos au
 Atenção à distinção no formato CNJ: o número dos autos do próprio documento, no cabeçalho, é distrator; a referência a outro processo em formato CNJ, no corpo do texto, é citação (como o RSE nº 7000592-58.2025.7.00.0000/DF do quadro acima).
 ### A base canônica
 
-Um SQLite de 93 MB com os 1.016 registros que definem o universo do desafio. É contra ele que uma citação é real ou inventada.
+Um SQLite de aproximadamente 90 MiB com os 1.014 registros que definem o universo do desafio. É contra ele que uma citação é real ou inventada.
 
 O banco é a cobertura congelada: um snapshot. Não se consulta base viva, e é isso que torna a avaliação reproduzível. Se um acórdão existe no mundo mas não está aqui, para efeito do desafio ele não existe — e, por construção, isso nunca prejudica ninguém: toda citação real dos documentos resolve dentro da cobertura. O caso-limite "registro real fora da cobertura" não ocorre neste dataset; se ocorresse, a citação seria excluída do scoring, não anotada como inventada.
 | Coluna | Tipo | Descrição |
@@ -231,18 +233,18 @@ O banco é a cobertura congelada: um snapshot. Não se consulta base viva, e é 
 natureza existe porque tipo sozinho não separa acórdão de súmula — os dois são jurisprudencia.
 | Natureza | Registros | O que são |
 | --- | ---: | --- |
-| `acordao` | 998 | Acórdãos de STF, STJ, TSE, TST e STM. |
+| `acordao` | 996 | Acórdãos de STF, STJ, TSE, TST e STM. |
 | `sumula` | 5 | Súmulas do STJ, STF e TST, incluindo vinculante. |
 | `dispositivo` | 13 | Artigos de CPC, CC, CLT, CF/88, CPP, CPM, CDC, Código Eleitoral e LC 64/1990. |
 
-Há ainda uma tabela virtual documentos_fts (FTS5, external content) indexando o texto integral dos 1.016 registros. Ela não duplica o conteúdo — aponta para documentos pelo rowid.
+Há ainda uma tabela virtual documentos_fts (FTS5, external content) indexando o texto integral dos 1.014 registros. Ela não duplica o conteúdo — aponta para documentos pelo rowid.
 
 ### Revisão da cobertura
 
-Na revisão oficial de 28/08/2026, os acórdãos `doc_0227` e `doc_0461` foram removidos por serem duplicatas exatas e `gen_n2_010.txt` foi corrigido. A cobertura resultante tem 1.016 registros: 998 acórdãos, 5 súmulas e 13 dispositivos. Em atualização posterior, a organização substituiu o `goldenset.csv`: removeu 30 referências vagas da classe `incompleta`, sem alterar a base, os textos, as 96 citações reais ou as 64 inventadas. No contrato de saída, `id_canonico` é um único doc_id para cada citação real.
+A revisão oficial de 28/08/2026 removeu `doc_0227` e `doc_0461` como duplicatas e corrigiu `gen_n2_010.txt`. A atualização pública final posterior removeu `doc_0657` e `doc_0662`, revisou 18 textos legais no SQLite e alterou três textos de entrada: `gen_n1_003`, `gen_n1_006` e `gen_n1_010`. O gold final `goldenset_offsets.csv` tem 192 linhas: 96 reais, 64 inventadas e 32 incompletas; os 3 spans incompletos removidos e o ID de `gen_n2_005/g6` foram revisados pela organização. No contrato de saída, `id_canonico` é um único doc_id para cada citação real.
 ### O gabarito
 
-O goldenset.csv tem uma linha por citação esperada — 195 no total, nos 26 documentos.
+O `goldenset_offsets.csv` tem uma linha por citação esperada — 192 no total, nos 26 documentos: 164 de jurisprudência e 28 de lei; 99 são N1 e 93 são N2.
 
 É o gabarito da amostra de desenvolvimento. O gabarito do conjunto final tem o mesmo formato, permanece com a organização e é usado exclusivamente na avaliação oficial.
 | Coluna | Descrição |
@@ -317,7 +319,7 @@ Como são poucos, o caminho prático é carregá-los em memória e casar por tex
 
     Não confunda as duas colunas de ID: documento_id é a chave interna do acervo e o nome do arquivo. id é o doc_id do Jusbrasil, e é ele que vai em resolucao.id_canonico. Entregar doc_0201 onde se espera 2566535283 derruba a citação para erro, mesmo com a classe certa.
 
-Cobertura congelada em 1.016 registros. A métrica completa e o alinhamento por IoU estão implementados no kaggle_metric.py, incluído nesta aba (ver Overview → Evaluation).
+Cobertura congelada em 1.014 registros. A métrica completa e o alinhamento por IoU estão implementados no kaggle_metric.py, incluído nesta aba (ver Overview → Evaluation).
 
 ## Regras da competição
 

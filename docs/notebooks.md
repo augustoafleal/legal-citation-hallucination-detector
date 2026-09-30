@@ -67,14 +67,17 @@ Em 28/08/2026, a baseline oficial foi atualizada: `doc_0227` e `doc_0461`
 foram removidos por serem duplicatas exatas. Uma atualização posterior removeu
 30 referências genéricas da classe `incompleta` do `goldenset.csv`; por isso,
 as estatísticas históricas de 225 citações descritas neste documento não são
-baseline do material atual de 195 citações. Consulte `report.md` na raiz antes
+baseline do material público final atual de 192 citações. A organização também
+revisou três textos e offsets anotados, removeu duas decisões da base e
+atualizou textos legais; consulte a documentação da competição para o inventário
+corrente. Consulte `report.md` na raiz antes
 de reexecutar ou comparar esses notebooks.
 
 ## 06_citation_surface_analysis.ipynb
 
 O sexto notebook é uma etapa exploratória sobre a superfície das citações da
 revisão corrente do desafio. Ele lê somente os 26 arquivos `txt` e as 225 linhas
-do `goldenset.csv`, valida os 225 spans contra os offsets do texto e separa
+do gold histórico `goldenset.csv`, valida os 225 spans contra os offsets do texto e separa
 explicitamente detecção, parsing e resolução; somente as duas primeiras são
 estudadas. A taxonomia textual cobre processos CNJ, processos ou recursos
 numerados, súmulas, referências jurisprudenciais contextuais ou gerais e três

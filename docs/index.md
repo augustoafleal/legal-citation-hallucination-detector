@@ -20,7 +20,7 @@ Leia a [documentação consolidada da competição](competition.md), que reúne 
 !!! tip "Por onde começar"
 
     1. Leia a [documentação consolidada](competition.md) para entender o contrato de entrada e saída.
-    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset.csv` como amostra de desenvolvimento.
+    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset_offsets.csv` como amostra de desenvolvimento.
     3. Use `desafio1_bracis.db` como a fonte de verdade para decidir e resolver citações.
     4. Reproduza localmente a métrica com `kaggle_metric.py` e gere o CSV final com `json_to_submission.py`.
 
@@ -52,7 +52,7 @@ O pareamento com o gabarito usa a sobreposição dos spans (IoU ≥ 0,5), portan
 ```text
 material_desafio_jusbrasil_bracis/
 ├── desafio1_bracis.db                             # base canônica SQLite (~89 MiB)
-├── goldenset.csv                                  # gabarito da amostra de desenvolvimento
+├── goldenset_offsets.csv                          # gabarito público final da amostra
 ├── json_to_submission.py                          # conversor de JSONs para CSV de submissão
 ├── kaggle_metric.py                               # métrica oficial
 ├── sample_submission.csv                          # modelo de submissão
@@ -99,11 +99,11 @@ A tabela principal é `documentos`. A tabela virtual `documentos_fts` usa FTS5, 
 | `tipo` | `jurisprudencia` ou `lei`. |
 | `texto`, `texto_len` | Inteiro teor e seu comprimento. |
 
-A base contém 1.016 registros, que somam 67.931.149 caracteres indexados:
+A base final contém 1.014 registros, que somam 67.737.021 caracteres indexados:
 
 | Natureza | Tipo | Registros |
 | --- | --- | ---: |
-| `acordao` | `jurisprudencia` | 998 |
+| `acordao` | `jurisprudencia` | 996 |
 | `sumula` | `jurisprudencia` | 5 |
 | `dispositivo` | `lei` | 13 |
 
@@ -111,7 +111,7 @@ Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas
 
 ## Gabarito de desenvolvimento
 
-`goldenset.csv` contém uma linha por citação esperada da amostra de desenvolvimento. A revisão mais recente possui 195 linhas distribuídas pelos 26 documentos (média de 7,5 por peça).
+`goldenset_offsets.csv` contém uma linha por citação esperada da amostra de desenvolvimento final. São 192 linhas distribuídas pelos 26 documentos (média de 7,38 por peça).
 
 | Campo | Descrição |
 | --- | --- |
@@ -125,24 +125,26 @@ Há 200 acórdãos de STF, TST e STM, 199 de STJ e 199 de TSE. As cinco súmulas
 
 | Recorte | `real` | `inventada` | `incompleta` | Total |
 | --- | ---: | ---: | ---: | ---: |
-| Nível 1 | 52 | 32 | 17 | 101 |
-| Nível 2 | 44 | 32 | 18 | 94 |
-| Total | 96 | 64 | 35 | 195 |
+| Nível 1 | 52 | 32 | 15 | 99 |
+| Nível 2 | 44 | 32 | 17 | 93 |
+| Total | 96 | 64 | 32 | 192 |
 
-Existem 165 citações de jurisprudência e 30 de lei. As 96 linhas classificadas como `real` possuem `id_canonico`; as demais o deixam vazio, como estabelece o enunciado.
+Existem 164 citações de jurisprudência e 28 de lei. As 96 linhas classificadas como `real` possuem `id_canonico`; as demais o deixam vazio, como estabelece o enunciado.
 
 !!! note "Observação de consistência"
 
-    Comparando `texto[inicio:fim]` com o `trecho`, ao interpretar `\\n` como quebra de linha, as 195 linhas coincidem com os textos atuais. A atualização mais recente removeu 30 referências genéricas da classe `incompleta`; não alterou textos, offsets remanescentes, classificações remanescentes ou IDs canônicos. Veja `report.md` na raiz do repositório.
+    Comparando `texto[inicio:fim]` com o `trecho`, ao interpretar `\\n` como quebra de linha, as 192 linhas coincidem com os textos atuais. A atualização final removeu três citações incompletas, ajustou spans anotados em textos revisados e corrigiu o ID de `gen_n2_005/g6`. Veja `report.md` na raiz do repositório.
 
 ## Revisões do dataset
 
 A revisão oficial removeu os acórdãos duplicados `doc_0227` e `doc_0461` do
 SQLite e corrigiu `gen_n2_010.txt`. A cópia local anterior tinha o gabarito em
-`goldenset.xlsx`; a distribuição atual usa `goldenset.csv` com os mesmos valores.
-A base tem 1.016 registros, incluindo 998 acórdãos, 13 dispositivos e 5
-súmulas. No contrato de saída, `id_canonico` é um único valor para cada citação
-real. Posteriormente, a organização revisou o `goldenset.csv`: 30 referências vagas da classe `incompleta` foram removidas. A cópia anterior está preservada em `material_desafio_jusbrasil_bracis_old3/`; os detalhes e os checksums estão em `report.md`.
+`goldenset.xlsx`; a versão intermediária usou `goldenset.csv`. O pacote final usa
+`goldenset_offsets.csv` e um SQLite com 1.014 registros: 996 acórdãos, 13
+dispositivos e 5 súmulas. A atualização final removeu dois acórdãos, revisou
+textos de dispositivos e súmulas, alterou três textos de entrada e ajustou o
+gold. No contrato, `id_canonico` é um único valor para cada citação real. As
+versões anteriores permanecem nas cópias históricas locais.
 
 ## Conversão da submissão
 
