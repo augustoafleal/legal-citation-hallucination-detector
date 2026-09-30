@@ -1,217 +1,115 @@
 ---
 title: Arquitetura
-description: Organização atual do bootstrap do projeto BRACIS Jusbrasil.
+summary: Pipeline determinístico que gera o CSV de submissão a partir das entradas fornecidas.
 ---
 
 # Arquitetura
 
-O bootstrap separa o código reutilizável, a exploração, os entrypoints e a
-documentação. Os arquivos originais do desafio permanecem em
-`material_desafio_jusbrasil_bracis/`; `data/` documenta essa decisão sem criar
-uma cópia do SQLite.
+A aplicação é um pipeline offline e determinístico. Para cada execução, ela
+recebe o banco e os textos informados na linha de comando, abre o banco em modo
+somente leitura e produz um CSV. Não consulta rede, APIs, modelos externos,
+gold público ou scorer durante a geração.
+
+## Visão do fluxo
+
+Use a roda do mouse, os botões ou arraste o diagrama para ampliar e navegar.
 
 ```mermaid
 flowchart LR
-    A[SQLite read-only] --> B[cases.parser]
-    B --> C[normalization]
-    C --> D[CaseIndex]
-    D --> E[(tribunal, numero_normalizado) -> Case]
-    B --> F[notebooks/]
-    D --> G[scripts/]
-    H[Texto original] --> I[CitationDetector V7]
-    I --> J[CitationCandidate[]]
-    J --> K[CitationParser V1]
-    K --> L[ParsedCitation[]]
-    L --> M[CitationResolver V3]
-    M --> N[ResolutionResult]
-    M --> D
-    N --> O[StructuralCNJArbitrator]
-    O --> P[ArbitrationResult]
+    A[run.sh] --> B[scripts/generate_submission.py]
+    B --> C[Valida argumentos e lê TXT em ordem estável]
+    B --> D[SQLite em modo somente leitura]
+    D --> E[CaseIndex]
+    D --> F[Catálogo legal dinâmico]
+    C --> G[Detector]
+    G --> H[Parser]
+    E --> I[Resolver]
+    F --> I
+    H --> I
+    I --> J[Arbitragem]
+    J --> K[Registro de submissão]
+    K --> L[CSV documento_id,citacoes]
 ```
 
-| Diretório | Responsabilidade atual |
+## Entrada e inicialização
+
+`run.sh` exige exatamente três argumentos e chama
+`scripts/generate_submission.py`. O script verifica o SQLite e o diretório de
+TXT, lê somente arquivos `*.txt`, ordena-os por nome e preserva o stem de cada
+arquivo como `documento_id`.
+
+A conexão SQLite usa `mode=ro`. Durante a inicialização, `build_case_index`
+constrói o índice de acórdãos por tribunal e número normalizado. O
+`CitationResolver` também deriva do mesmo banco o catálogo de dispositivos
+legais. Assim, a resolução usa a cobertura do banco recebido, sem IDs legais
+fixos no runtime.
+
+## Processamento por documento
+
+```mermaid
+flowchart TD
+    A[Texto UTF-8] --> B[CitationDetector.detect]
+    B --> C[CitationCandidate]
+    C --> D[CitationParser.parse]
+    D --> E[ParsedCitation]
+    E --> F[CitationResolver.resolve]
+    F --> G[ResolutionResult]
+    C --> H[arbitrate_citations]
+    E --> H
+    G --> H
+    H --> I[ArbitrationResult]
+    I --> J[build_submission_record]
+```
+
+### Detector
+
+`CitationDetector` localiza spans literais de processos e recursos, números
+CNJ, súmulas, referências legais e referências jurisprudenciais contextualizadas.
+Ele ordena e remove apenas candidatos com o mesmo intervalo exato. O detector
+não abre o banco e não atribui a classificação final.
+
+### Parser
+
+`CitationParser` transforma cada candidato em campos estruturados: família,
+tipo, tribunal explícito, número processual e demais dados presentes no próprio
+span. Para referências legais, preserva artigo, complementos, diploma e sinais
+de ambiguidade ou OCR crítico. O parser não consulta o corpus.
+
+### Resolver
+
+`CitationResolver` consulta os índices derivados do SQLite da execução e retorna
+um estado imutável:
+
+| estado interno | classificação CSV |
 | --- | --- |
-| `src/` | Código reutilizável: conexão read-only, normalização e domínio `cases`. |
-| `notebooks/` | Exploração visual e experimentos executáveis. |
-| `scripts/` | Comandos utilitários e reproduzíveis. |
-| `data/` | Documentação da localização dos arquivos distribuídos. |
-| `docs/` | Decisões e documentação renderizada pelo MkDocs. |
+| `resolved` | `real` |
+| `no_match` | `inventada` |
+| `ambiguous` | `incompleta` |
+| `insufficient` | `incompleta` |
 
-## Domínio `cases`
+A resolução só escolhe um `id_canonico` quando a identidade é única e compatível
+com os guards estruturais. Ausência de dados, conflito ou múltiplas identidades
+mantêm a abstinência.
 
-O `CaseIndex` cobre somente os 996 acórdãos do SQLite final. O parser estrutural
-por tribunal forma 912 feitos: 835 single-ID e 77 multi-ID. Todos os IDs de um
-mesmo feito são preservados; nenhum é escolhido arbitrariamente. Súmulas e
-dispositivos ainda não fazem parte do índice.
+### Arbitragem
 
-A atualização pública final contém 1.014 registros: 996 acórdãos, 5 súmulas e
-13 dispositivos. Ela removeu `doc_0657` e `doc_0662`, e atualizou textos de
-18 registros legais (13 dispositivos e 5 súmulas).
+`arbitrate_citations` executa duas proteções finais: trata referências CNJ que
+pertencem ao processo da própria peça e une spans estruturais compatíveis quando
+representam a mesma referência. Em seguida, mantém apenas a forma legal mais
+completa quando um span legal menor está contido com segurança no maior. A saída
+permanece ordenada por posição no texto.
 
-O índice é uma chave de recuperação, não um resolver de citações. O domínio
-`citations/` contém o `CitationDetector` V9: um detector determinístico que
-recebe texto original e retorna candidatos com offsets, texto, regra e família
-superficial. A V5 preserva a V4 e promove quatro extensões estruturais
-confirmadas pela revisão humana dos sete residuais:
+## Serialização
 
-- expansão de prefixos processuais formais imediatamente anteriores a CNJ;
-- `RHC`, `RMS` e `AR` com marcador, quebra de linha local e UF opcional;
-- modificador (`AgInt`, `AgRg`, `EDcl` ou `ED`) diretamente seguido de número
-  não-CNJ;
-- título composto de agravo interno e suspensão, com whitespace/newline local.
+`build_submission_record` aplica a confiança global `0.85` aos resultados finais.
+`write_submission_csv` ordena os documentos e escreve somente as colunas
+`documento_id,citacoes`. O CSV representa spans nos offsets Unicode do TXT
+original; `fim` é exclusivo.
 
-Além das extensões V5, a V6 reconhece CNJs não canônicos/degradados com
-exatamente 20 dígitos quando há marcador processual positivo e local. A regra
-`degraded_compact_cnj` preserva dígitos e offsets do texto original, aceita
-somente separadores estruturais e no máximo uma quebra local dentro do número,
-e não faz OCR. O marcador é composto por classes/modificadores processuais
-controlados; cadeias administrativas intermediárias, como `REsp OAB/SP ...`,
-não pertencem à gramática e são rejeitadas sem blacklist.
+## Propriedades operacionais
 
-A V7 acrescenta somente a regra `compound_procedural_chain`: cadeias
-procedurais formadas por `ED`, `E` e `RR`, com prefixo opcional `TST`,
-separadas exclusivamente por hífen ASCII e seguidas imediatamente por número
-CNJ/TST completo. A cadeia contém de dois a cinco tokens lexicais, permite no
-máximo duas ocorrências do mesmo token processual e aceita de um a sete dígitos
-no primeiro segmento numérico. Números parciais, tokens fora desse conjunto e
-variantes com whitespace ao redor do hífen são rejeitados. O Parser valida a
-mesma estrutura antes de extrair classe terminal, número literal e tribunal
-explícito; a regra não consulta banco nem completa dígitos.
-
-A V8 acrescenta `decision_tribunal_relator_year` para jurisprudência concreta
-insuficiente: exige, na mesma cláusula local, anchor decisório/classe, tribunal
-explícito, ano contextual e relatoria explícita. O span começa no anchor e
-termina no nome literal do relator. A regra usa a família contextual já
-suportada pelo Parser e, portanto, segue para `insufficient` no Resolver e
-`incompleta` na classificação sem exceção específica. Quando seu span tem IoU
-de pelo menos 0,5 somente com `tribunal_contextual`, a V8 preserva H2 e suprime
-o contextual curto; abaixo desse limiar mantém ambos. Nunca interfere com CNJ,
-processos numerados, súmulas ou lei. Não consulta Gold, banco, IDs ou nomes.
-
-A V9 acrescenta `rcl_relator_year_no_tribunal` como extensão independente e
-estrita da mesma família contextual: aceita somente `Rcl` ou `Reclamação` com
-ano contextual (`de`/`em` seguido de ano) e relatoria explícita, terminando no
-nome literal do relator. Não infere tribunal, não consulta banco e não aceita
-APL, referências vagas ou anchors decisórios genéricos. O candidato reutiliza
-o Parser contextual; sem número e sem tribunal, segue naturalmente para
-`insufficient` no Resolver e `incompleta` na classificação. Não altera H2, a
-Policy B, CNJ, arbitragem ou qualquer outra família. A regra permite somente
-uma quebra de linha local e rejeita fronteira de parágrafo mesmo quando as duas
-quebras são separadas por espaços ou tabs.
-
-As extensões são exclusivamente textuais, determinísticas e guardadas; não
-consultam IDs, documentos, gold, banco ou `CaseIndex`, e não fazem reparo fuzzy.
-A V4 preserva a V3 e promoveu somente três extensões estruturais:
-H1 expande localmente cadeias processuais adjacentes com guards; H2 reconhece
-`Rec. Esp.` e `H.C.` somente quando associados a uma estrutura processual válida;
-H3 estende localmente uma continuação numérica sob ruído OCR estrutural. H3 não
-é fuzzy matching. As hipóteses H4/H5 originais foram reavaliadas com os sete
-residuais e promovidas apenas nas formas guardadas acima. Historicamente, a V2
-adicionou referências jurisprudenciais gerais (`jurisprudencia_geral`): V1
-obteve 105 TP / 89 FP / 120 FN (F1 0,501); V2, 117 TP / 89 FP / 108 FN
-(F1 0,543). Sob o Gold V2, referências vagas a jurisprudência ou orientação
-sem fonte concreta ficaram fora do escopo de citação e essa emissão foi retirada
-do Detector.
-Na revisão atual, V3 obteve 119 TP / 87 FP / 106 FN (F1 0,552), V4 obteve
-127 TP / 84 FP / 98 FN (F1 0,583), V5 obteve 137 TP / 82 FP / 88 FN
-(F1 0,617; 83 matches exatos) e V6 obteve 140 TP / 82 FP / 85 FN
-(86 matches exatos). O detector não consulta o banco ou
-`CaseIndex` e não classifica uma citação.
-
-O pipeline de produção é `Texto -> CitationDetector V9 -> CitationParser V1 ->
-CitationResolver V3 -> StructuralCNJArbitrator`. Após a promoção de H1/H2/H3, novas expansões marginais do
-Detector não devem ser adicionadas sem nova evidência independente de
-generalização e segurança.
-
-`CitationParser` V1 recebe uma `CitationCandidate` já delimitada e produz
-`ParsedCitation`: família, tipo, tribunal explícito e um payload específico da
-família com os campos textualmente presentes. Opcionalmente, a etapa de
-enriquecimento recebe o texto original e associa ao CNJ apenas o prefixo
-estrutural imediatamente adjacente (`tribunal-classe-CNJ`); não atravessa
-frases ou linhas arbitrariamente. O parser não consulta banco, FTS ou
-`CaseIndex`, não classifica a citação e não decide se há evidência suficiente.
-
-`CitationResolver` V3 é o único componente que confronta a interpretação com o
-corpus. Ele preserva `case_number_exact` para processo/recurso e, quando um
-número numerado retorna múltiplas identidades, promove somente a classe
-primária explicitamente citada que seleciona exatamente um ID. Sem classe,
-com conflito ou com mais de um match, a ambiguidade é preservada. Também promove
-`sumula_number_only`: para a família `sumula_numerada`, um número presente é
-consultado globalmente no corpus de súmulas, sem exigir tribunal. Zero matches
-retorna `no_match`, um match retorna `resolved` e múltiplos matches retornam
-`ambiguous`; o dispatch explícito com tribunal preserva a estratégia V1
-`sumula_number_tribunal`. Grupos canônicos com mais de um `doc_id` permanecem
-ambíguos quando não há esse guard estrutural; não há escolha arbitrária, busca
-aproximada ou fallback por texto.
-
-O resultado é `ResolutionResult`, com os estados neutros `resolved`,
-`no_match`, `ambiguous` e `insufficient`. `no_match` significa que uma consulta
-segura foi possível, mas não encontrou candidato; `insufficient` significa que
-faltou informação ou que a estratégia não é aprovada nesta V3. Para CNJ, a V3
-consulta somente a identidade primária formal do acórdão. O tribunal explícito
-(ou o segmento estrutural do número) e a classe textual, quando presentes,
-funcionam como guards; conflito, ausência de identidade primária ou múltiplos
-IDs resultam em abstinência/ambiguidade, sem escolha arbitrária. Jurisprudência
-geral/contextual permanece `insufficient`.
-
-Na V11, dispositivos legais passam por uma frente independente e determinística.
-`LegalCanonicalCatalog` contém exatamente os 13 dispositivos do SQLite
-congelado e é vinculado ao SHA-256 desse banco e aos hashes das fontes oficiais
-auditadas. A única chave de resolução é `(artigo_normalizado,
-diploma_normalizado)`: não existe resolução por artigo isolado, texto do artigo,
-corpo do acórdão ou primeiro ID arbitrário. O runtime não consulta Gold nem rede.
-
-O detector legal captura um span limitado de artigo, complementos e diploma,
-aceita uma quebra de linha e bloqueia travessia de parágrafo. O parser produz
-`ParsedLegalIdentity`, preservando texto/offsets brutos e explicitando artigo,
-parágrafo, inciso, alínea, diploma, ambiguidade e OCR crítico. Aliases curtos
-`CF`, `CF/88`, `CC` e `CE` exigem ligação imediata a um artigo em contexto legal
-forte. Identidade desconhecida, ambígua, incompleta ou com OCR crítico abstém
-como `incompleta`.
-
-Uma chave única no catálogo resolve como `real` com ID. Uma chave completa sem
-match vira `inventada` apenas quando o namespace do diploma possui proveniência
-coberta; namespace desconhecido continua `incompleta`. A arbitragem legal roda
-depois da arbitragem CNJ V10 e remove somente um span legal curto contido em um
-span legal mais completo da mesma raiz de artigo, sem conflito de diploma. H2,
-H4, CNJ e toda a projeção jurisprudencial são preservados.
-
-`StructuralCNJArbitrator` é separado do resolver e recebe candidatos, parses e
-resultados já calculados. Ele só une um CNJ primário resolvido a exatamente um
-companheiro sobreposto de processo numerado ou contexto tribunalício quando o
-companheiro carrega um prefixo numérico de pelo menos dez dígitos, a classe e o
-tribunal são compatíveis e a identidade resolvida é a mesma. O intervalo unido
-é recortado literalmente do texto original; em qualquer dúvida, os candidatos
-são preservados. A saída imutável `ArbitrationResult` registra as fontes e os
-itens suprimidos, sem alterar `CitationCandidate`.
-
-Na V10, antes dessa união estrutural, a arbitragem aplica um filtro apenas a
-CNJs da regra `cnj` já parseados e resolvidos como `no_match`. A H-CNJ-4 exige
-um marcador processual local combinado com layout de processo próprio,
-cabeçalho, partes ou histórico, sem linguagem de precedente ou verbo
-citacional. A guarda G4 preserva um bloco jurisprudencial local que combina
-duas classes processuais, metadado de publicação/relatoria/ementa, aspas e
-linguagem de fundamentação. CNJ resolvido, ambíguo, sobreposto a H2/H4 ou à
-estrutura protegida, bem como qualquer candidato não-CNJ, permanece intacto.
-O filtro não consulta Gold, labels humanos, artefatos, documentos, offsets,
-IDs canônicos ou listas de exemplos; parser, resolver, classificação, conversor
-oficial e a confidence global permanecem inalterados.
-
-Por decisão de segurança, a implementação não usa fallback por menção no corpo,
-nem as políticas `longest-span`, `resolved-wins` ou seleção automática de um ID
-em grupos multi-ID.
-
-### Submissão e confiança
-
-O gerador de submissão serializa somente `ArbitrationResult` finais. Cada
-citação recebe a constante global `DEFAULT_SUBMISSION_CONFIDENCE = 0.85` no
-JSON contratual, após a arbitragem; spans, classe e ID canônico permanecem
-inalterados. O conversor oficial `json_to_submission.py` é preservado e emite
-esse número como `0.8500` no CSV. Pela métrica oficial, confidence entra apenas
-no bônus Brier por nível para previsões emparelhadas e não altera matching.
-O valor foi calibrado no Gold aberto, portanto o risco blind é MODERATE: não há
-ajuste por leaderboard nem confiança por classe, família, regra ou documento.
-No gold público final (`goldenset_offsets.csv`, 192 citações), a V11 obteve
-`0.9469602014515148`. O score informado é medido no gold público final e serve
-apenas como validação local; a avaliação final usa conjunto oculto. O risco
-blind permanece MODERATE.
+- **Determinismo:** TXT, candidatos e registros são ordenados antes da saída.
+- **Isolamento:** o SQLite é aberto somente para leitura.
+- **Portabilidade:** o entrypoint não depende do diretório atual.
+- **Cobertura dinâmica:** índices de acórdãos e dispositivos vêm do banco da execução.
+- **Falha segura:** uma identidade insuficiente ou ambígua não recebe ID arbitrário.

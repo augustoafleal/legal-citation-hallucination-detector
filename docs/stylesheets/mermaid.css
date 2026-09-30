@@ -1,0 +1,75 @@
+.mermaid-panzoom {
+  position: relative;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(2, 6, 23, 0.6);
+  margin: 12px 0;
+}
+
+.mermaid-panzoom__toolbar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.mermaid-panzoom__button {
+  background: rgba(15, 23, 42, 0.8);
+  color: #e2e8f0;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.mermaid-panzoom__button:hover {
+  background: rgba(30, 41, 59, 0.9);
+}
+
+.mermaid-panzoom__button[data-action='exit-fullscreen'] {
+  display: none;
+}
+
+.mermaid-panzoom.is-fullscreen .mermaid-panzoom__button[data-action='exit-fullscreen'] {
+  display: inline-flex;
+  align-items: center;
+}
+
+.mermaid-panzoom__content {
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  min-height: 260px;
+}
+
+.mermaid-panzoom__content.is-dragging {
+  cursor: grabbing;
+}
+
+.mermaid-panzoom.is-fullscreen {
+  position: fixed;
+  inset: 8px;
+  z-index: 9999;
+  background: #0f172a;
+  padding: 16px;
+}
+
+.mermaid-panzoom.is-fullscreen .mermaid-panzoom__content {
+  height: calc(100vh - 92px);
+  overflow: auto;
+}
+
+.mermaid-panzoom svg {
+  transition: transform 0.05s linear;
+}
+
+.mermaid-panzoom__content .mermaid {
+  display: inline-block;
+  transform-origin: 0 0;
+  transition: transform 0.05s linear;
+  will-change: transform;
+}
