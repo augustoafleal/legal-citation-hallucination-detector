@@ -78,8 +78,8 @@ class LegalResolverV11Tests(unittest.TestCase):
     def test_guarded_alias_and_source_covered_no_match(self) -> None:
         guarded = self.resolve_complete("art. 5 da CF")
         self.assertEqual((guarded.status, guarded.id_canonico), ("resolved", 10641516))
-        covered_no_match = self.resolve_complete("art. 172 da Lei nº 9.504/1997")
-        self.assertEqual((covered_no_match.status, covered_no_match.id_canonico), ("no_match", None))
+        uncovered_no_match = self.resolve_complete("art. 172 da Lei nº 9.504/1997")
+        self.assertEqual((uncovered_no_match.status, uncovered_no_match.id_canonico), ("insufficient", None))
 
     def test_critical_ocr_never_becomes_inventada(self) -> None:
         candidate = CitationCandidate(0, 25, "art. 312 do Código de De", "test", "lei_dispositivo_com_diploma")

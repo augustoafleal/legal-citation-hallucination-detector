@@ -1,0 +1,13 @@
+.git/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+material_desafio_jusbrasil_bracis/
+material_desafio_jusbrasil_bracis_old/
+artifacts/
+submissions/
+notebooks/
+site/
+tests/
+report.md
