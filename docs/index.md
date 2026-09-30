@@ -1,11 +1,13 @@
 ---
-title: Desafio 1 — Dados do Caça-Alucinações
-description: Visão geral e inventário dos materiais do desafio Jusbrasil para a BRACIS 2026.
+title: Legal Citation Hallucination Detector
+description: Solução offline e materiais públicos do desafio Jusbrasil para a BRACIS 2026.
 ---
 
-# Desafio 1 — Dados do Caça-Alucinações
+# Legal Citation Hallucination Detector
 
-Bem-vindo ao material do desafio Jusbrasil na BRACIS 2026. A tarefa é construir uma solução que encontre citações em peças jurídicas sintéticas e as classifique como **reais**, **inventadas** ou **incompletas**, resolvendo as referências reais contra a base canônica distribuída.
+Este repositório contém a solução offline para o desafio Jusbrasil na BRACIS 2026. Ela recebe um banco SQLite e uma pasta de documentos TXT e produz o CSV de submissão por meio de `run.sh`.
+
+O material público é uma fixture de desenvolvimento e validação. A avaliação oculta fornece seus próprios caminhos de banco e documentos; a execução final não depende do gold público.
 
 Leia a [documentação consolidada da competição](competition.md), que reúne as regras do Kaggle, o contrato de dados, a métrica, a submissão, o cronograma, o FAQ e as regras fundamentais da plataforma. A fonte principal é a [página oficial no Kaggle](https://www.kaggle.com/competitions/desafio-jusbrasil-bracis-2026).
 
@@ -16,13 +18,14 @@ Leia a [documentação consolidada da competição](competition.md), que reúne 
 - [Scripts](scripts.md): sanity check read-only disponível.
 - [Competição](competition.md): regras e especificação oficial consolidada.
 - [Dados e materiais](#arquivos-disponiveis): localização dos arquivos distribuídos, sem cópia do SQLite.
+- [Repositório público](https://github.com/augustoafleal/legal-citation-hallucination-detector): código-fonte e histórico de revisões.
 
 !!! tip "Por onde começar"
 
     1. Leia a [documentação consolidada](competition.md) para entender o contrato de entrada e saída.
-    2. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset_offsets.csv` como amostra de desenvolvimento.
-    3. Use `desafio1_bracis.db` como a fonte de verdade para decidir e resolver citações.
-    4. Reproduza localmente a métrica com `kaggle_metric.py` e gere o CSV final com `json_to_submission.py`.
+    2. Execute `bash run.sh <caminho_db> <pasta_txt> <arquivo_saida>` para gerar o CSV final.
+    3. Explore os textos em `material_desafio_jusbrasil_bracis/txt/` e o `goldenset_offsets.csv` somente como amostra pública de desenvolvimento.
+    4. Use o SQLite recebido em cada execução como a fonte de verdade para decidir e resolver citações.
 
 ## Resumo da tarefa
 
@@ -146,15 +149,15 @@ textos de dispositivos e súmulas, alterou três textos de entrada e ajustou o
 gold. No contrato, `id_canonico` é um único valor para cada citação real. As
 versões anteriores permanecem nas cópias históricas locais.
 
-## Conversão da submissão
+## Execução final
 
-`json_to_submission.py` é o utilitário Python que transforma uma pasta de JSONs no CSV de envio.
+O entrypoint de entrega gera diretamente o CSV exigido pela organização:
 
 ```bash
-python json_to_submission.py <pasta_com_jsons> [submission.csv]
+bash run.sh <caminho_db> <pasta_txt> <arquivo_saida>
 ```
 
-O resultado contém `documento_id,citacoes`. Cada citação é codificada como `inicio,fim,classificacao,id_canonico,confianca`, separada por `|`. A ausência de citações, resolução ou confiança é representada por `-`, conforme o campo. `trecho` e `tipo` fazem parte do contrato de JSON, mas não são exportados para o CSV por esse conversor.
+O resultado contém `documento_id,citacoes`. Cada citação é codificada como `inicio,fim,classificacao,id_canonico,confianca`, separada por `|`; documentos sem citação recebem `-`. Registre o hash do commit usado com `git rev-parse HEAD` antes de enviar a entrega.
 
 ## Arquivo compactado
 

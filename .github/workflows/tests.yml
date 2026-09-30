@@ -1,0 +1,56 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Run unit tests
+        run: PYTHONPATH=src python -m unittest discover -s tests -v
+
+      - name: Compile source and scripts
+        run: python -m compileall src scripts
+
+      - name: Smoke test final entrypoint
+        run: |
+          bash run.sh \
+            material_desafio_jusbrasil_bracis/desafio1_bracis.db \
+            material_desafio_jusbrasil_bracis/txt \
+            /tmp/bracis_submission.csv
+          test -s /tmp/bracis_submission.csv
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          output = Path('/tmp/bracis_submission.csv')
+          with output.open(encoding='utf-8', newline='') as handle:
+              rows = list(csv.DictReader(handle))
+
+          assert rows
+          assert set(rows[0].keys()) == {'documento_id', 'citacoes'}
+          expected_count = len(list(Path('material_desafio_jusbrasil_bracis/txt').glob('*.txt')))
+          assert len(rows) == expected_count
+          PY

@@ -5,6 +5,8 @@ Ela recebe um banco SQLite e uma pasta de documentos TXT, produzindo o CSV de
 submissão. O banco é aberto em modo somente leitura; GPU, rede, APIs e modelos
 externos não são necessários.
 
+Repositório público: [legal-citation-hallucination-detector](https://github.com/augustoafleal/legal-citation-hallucination-detector).
+
 ## Requisitos
 
 - Python 3.11 ou superior para execução local
@@ -63,9 +65,9 @@ O CSV possui as colunas `documento_id,citacoes`. Cada citação é serializada c
 
 A solução ordena os arquivos e as linhas de saída, usa o SQLite em modo
 somente leitura e não acessa a internet durante a execução. A validação pública
-é apenas uma referência de desenvolvimento e não representa avaliação oculta.
+é uma fixture de desenvolvimento e não é uma dependência da avaliação oculta.
 
-Para registrar a revisão usada na entrega, execute:
+Informe no e-mail de entrega o hash do commit usado. Para obtê-lo, execute:
 
 ```bash
 git rev-parse HEAD
